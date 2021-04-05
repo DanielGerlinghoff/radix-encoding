@@ -27,23 +27,29 @@ module conv_accumulator_tb;
 
     /* Module input signals */
     logic [INP_SIZE-1:0] addend;
-    logic [OUT_SIZE-1:0] accumulator;
-    logic select, clear;
+    logic [OUT_SIZE-1:0] acc_in, acc_out;
+    logic select, clear, acc_wren;
 
     initial begin
-        addend = 0;
-        select = 0;
+        addend   = 0;
+        clear    = 0;
+        select   = 0;
+        acc_wren = 0;
+        acc_in   = $urandom();
 
         #(RST_PERIOD) clear = 1;
         #(CLK_PERIOD) clear = 0;
 
-        #(50);
+        #(RST_PERIOD);
         for (addend = 0; addend < 10; addend++) begin
             #(CLK_PERIOD);
             select = ~select;
         end
 
-        #(50) clear = 1;
+        #(RST_PERIOD) acc_wren = 1;
+        #(CLK_PERIOD) acc_wren = 0;
+
+        #(RST_PERIOD) clear = 1;
         #(CLK_PERIOD) clear = 0;
     end
 

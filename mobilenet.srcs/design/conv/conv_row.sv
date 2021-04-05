@@ -19,7 +19,9 @@ module conv_row #(
     input  logic                enable,
     input  logic                activation [COLS],
     input  logic [KER_SIZE-1:0] kernel [COLS],
-    output logic [SUM_SIZE-1:0] sum [COLS]
+    input  logic                sum_wren,
+    input  logic [SUM_SIZE-1:0] sum_in [COLS],
+    output logic [SUM_SIZE-1:0] sum_out [COLS]
 );
 
     for (genvar col = 0; col < COLS; col++) begin :conv_accs
@@ -27,11 +29,13 @@ module conv_row #(
             .INP_SIZE(KER_SIZE),
             .OUT_SIZE(SUM_SIZE)
         ) acc_i (
-            .clk         (clk),
-            .addend      (kernel[col]),
-            .select      (activation[col] & enable),
-            .clear       (clear),
-            .accumulator (sum[col])
+            .clk      (clk),
+            .addend   (kernel[col]),
+            .select   (activation[col] & enable),
+            .clear    (clear),
+            .acc_wren (sum_wren),
+            .acc_in   (sum_in[col]),
+            .acc_out  (sum_out[col])
         );
     end
 

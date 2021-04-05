@@ -18,16 +18,18 @@ module conv_accumulator #(
     input  logic [INP_SIZE-1:0] addend,
     input  logic                select,
     input  logic                clear,
-    output logic [OUT_SIZE-1:0] accumulator  
+    input  logic                acc_wren,
+    input  logic [OUT_SIZE-1:0] acc_in,
+    output logic [OUT_SIZE-1:0] acc_out
 );
 
     always_ff @(posedge clk) begin
         if (clear) begin
-            accumulator <= 0;
-        end else begin
-            if (select) begin
-                accumulator <= accumulator + addend;
-            end
+            acc_out <= 0;
+        end else if (acc_wren) begin
+            acc_out <= acc_in;
+        end else if (select) begin
+            acc_out <= acc_out + addend;
         end
     end
 

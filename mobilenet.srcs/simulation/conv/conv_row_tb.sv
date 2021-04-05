@@ -29,17 +29,20 @@ module conv_row_tb;
     /* Module input signals */
     logic clear, enable, activation [COLS];
     logic [KER_SIZE-1:0] kernel [COLS];
-    logic [SUM_SIZE-1:0] sum [COLS];
+    logic [SUM_SIZE-1:0] sum_in [COLS], sum_out [COLS];
+    logic sum_wren;
 
     initial begin
         activation = '{default: 0};
         kernel     = '{default: 8};
         enable     = 0;
+        clear      = 0;
+        sum_wren   = 0;
 
         #(RST_PERIOD) clear = 1;
         #(CLK_PERIOD) clear = 0;
 
-        #(50);
+        #(RST_PERIOD);
         enable = 1;
         for (int i = 0; i < 10; i++) begin
             #(CLK_PERIOD);
@@ -49,7 +52,13 @@ module conv_row_tb;
         end
         enable = 0;
 
-        #(50) clear = 1;
+        #(RST_PERIOD) sum_wren = 1;
+        for (int col = 0; col < COLS; col++) begin
+            sum_in[col] = $random();
+        end
+        #(CLK_PERIOD) sum_wren = 0;
+
+        #(RST_PERIOD) clear = 1;
         #(CLK_PERIOD) clear = 0;
     end
 
