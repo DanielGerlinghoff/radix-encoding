@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="conv_array_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="conv_array_tb" />
+            <top_module name="glbl" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="406450000fs"></ZoomStartTime>
+      <ZoomEndTime time="535850001fs"></ZoomEndTime>
+      <Cursor1Time time="275000000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="166"></NameColumnWidth>
+      <ValueColumnWidth column_width="66"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="8" />
+   <wave_markers>
+      <marker label="" time="275000000" />
+   </wave_markers>
+   <wvobject type="logic" fp_name="/conv_array_tb/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="group" fp_name="group87">
+      <obj_property name="label">Kernel Load</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/conv_array_tb/ker/wren">
+         <obj_property name="ElementShortName">wren</obj_property>
+         <obj_property name="ObjectShortName">wren</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/conv_array_tb/ker/data">
+         <obj_property name="ElementShortName">data[8:0][7:0]</obj_property>
+         <obj_property name="ObjectShortName">data[8:0][7:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/conv_array_tb/test/kernel_regs">
+         <obj_property name="ElementShortName">kernel_regs[0:15][8:0][7:0]</obj_property>
+         <obj_property name="ObjectShortName">kernel_regs[0:15][8:0][7:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/conv_array_tb/test/kernel_cnt">
+         <obj_property name="ElementShortName">kernel_cnt[3:0]</obj_property>
+         <obj_property name="ObjectShortName">kernel_cnt[3:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="logic" fp_name="/conv_array_tb/test/start">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/conv_array_tb/test/stop">
+      <obj_property name="ElementShortName">stop</obj_property>
+      <obj_property name="ObjectShortName">stop</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/conv_array_tb/test/state">
+      <obj_property name="ElementShortName">state[3:0]</obj_property>
+      <obj_property name="ObjectShortName">state[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/conv_array_tb/test/conv_clear">
+      <obj_property name="ElementShortName">conv_clear</obj_property>
+      <obj_property name="ObjectShortName">conv_clear</obj_property>
+   </wvobject>
+   <wvobject type="group" fp_name="group117">
+      <obj_property name="label">Convolution</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="array" fp_name="/conv_array_tb/test/col_cnt">
+         <obj_property name="ElementShortName">col_cnt[1:0]</obj_property>
+         <obj_property name="ObjectShortName">col_cnt[1:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/conv_array_tb/test/conv_enable">
+         <obj_property name="ElementShortName">conv_enable</obj_property>
+         <obj_property name="ObjectShortName">conv_enable</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/conv_array_tb/test/kernel_rows">
+         <obj_property name="ElementShortName">kernel_rows[0:2][0:3][7:0]</obj_property>
+         <obj_property name="ObjectShortName">kernel_rows[0:2][0:3][7:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/conv_array_tb/test/activation">
+         <obj_property name="ElementShortName">activation[0:2][0:3]</obj_property>
+         <obj_property name="ObjectShortName">activation[0:2][0:3]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/conv_array_tb/test/sum_out">
+         <obj_property name="ElementShortName">sum_out[0:2][0:3][11:0]</obj_property>
+         <obj_property name="ObjectShortName">sum_out[0:2][0:3][11:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group121">
+      <obj_property name="label">Shift</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/conv_array_tb/test/sum_wren">
+         <obj_property name="ElementShortName">sum_wren</obj_property>
+         <obj_property name="ObjectShortName">sum_wren</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/conv_array_tb/test/sum_out">
+         <obj_property name="ElementShortName">sum_out[0:2][0:3][11:0]</obj_property>
+         <obj_property name="ObjectShortName">sum_out[0:2][0:3][11:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/conv_array_tb/test/sum_in">
+         <obj_property name="ElementShortName">sum_in[0:2][0:3][11:0]</obj_property>
+         <obj_property name="ObjectShortName">sum_in[0:2][0:3][11:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/conv_array_tb/test/row_conv">
+         <obj_property name="ElementShortName">row_conv[0:3][11:0]</obj_property>
+         <obj_property name="ObjectShortName">row_conv[0:3][11:0]</obj_property>
+      </wvobject>
+   </wvobject>
+</wave_config>

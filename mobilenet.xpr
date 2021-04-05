@@ -20,7 +20,7 @@
     <Option Name="SimulatorLanguage" Val="Verilog"/>
     <Option Name="BoardPart" Val=""/>
     <Option Name="SourceMgmtMode" Val="DisplayOnly"/>
-    <Option Name="ActiveSimSet" Val="conv_row"/>
+    <Option Name="ActiveSimSet" Val="conv_array"/>
     <Option Name="DefaultLib" Val="xil_defaultlib"/>
     <Option Name="ProjectType" Val="Default"/>
     <Option Name="IPOutputRepo" Val="$PCACHEDIR/ip"/>
@@ -33,7 +33,7 @@
     <Option Name="EnableBDX" Val="FALSE"/>
     <Option Name="DSAVendor" Val="xilinx"/>
     <Option Name="DSANumComputeUnits" Val="60"/>
-    <Option Name="WTXSimLaunchSim" Val="58"/>
+    <Option Name="WTXSimLaunchSim" Val="99"/>
     <Option Name="WTModelSimLaunchSim" Val="0"/>
     <Option Name="WTQuestaLaunchSim" Val="0"/>
     <Option Name="WTIesLaunchSim" Val="0"/>
@@ -84,7 +84,6 @@
       </File>
       <File Path="$PSRCDIR/design/conv/conv_array.sv">
         <FileInfo>
-          <Attr Name="UserDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -157,6 +156,7 @@
       </Config>
     </FileSet>
     <FileSet Name="conv_array" Type="SimulationSrcs" RelSrcDir="$PSRCDIR/conv_array">
+      <Filter Type="Srcs"/>
       <File Path="$PSRCDIR/simulation/sim.vh">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -170,6 +170,11 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
+      <File Path="$PSRCDIR/simulation/conv/conv_array_tb.wcfg">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
         <Option Name="TopModule" Val="conv_array_tb"/>
@@ -177,6 +182,7 @@
         <Option Name="TransportPathDelay" Val="0"/>
         <Option Name="TransportIntDelay" Val="0"/>
         <Option Name="SrcSet" Val="sources_1"/>
+        <Option Name="XSimWcfgFile" Val="$PSRCDIR/simulation/conv/conv_array_tb.wcfg"/>
       </Config>
     </FileSet>
   </FileSets>
