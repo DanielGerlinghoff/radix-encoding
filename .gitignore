@@ -10,3 +10,6 @@ ddr4.ip_user_files
 ddr4.runs
 ddr4.sim
 
+ip
+*.swp
+
