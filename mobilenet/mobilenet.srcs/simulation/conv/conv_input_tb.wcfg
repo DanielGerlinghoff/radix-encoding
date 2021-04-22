@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="conv_input_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="conv_input_tb" />
+            <top_module name="glbl" />
+            <top_module name="pkg_configuration" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="53333333fs"></ZoomStartTime>
+      <ZoomEndTime time="373333334fs"></ZoomEndTime>
+      <Cursor1Time time="320000000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="154"></NameColumnWidth>
+      <ValueColumnWidth column_width="66"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="6" />
+   <wvobject type="logic" fp_name="/conv_input_tb/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="group" fp_name="group976">
+      <obj_property name="label">Register</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/conv_input_tb/act/wren">
+         <obj_property name="ElementShortName">wren</obj_property>
+         <obj_property name="ObjectShortName">wren</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/conv_input_tb/test/act_reg">
+         <obj_property name="ElementShortName">act_reg[223:0]</obj_property>
+         <obj_property name="ObjectShortName">act_reg[223:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group978">
+      <obj_property name="label">Parallel</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="array" fp_name="/conv_input_tb/test/conf/parallel">
+         <obj_property name="ElementShortName">parallel[0:0][2:0]</obj_property>
+         <obj_property name="ObjectShortName">parallel[0:0][2:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/pkg_configuration/PARALLEL_DIM">
+         <obj_property name="ElementShortName">PARALLEL_DIM[0:1][31:0]</obj_property>
+         <obj_property name="ObjectShortName">PARALLEL_DIM[0:1][31:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/pkg_configuration/PARALLEL_NUM">
+         <obj_property name="ElementShortName">PARALLEL_NUM[0:4][31:0]</obj_property>
+         <obj_property name="ObjectShortName">PARALLEL_NUM[0:4][31:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/pkg_configuration/PARALLEL">
+         <obj_property name="ElementShortName">PARALLEL[0:4][0:15][0:1][31:0]</obj_property>
+         <obj_property name="ObjectShortName">PARALLEL[0:4][0:15][0:1][31:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/conv_input_tb/test/act_reg">
+         <obj_property name="ElementShortName">act_reg[223:0]</obj_property>
+         <obj_property name="ObjectShortName">act_reg[223:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/conv_input_tb/test/act_parallel">
+         <obj_property name="ElementShortName">act_parallel[257:0]</obj_property>
+         <obj_property name="ObjectShortName">act_parallel[257:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group982">
+      <obj_property name="label">Shift</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="logic" fp_name="/conv_input_tb/test/start">
+         <obj_property name="ElementShortName">start</obj_property>
+         <obj_property name="ObjectShortName">start</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/conv_input_tb/test/shift_cnt">
+         <obj_property name="ElementShortName">shift_cnt[1:0]</obj_property>
+         <obj_property name="ObjectShortName">shift_cnt[1:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/conv_input_tb/test/act_parallel">
+         <obj_property name="ElementShortName">act_parallel[257:0]</obj_property>
+         <obj_property name="ObjectShortName">act_parallel[257:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/conv_input_tb/test/act_shift">
+         <obj_property name="ElementShortName">act_shift[257:0]</obj_property>
+         <obj_property name="ObjectShortName">act_shift[257:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group984">
+      <obj_property name="label">Stride</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="array" fp_name="/conv_input_tb/conf/stride">
+         <obj_property name="ElementShortName">stride[0:0][0:0]</obj_property>
+         <obj_property name="ObjectShortName">stride[0:0][0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/pkg_configuration/STRIDE_DIM">
+         <obj_property name="ElementShortName">STRIDE_DIM[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STRIDE_DIM[31:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/pkg_configuration/STRIDE">
+         <obj_property name="ElementShortName">STRIDE[0:1][31:0]</obj_property>
+         <obj_property name="ObjectShortName">STRIDE[0:1][31:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/pkg_configuration/STRIDE_MAX">
+         <obj_property name="ElementShortName">STRIDE_MAX[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STRIDE_MAX[31:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/conv_input_tb/test/act_shift">
+         <obj_property name="ElementShortName">act_shift[257:0]</obj_property>
+         <obj_property name="ObjectShortName">act_shift[257:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/conv_input_tb/test/act_stride">
+         <obj_property name="ElementShortName">act_stride[127:0]</obj_property>
+         <obj_property name="ObjectShortName">act_stride[127:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group25">
+      <obj_property name="label">Output</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="array" fp_name="/conv_input_tb/test/act_stride">
+         <obj_property name="ElementShortName">act_stride[127:0]</obj_property>
+         <obj_property name="ObjectShortName">act_stride[127:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/conv_input_tb/test/act_row">
+         <obj_property name="ElementShortName">act_row[0:127]</obj_property>
+         <obj_property name="ObjectShortName">act_row[0:127]</obj_property>
+      </wvobject>
+   </wvobject>
+</wave_config>
