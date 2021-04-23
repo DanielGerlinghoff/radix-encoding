@@ -30,9 +30,7 @@ module conv_input_tb;
     /* Module input signals */
     logic start;
 
-    if_configuration #(
-        .CONVUNITS(CONVUNITS)
-    ) conf ();
+    if_configuration conf ();
 
     if_activation #(
         .SIZE_MAX(ACT_SIZE_MAX)

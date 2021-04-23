@@ -16,9 +16,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-interface if_configuration #(
-    CONVUNITS
-);
+interface if_configuration;
 
     import pkg_configuration::*;
 
@@ -29,6 +27,12 @@ interface if_configuration #(
     logic [PARALLEL_BITS-1:0] parallel [CONVUNITS];
     logic [STRIDE_BITS-1:0]   stride [CONVUNITS];
 
+    enum logic [0:1] {
+        DIR = 2'b10,
+        ADD = 2'b01,
+        SFT = 2'b00
+    } output_mode;
+
     /* Modports */
     modport array_in (
         input enable,
@@ -37,7 +41,8 @@ interface if_configuration #(
     );
 
     modport array_out (
-        input enable
+        input enable,
+        input output_mode
     );
 
 endinterface

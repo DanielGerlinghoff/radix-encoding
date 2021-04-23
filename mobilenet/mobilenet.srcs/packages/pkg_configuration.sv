@@ -1,3 +1,4 @@
+`timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company:     A*STAR IHPC
 // Engineer:    Gerlinghoff Daniel
@@ -9,6 +10,16 @@
 
 
 package pkg_configuration;
+    /* Convolution settings */
+    localparam int CONVUNITS = 2;
+    localparam int CONV_SIZE [CONVUNITS] = '{112, 112};
+    localparam int CONV_BITS = 12;
+    localparam int ACT_BITS = 4;
+    localparam int ACT_SIZE [CONVUNITS] = '{112, 112};
+    localparam int KERNEL_BITS = 8;
+    localparam int KERNEL_SIZE [CONVUNITS] = '{3, 3};
+
+    /* Convolution activation input */
     localparam int PARALLEL_DIM [2] = '{5, 16};
     localparam int PARALLEL_NUM [5] = '{1, 2, 4, 8, 16};
     localparam int PARALLEL [5][16][2] = '{
