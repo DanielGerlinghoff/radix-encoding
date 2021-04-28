@@ -22,8 +22,6 @@ module conv_input_tb;
     end
 
     /* Module parameters */
-    localparam COLS         = 128;
-    localparam KERNEL       = 3;
     localparam CONVUNITS    = 1;
     localparam ACT_SIZE_MAX = 224;
 
@@ -37,16 +35,14 @@ module conv_input_tb;
     ) act ();
 
     initial begin
-        start    = 0;
-        act.data = {ACT_SIZE_MAX/4 {4'h4}};
-        act.wren = 0;
+        start          = 0;
+        conf.enable[0] = 1;
+        act.data       = {ACT_SIZE_MAX/4 {4'h4}};
+        act.wren       = 0;
 
         /* Write activation data */
-        #(RST_PERIOD);
-        act.wren = 1;
-
-        #(CLK_PERIOD);
-        act.wren = 0;
+        #(RST_PERIOD) act.wren = 1;
+        #(CLK_PERIOD) act.wren = 0;
 
         /* Start convolution */
         #(RST_PERIOD);
@@ -85,9 +81,7 @@ module conv_input_tb;
     logic act_row [128];
 
     conv_input #(
-        .ID(0),
-        .COLS(COLS),
-        .KERNEL(KERNEL)
+        .ID(0)
     ) test (
         .*
     );

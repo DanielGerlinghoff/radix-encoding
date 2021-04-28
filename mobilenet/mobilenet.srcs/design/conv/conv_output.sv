@@ -11,7 +11,7 @@
 
 
 module conv_output
-import pkg_configuration::*;
+import pkg_processing::*;
 #(
     ID
 ) (
@@ -20,7 +20,6 @@ import pkg_configuration::*;
     input  logic [CONV_BITS-1:0]               act_row [CONV_SIZE[ID]],
     input  logic                               act_valid,
 
-    output logic                               bram_enable,
     output logic [$clog2(CONV_SIZE[ID])-1:0]   bram_addr,
     input  logic [CONV_SIZE[ID]*CONV_BITS-1:0] bram_rd_data,
     output logic [CONV_SIZE[ID]*CONV_BITS-1:0] bram_wr_data,
@@ -57,7 +56,6 @@ import pkg_configuration::*;
         end
     end
 
-    assign bram_enable        = conf.enable[ID];
     assign bram_addr          = act_cnt;
     assign {>>{act_data_old}} = bram_rd_data;
 

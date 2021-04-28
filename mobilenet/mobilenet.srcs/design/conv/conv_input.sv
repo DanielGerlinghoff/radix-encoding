@@ -9,52 +9,51 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module conv_input #(
-    ID,
-    COLS,
-    KERNEL
+module conv_input
+import pkg_processing::*;
+#(
+    ID
 ) (
-    if_activation.array_in act,
     if_configuration.array_in conf,
+    if_activation.array_in act,
     input  logic clk,
     input  logic start,
-    output logic act_row [COLS]
+    output logic act_row [CONV_SIZE[ID]]
 );
 
-    import pkg_configuration::*;
-
-    localparam KERNEL_HALF = (KERNEL - 1) / 2;
-    localparam COLS_INPUT  = STRIDE_MAX * COLS + (KERNEL - 1);
+    localparam SIZE          = CONV_SIZE[ID];
+    localparam KER_SIZE_HALF = (KER_SIZE[ID] - 1) / 2;
+    localparam SIZE_INPUT    = STRIDE_MAX[ID] * SIZE + (KER_SIZE[ID] - 1);
 
     /* Activation register */
     logic [act.SIZE_MAX-1:0] act_reg;
 
     always_ff @(posedge clk) begin
-        if (act.wren) begin
+        if (conf.enable[ID] && act.wren) begin
             act_reg <= act.data;
         end
     end
 
     /* Parallel assignment */
-    wor [COLS_INPUT-1:0] act_parallel = 0;
+    tri0 [SIZE_INPUT-1:0] act_parallel;
 
     generate
-        for (genvar p = 0; p < PARALLEL_DIM[0]; p++) begin :gen_parallel
-            for (genvar a = 0; a < PARALLEL_NUM[p]; a++) begin :gen_parallel_assign
-                assign act_parallel[PARALLEL[p][a][1]:PARALLEL[p][a][0]] = (conf.parallel[ID] == p) ? act_reg : 'z;
+        for (genvar p = 0; p < PARALLEL_DIM[ID][0]; p++) begin :gen_parallel
+            for (genvar a = 0; a < PARALLEL_NUM[ID][p]; a++) begin :gen_parallel_assign
+                assign act_parallel[PARALLEL_ACT[ID][p][a][1]:PARALLEL_ACT[ID][p][a][0]] = (conf.parallel[ID] == p) ? act_reg : 'z;
             end
         end
     endgenerate
 
     /* Row shift */
-    logic [COLS_INPUT-1:0] act_shift;
-    logic [$clog2(KERNEL)-1:0] shift_cnt;
+    logic [SIZE_INPUT-1:0] act_shift;
+    logic [$clog2(KER_SIZE[ID])-1:0] shift_cnt;
 
     always_ff @(posedge clk) begin
-        if (start) begin
-            act_shift <= act_parallel << KERNEL_HALF;
+        if (conf.enable[ID] && start) begin
+            act_shift <= act_parallel << KER_SIZE_HALF;
             shift_cnt <= 1;
-        end else if (shift_cnt > 0 && shift_cnt < KERNEL) begin
+        end else if (shift_cnt > 0 && shift_cnt < KER_SIZE[ID]) begin
             act_shift <= act_shift >> 1;
             shift_cnt <= shift_cnt + 1;
         end else begin
@@ -63,12 +62,12 @@ module conv_input #(
     end
 
     /* Stride selection */
-    wire [COLS-1:0] act_stride;
+    wire [SIZE-1:0] act_stride;
 
     generate
-        for (genvar s = 0; s < STRIDE_DIM; s++) begin :gen_stride
-            for (genvar i = 0; i < COLS; i++) begin :gen_stride_assign
-                assign act_stride[i] = (conf.stride[ID] == s) ? act_shift[i*STRIDE[s]+KERNEL_HALF] : 'z;
+        for (genvar s = 0; s < STRIDE_DIM[ID]; s++) begin :gen_stride
+            for (genvar i = 0; i < SIZE; i++) begin :gen_stride_assign
+                assign act_stride[i] = (conf.stride[ID] == s) ? act_shift[i*STRIDE[ID][s]+KER_SIZE_HALF] : 'z;
             end
         end
     endgenerate
@@ -76,7 +75,7 @@ module conv_input #(
     /* Register output */
     always_ff @(posedge clk) begin
         if (shift_cnt) begin
-            for (int i = 0; i < COLS; i++) begin
+            for (int i = 0; i < SIZE; i++) begin
                 act_row[i] <= act_stride[i];
             end
         end

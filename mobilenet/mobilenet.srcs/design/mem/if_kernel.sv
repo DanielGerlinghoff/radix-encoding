@@ -10,11 +10,11 @@
 
 
 interface if_kernel #(
-    KER_SIZE,
+    KER_BITS,
     KER_VALS
 );
 
-    logic [KER_VALS-1:0][KER_SIZE-1:0] data;
+    logic [KER_VALS-1:0][KER_BITS-1:0] data;
     logic                              wren;
     
     /* Modports */

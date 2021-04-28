@@ -12,6 +12,8 @@
 
 
 module conv_output_tb;
+    import pkg_processing::*;
+
     /* Clock signal */
     logic clk;
     initial begin
@@ -22,8 +24,6 @@ module conv_output_tb;
     end
 
     /* Module parameters */
-    import pkg_configuration::*;
-
     localparam ID = 0;
 
     /* Module input signals */
@@ -38,7 +38,7 @@ module conv_output_tb;
         act_row   = '{default: 1};
         act_valid = 0;
 
-        conf.enable      = '{1, 0};
+        conf.enable      = '{1};
         conf.output_mode = conf.DIR;
 
         #(CLK_PERIOD);
@@ -70,7 +70,6 @@ module conv_output_tb;
     end
 
     /* Module instantiation */
-    wire                               bram_enable;
     wire [$clog2(CONV_SIZE[ID])-1:0]   bram_addr;
     wire [CONV_SIZE[ID]*CONV_BITS-1:0] bram_rd_data;
     wire [CONV_SIZE[ID]*CONV_BITS-1:0] bram_wr_data;
@@ -87,7 +86,7 @@ module conv_output_tb;
         .HEIGHT(CONV_SIZE[ID])
     ) mem (
         .clk       (clk),
-        .enable    (bram_enable),
+        .enable    (conf.enable[ID]),
         .addr_a    (bram_addr),
         .addr_b    (0),
         .wr_data   (bram_wr_data),
