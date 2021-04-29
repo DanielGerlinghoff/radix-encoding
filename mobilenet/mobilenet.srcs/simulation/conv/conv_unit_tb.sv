@@ -54,10 +54,10 @@ module conv_unit_tb;
 
         /* Configuration */
         #(RST_PERIOD);
-        conf.enable[0]   = 1;
-        conf.parallel[0] = 0;
-        conf.stride[0]   = 0;
-        conf.output_mode = conf.DIR;
+        conf.enable[0]     = 1;
+        conf.conv_parallel = 0;
+        conf.conv_stride   = 0;
+        conf.output_mode   = conf.DIR;
 
         /* Load kernel */
         #(RST_PERIOD);
@@ -78,7 +78,7 @@ module conv_unit_tb;
         #(CLK_PERIOD) act.wren = 0;
 
         /* Start and reset */
-        #(RST_PERIOD) 
+        #(RST_PERIOD);
         for (int i = 0; i < 4; i++) begin
             start = 1;
             #(CLK_PERIOD);

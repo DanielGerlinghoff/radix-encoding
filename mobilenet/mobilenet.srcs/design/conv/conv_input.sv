@@ -40,7 +40,7 @@ import pkg_processing::*;
     generate
         for (genvar p = 0; p < PARALLEL_DIM[ID][0]; p++) begin :gen_parallel
             for (genvar a = 0; a < PARALLEL_NUM[ID][p]; a++) begin :gen_parallel_assign
-                assign act_parallel[PARALLEL_ACT[ID][p][a][1]:PARALLEL_ACT[ID][p][a][0]] = (conf.parallel[ID] == p) ? act_reg : 'z;
+                assign act_parallel[PARALLEL_ACT[ID][p][a][1]:PARALLEL_ACT[ID][p][a][0]] = (conf.conv_parallel == p) ? act_reg : 'z;
             end
         end
     endgenerate
@@ -67,7 +67,7 @@ import pkg_processing::*;
     generate
         for (genvar s = 0; s < STRIDE_DIM[ID]; s++) begin :gen_stride
             for (genvar i = 0; i < SIZE; i++) begin :gen_stride_assign
-                assign act_stride[i] = (conf.stride[ID] == s) ? act_shift[i*STRIDE[ID][s]+KER_SIZE_HALF] : 'z;
+                assign act_stride[i] = (conf.conv_stride == s) ? act_shift[i*STRIDE[ID][s]+KER_SIZE_HALF] : 'z;
             end
         end
     endgenerate

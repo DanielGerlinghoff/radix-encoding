@@ -3,9 +3,9 @@
 // Company:     A*STAR IHPC
 // Engineer:    Gerlinghoff Daniel
 // Create Date: 29/03/2021
-// 
+//
 // Description: Combines accumulators to calculate one row of activations
-// 
+//
 //////////////////////////////////////////////////////////////////////////////////
 
 

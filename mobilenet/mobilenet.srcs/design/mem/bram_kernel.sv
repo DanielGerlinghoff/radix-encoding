@@ -17,13 +17,13 @@ module bram_kernel #(
     WR_HEIGHT,
     INIT_FILE = ""
 ) (
-    input  logic clk,
-    input  logic wr_en,
+    input  logic                         clk,
+    input  logic                         wr_en,
     input  logic [$clog2(WR_HEIGHT)-1:0] wr_addr,
-    input  logic [WR_WIDTH-1:0] wr_data,
-    input  logic rd_en,
+    input  logic [WR_WIDTH-1:0]          wr_data,
+    input  logic                         rd_en,
     input  logic [$clog2(RD_HEIGHT)-1:0] rd_addr,
-    output logic [RD_WIDTH-1:0] rd_data
+    output logic [RD_WIDTH-1:0]          rd_data
 );
 
     localparam RATIO = WR_WIDTH / RD_WIDTH;

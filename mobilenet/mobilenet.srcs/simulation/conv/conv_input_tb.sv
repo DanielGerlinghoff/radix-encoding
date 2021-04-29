@@ -46,29 +46,29 @@ module conv_input_tb;
 
         /* Start convolution */
         #(RST_PERIOD);
-        conf.parallel[0] = 0;
-        conf.stride[0]   = 0;
+        conf.conv_parallel = 0;
+        conf.conv_stride   = 0;
         start = 1;
         #(CLK_PERIOD);
         start = 0;
 
         #(RST_PERIOD);
-        conf.parallel[0] = 2;
-        conf.stride[0]   = 0;
+        conf.conv_parallel = 2;
+        conf.conv_stride   = 0;
         start = 1;
         #(CLK_PERIOD);
         start = 0;
 
         #(RST_PERIOD);
-        conf.parallel[0] = 4;
-        conf.stride[0]   = 0;
+        conf.conv_parallel = 4;
+        conf.conv_stride   = 0;
         start = 1;
         #(CLK_PERIOD);
         start = 0;
 
         #(RST_PERIOD);
-        conf.parallel[0] = 0;
-        conf.stride[0]   = 1;
+        conf.conv_parallel = 0;
+        conf.conv_stride   = 1;
         start = 1;
         #(CLK_PERIOD);
         start = 0;

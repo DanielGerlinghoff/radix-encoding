@@ -3,10 +3,10 @@
 // Company:     A*STAR IHPC
 // Engineer:    Gerlinghoff Daniel
 // Create Date: 29/03/2021
-// 
+//
 // Description: Adds zero or addend to accumulator based on select value
 //              Clears accumulator on clear signal
-// 
+//
 //////////////////////////////////////////////////////////////////////////////////
 
 

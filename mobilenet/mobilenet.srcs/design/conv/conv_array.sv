@@ -23,7 +23,7 @@ import pkg_processing::*;
 );
 
     /* Kernel registers */
-    import pkg_mapping::KER_TO_CONV; 
+    import pkg_mapping::KER_TO_CONV;
 
     localparam KER_REGS = PARALLEL_MAX[ID];
     localparam KER_VALS = KER_SIZE[ID] ** 2;
@@ -93,7 +93,7 @@ import pkg_processing::*;
             for (genvar p = 0; p < PARALLEL_DIM[ID][0]; p++) begin :gen_parallel
                 for (genvar a = 0; a < PARALLEL_NUM[ID][p]; a++) begin :gen_parallel_assign
                     for (genvar v = PARALLEL_KER[ID][p][a][0]; v <= PARALLEL_KER[ID][p][a][1]; v++) begin :gen_parallel_values
-                        assign kernel_parallel[r][v] = (conf.parallel[ID] == p) ? kernel_regs[a][col_cnt+r*KER_SIZE[ID]] : 'z;
+                        assign kernel_parallel[r][v] = (conf.conv_parallel == p) ? kernel_regs[a][col_cnt+r*KER_SIZE[ID]] : 'z;
                     end
                 end
             end

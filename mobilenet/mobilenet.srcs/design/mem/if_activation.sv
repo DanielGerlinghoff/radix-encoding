@@ -3,9 +3,9 @@
 // Company:     A*STAR IHPC
 // Engineer:    Gerlinghoff Daniel
 // Create Date: 05/04/2021
-// 
+//
 // Description: Connect activation BRAMs to convolution arrays
-// 
+//
 //////////////////////////////////////////////////////////////////////////////////
 
 
