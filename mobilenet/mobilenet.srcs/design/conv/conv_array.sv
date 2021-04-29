@@ -23,8 +23,11 @@ import pkg_processing::*;
 );
 
     /* Kernel registers */
+    import pkg_mapping::KER_TO_CONV; 
+
     localparam KER_REGS = PARALLEL_MAX[ID];
     localparam KER_VALS = KER_SIZE[ID] ** 2;
+    localparam ID_MEM   = KER_TO_CONV[ID];
 
     logic [KER_VALS-1:0][KER_BITS-1:0] kernel_regs [KER_REGS];
     logic [$clog2(KER_REGS+1)-1:0] kernel_cnt = 0;
@@ -32,8 +35,8 @@ import pkg_processing::*;
     always_ff @(posedge clk) begin
         if (rst) begin
             kernel_cnt <= 0;
-        end else if (conf.enable[ID] && ker.wren) begin
-            kernel_regs[kernel_cnt] <= ker.data;
+        end else if (conf.enable[ID] && ker.bram_rd_val[ID_MEM]) begin
+            kernel_regs[kernel_cnt] <= ker.bram_rd_data[ID_MEM][KER_VALS*KER_BITS-1:0];
             kernel_cnt <= kernel_cnt + 1;
         end
     end

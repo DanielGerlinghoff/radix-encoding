@@ -7,17 +7,19 @@
          <top_modules>
             <top_module name="conv_array_tb" />
             <top_module name="glbl" />
-            <top_module name="pkg_configuration" />
+            <top_module name="pkg_mapping" />
+            <top_module name="pkg_memory" />
+            <top_module name="pkg_processing" />
          </top_modules>
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="508670500fs"></ZoomStartTime>
-      <ZoomEndTime time="638870501fs"></ZoomEndTime>
-      <Cursor1Time time="545000000fs"></Cursor1Time>
+      <ZoomStartTime time="108333333fs"></ZoomStartTime>
+      <ZoomEndTime time="758333334fs"></ZoomEndTime>
+      <Cursor1Time time="650000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="162"></NameColumnWidth>
+      <NameColumnWidth column_width="158"></NameColumnWidth>
       <ValueColumnWidth column_width="66"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="9" />
@@ -31,13 +33,13 @@
    <wvobject type="group" fp_name="group87">
       <obj_property name="label">Kernel Load</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <wvobject type="logic" fp_name="/conv_array_tb/ker/wren">
-         <obj_property name="ElementShortName">wren</obj_property>
-         <obj_property name="ObjectShortName">wren</obj_property>
+      <wvobject type="array" fp_name="/conv_array_tb/ker/bram_rd_val">
+         <obj_property name="ElementShortName">bram_rd_val[0:0]</obj_property>
+         <obj_property name="ObjectShortName">bram_rd_val[0:0]</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/conv_array_tb/ker/data">
-         <obj_property name="ElementShortName">data[8:0][7:0]</obj_property>
-         <obj_property name="ObjectShortName">data[8:0][7:0]</obj_property>
+      <wvobject type="array" fp_name="/conv_array_tb/ker/bram_rd_data">
+         <obj_property name="ElementShortName">bram_rd_data[0:0][127:0]</obj_property>
+         <obj_property name="ObjectShortName">bram_rd_data[0:0][127:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/conv_array_tb/test/kernel_regs">
          <obj_property name="ElementShortName">kernel_regs[0:15][8:0][7:0]</obj_property>
@@ -67,14 +69,9 @@
    <wvobject type="group" fp_name="group22">
       <obj_property name="label">Parallel</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject type="array" fp_name="/conv_array_tb/conf/parallel">
          <obj_property name="ElementShortName">parallel[0:0][34:0]</obj_property>
          <obj_property name="ObjectShortName">parallel[0:0][34:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/pkg_configuration/PARALLEL_KER">
-         <obj_property name="ElementShortName">PARALLEL_KER[0:0][0:4][0:15][0:1][31:0]</obj_property>
-         <obj_property name="ObjectShortName">PARALLEL_KER[0:0][0:4][0:15][0:1][31:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/conv_array_tb/test/kernel_regs">
          <obj_property name="ElementShortName">kernel_regs[0:15][8:0][7:0]</obj_property>
@@ -92,7 +89,6 @@
    <wvobject type="group" fp_name="group117">
       <obj_property name="label">Convolution</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject type="array" fp_name="/conv_array_tb/test/col_cnt">
          <obj_property name="ElementShortName">col_cnt[1:0]</obj_property>
          <obj_property name="ObjectShortName">col_cnt[1:0]</obj_property>
@@ -112,7 +108,6 @@
       <wvobject type="array" fp_name="/conv_array_tb/test/sum_out">
          <obj_property name="ElementShortName">sum_out[0:2][0:127][11:0]</obj_property>
          <obj_property name="ObjectShortName">sum_out[0:2][0:127][11:0]</obj_property>
-         <obj_property name="isExpanded"></obj_property>
       </wvobject>
    </wvobject>
    <wvobject type="group" fp_name="group121">

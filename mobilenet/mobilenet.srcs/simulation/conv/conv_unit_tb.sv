@@ -25,6 +25,7 @@ module conv_unit_tb;
 
     /* Module parameters */
     localparam ID           = 0;
+    localparam ID_MEM       = 0;
     localparam KER_VALS     = KER_SIZE[ID] ** 2;
     localparam ACT_SIZE_MAX = 224;
 
@@ -36,10 +37,7 @@ module conv_unit_tb;
 
     if_configuration conf ();
 
-    if_kernel #(
-        .KER_BITS(KER_BITS),
-        .KER_VALS(KER_VALS)
-    ) ker ();
+    if_kernel ker ();
 
     if_activation #(
         .SIZE_MAX(ACT_SIZE_MAX)
@@ -65,13 +63,13 @@ module conv_unit_tb;
         #(RST_PERIOD);
         for (int k = 0; k < PARALLEL_MAX[ID]; k++) begin
             #(CLK_PERIOD);
-            for (int val = 0; val < KER_VALS; val++) begin
-                ker.data[val] = $random();
+            for (int val = 0; val < KER_VALS * KER_BITS; val++) begin
+                ker.bram_rd_data[ID_MEM][val] = $random();
             end
-            ker.wren = 1'b1;
+            ker.bram_rd_val[ID_MEM] = 1'b1;
 
             #(CLK_PERIOD);
-            ker.wren = 1'b0;
+            ker.bram_rd_val[ID_MEM] = 1'b0;
         end
 
         /* Load activation */
