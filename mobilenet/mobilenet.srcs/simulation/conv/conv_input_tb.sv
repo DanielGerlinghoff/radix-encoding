@@ -22,27 +22,26 @@ module conv_input_tb;
     end
 
     /* Module parameters */
-    localparam CONVUNITS    = 1;
-    localparam ACT_SIZE_MAX = 224;
+    localparam CONVUNITS = 1;
+    localparam ID_MEM    = 0;
 
     /* Module input signals */
     logic start;
 
     if_configuration conf ();
 
-    if_activation #(
-        .SIZE_MAX(ACT_SIZE_MAX)
-    ) act ();
+    if_activation act (.clk);
 
     initial begin
-        start          = 0;
-        conf.enable[0] = 1;
-        act.data       = {ACT_SIZE_MAX/4 {4'h4}};
-        act.wren       = 0;
+        start               = 0;
+        conf.enable[0]      = 1;
+        conf.mem_select     = ID_MEM;
+        act.rd_data[ID_MEM] = {pkg_memory::ACT_WIDTH_MAX/4 {4'h4}};
+        act.rd_val[ID_MEM]  = 0;
 
         /* Write activation data */
-        #(RST_PERIOD) act.wren = 1;
-        #(CLK_PERIOD) act.wren = 0;
+        #(RST_PERIOD) act.rd_val[ID_MEM] = 1;
+        #(CLK_PERIOD) act.rd_val[ID_MEM] = 0;
 
         /* Start convolution */
         #(RST_PERIOD);

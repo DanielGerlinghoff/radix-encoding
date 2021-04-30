@@ -26,11 +26,12 @@ import pkg_processing::*;
     localparam SIZE_INPUT    = STRIDE_MAX[ID] * SIZE + (KER_SIZE[ID] - 1);
 
     /* Activation register */
-    logic [act.SIZE_MAX-1:0] act_reg;
+    import pkg_memory::ACT_WIDTH_MAX;
+    logic [ACT_WIDTH_MAX-1:0] act_reg;
 
     always_ff @(posedge clk) begin
-        if (conf.enable[ID] && act.wren) begin
-            act_reg <= act.data;
+        if (conf.enable[ID] && act.rd_val[conf.mem_select]) begin
+            act_reg <= act.rd_data[conf.mem_select];
         end
     end
 

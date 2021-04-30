@@ -12,13 +12,15 @@
 interface if_configuration;
 
     import pkg_processing::*;
+    import pkg_memory::ACT_NUM;
 
     localparam PARALLEL_BITS = $clog2($size(PARALLEL_NUM, 2) + 1);
     localparam STRIDE_BITS   = $clog2($size(STRIDE, 2) + 1);
 
-    logic                     enable [CONVUNITS];
-    logic [PARALLEL_BITS-1:0] conv_parallel;
-    logic [STRIDE_BITS-1:0]   conv_stride;
+    logic                       enable [CONVUNITS];
+    logic [PARALLEL_BITS-1:0]   conv_parallel;
+    logic [STRIDE_BITS-1:0]     conv_stride;
+    logic [$clog2(ACT_NUM)-1:0] mem_select;
 
     enum logic [0:1] {
         DIR = 2'b10,
@@ -29,6 +31,7 @@ interface if_configuration;
     /* Modports */
     modport array_in (
         input enable,
+        input mem_select,
         input conv_parallel,
         input conv_stride
     );

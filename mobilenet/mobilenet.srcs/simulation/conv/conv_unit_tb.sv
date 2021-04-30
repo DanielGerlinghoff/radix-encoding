@@ -13,6 +13,7 @@
 
 module conv_unit_tb;
     import pkg_processing::*;
+    import pkg_memory::*;
 
     /* Clock signal */
     logic clk;
@@ -24,10 +25,9 @@ module conv_unit_tb;
     end
 
     /* Module parameters */
-    localparam ID           = 0;
-    localparam ID_MEM       = 0;
-    localparam KER_VALS     = KER_SIZE[ID] ** 2;
-    localparam ACT_SIZE_MAX = 224;
+    localparam ID       = 0;
+    localparam ID_MEM   = 0;
+    localparam KER_VALS = KER_SIZE[ID] ** 2;
 
     /* Module input signals */
     logic                               rst;
@@ -37,12 +37,9 @@ module conv_unit_tb;
 
     if_configuration conf ();
 
-    if_kernel ker ();
+    if_kernel ker (.clk);
 
-    if_activation #(
-        .SIZE_MAX(ACT_SIZE_MAX)
-    ) act ();
-
+    if_activation act (.clk);
 
     initial begin
         rst      = 0;
@@ -55,6 +52,7 @@ module conv_unit_tb;
         /* Configuration */
         #(RST_PERIOD);
         conf.enable[0]     = 1;
+        conf.mem_select    = ID_MEM;
         conf.conv_parallel = 0;
         conf.conv_stride   = 0;
         conf.output_mode   = conf.DIR;
@@ -73,9 +71,9 @@ module conv_unit_tb;
         end
 
         /* Load activation */
-        act.data = {ACT_SIZE_MAX/4 {4'h4}};
-        #(RST_PERIOD) act.wren = 1;
-        #(CLK_PERIOD) act.wren = 0;
+        act.rd_data[ID_MEM] = {ACT_WIDTH_MAX/4 {4'h4}};
+        #(RST_PERIOD) act.rd_val[ID_MEM] = 1;
+        #(CLK_PERIOD) act.rd_val[ID_MEM] = 0;
 
         /* Start and reset */
         #(RST_PERIOD);

@@ -19,5 +19,12 @@ package pkg_memory;
     localparam [800:1] KER_INIT [KER_NUM] = '{""};
     localparam int DRAM_WIDTH = 512;
 
+    /* Activation memory */
+    localparam int ACT_NUM = 2;
+    localparam int ACT_WIDTH [ACT_NUM] = '{224, 224};
+    localparam int ACT_WIDTH_MAX = 224;
+    localparam int ACT_HEIGHT [ACT_NUM] = '{16, 16};
+    localparam int ACT_HEIGHT_MAX = 16;
+
 endpackage
 
