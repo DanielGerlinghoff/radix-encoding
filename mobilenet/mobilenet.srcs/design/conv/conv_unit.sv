@@ -19,16 +19,14 @@ import pkg_processing::*;
     if_activation act,
     input  logic clk, rst,
     input  logic start,
-    output logic finish,
-
-    input  logic [$clog2(CONV_SIZE[ID])-1:0]   act_addr,
-    output logic [CONV_SIZE[ID]*CONV_BITS-1:0] act_output
+    output logic finish
 );
 
     /* Convolution modules */
-    wire                 conv_input [CONV_SIZE[ID]];
-    wire [CONV_BITS-1:0] conv_output [CONV_SIZE[ID]];
-    wire                 conv_finish;
+    wire                               conv_input [CONV_SIZE[ID]];
+    wire [CONV_BITS-1:0]               conv_output [CONV_SIZE[ID]];
+    wire [CONV_SIZE[ID]*CONV_BITS-1:0] conv_result;
+    wire                               conv_finish;
 
     wire [$clog2(CONV_SIZE[ID])-1:0]   bram_addr;
     wire [CONV_SIZE[ID]*CONV_BITS-1:0] bram_rd_data;
@@ -76,15 +74,25 @@ import pkg_processing::*;
     conv_bram #(
         .WIDTH  (CONV_SIZE[ID]*CONV_BITS),
         .HEIGHT (CONV_SIZE[ID])
-    ) mem (
+    ) bram (
         .clk       (clk),
-        .enable    (conf.enable[ID]),
+        .en_a      (conf.enable[ID]),
         .addr_a    (bram_addr),
-        .addr_b    (act_addr),
-        .wr_data   (bram_wr_data),
-        .wr_en     (bram_wr_en),
         .rd_data_a (bram_rd_data),
-        .rd_data_b (act_output)
+        .wr_en_a   (bram_wr_en),
+        .wr_data_a (bram_wr_data),
+        .rd_en_b   (act.conv_rd_en[ID]),
+        .rd_addr_b (act.conv_rd_addr),
+        .rd_data_b (conv_result)
+    );
+
+    conv_relu #(
+        .ID(ID)
+    ) relu (
+        .clk       (clk),
+        .conf      (conf),
+        .act       (act),
+        .conv_data (conv_result)
     );
 
     assign finish = conv_finish;

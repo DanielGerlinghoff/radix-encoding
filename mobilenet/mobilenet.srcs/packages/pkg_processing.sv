@@ -13,6 +13,7 @@ package pkg_processing;
     /* Convolution settings */
     localparam int CONVUNITS = 1;
     localparam int CONV_SIZE [CONVUNITS] = '{128};
+    localparam int CONV_SIZE_MAX = 128;
     localparam int CONV_BITS = 12;
     localparam int ACT_BITS = 4;
     localparam int KER_BITS = 8;
@@ -20,6 +21,7 @@ package pkg_processing;
 
     localparam int PARALLEL_DIM [CONVUNITS][2] = '{'{5, 16}};
     localparam int PARALLEL_NUM [CONVUNITS][5] = '{'{1, 2, 4, 8, 16}};
+    localparam int PARALLEL_WIDTH [CONVUNITS][5] = '{'{112, 56, 28, 14, 7}};
     localparam int PARALLEL_MAX [CONVUNITS] = '{16};
     localparam int PARALLEL_ACT [CONVUNITS][5][16][2] = '{'{
         '{'{1, 224}, '{0, 0}, '{0, 0}, '{0, 0}, '{0, 0}, '{0, 0}, '{0, 0}, '{0, 0}, '{0, 0}, '{0, 0}, '{0, 0}, '{0, 0}, '{0, 0}, '{0, 0}, '{0, 0}, '{0, 0}},

@@ -14,8 +14,14 @@ interface if_activation (
 );
 
     import pkg_memory::*;
+    import pkg_processing::CONVUNITS;
+    import pkg_processing::CONV_SIZE_MAX;
+    import pkg_processing::CONV_BITS;
 
     logic [$clog2(ACT_HEIGHT_MAX)-1:0] addr;
+    logic [$clog2(ACT_HEIGHT_MAX)-1:0] wr_addr_base;
+    logic [$clog2(ACT_HEIGHT_MAX)-1:0] wr_addr_offset;
+    logic                              wr_add_addr;
     logic                              wr_en [ACT_NUM];
     logic [ACT_WIDTH_MAX-1:0]          wr_data;
     logic                              rd_en [ACT_NUM];
@@ -25,6 +31,23 @@ interface if_activation (
     always_ff @(posedge clk) begin
         for (int n = 0; n < ACT_NUM; n++) begin
             rd_val[n] <= rd_en[n];
+        end
+
+        if (wr_add_addr) begin
+            addr <= wr_addr_base + wr_addr_offset;
+        end
+    end
+
+    logic                              conv_rd_en [CONVUNITS];
+    logic                              conv_rd_val [CONVUNITS];
+    logic [$clog2(CONV_SIZE_MAX)-1:0]  conv_rd_addr;
+    logic [$clog2(CONV_BITS)-1:0]      conv_scale;
+    logic [$clog2(ACT_HEIGHT_MAX)-1:0] conv_addr_step [2];
+    logic                              conv_transfer_finish = 0;
+
+    always_ff @(posedge clk) begin
+        for (int n = 0; n < CONVUNITS; n++) begin
+            conv_rd_val[n] <= conv_rd_en[n];
         end
     end
 
@@ -40,6 +63,17 @@ interface if_activation (
         input  wr_data,
         input  rd_en,
         output rd_data
+    );
+
+    modport array_relu (
+        input  conv_rd_val,
+        input  conv_scale,
+        input  conv_addr_step,
+        output conv_transfer_finish,
+        output wr_addr_offset,
+        output wr_add_addr,
+        output wr_en,
+        output wr_data
     );
 
 endinterface

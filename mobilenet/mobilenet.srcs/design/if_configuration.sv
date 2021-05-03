@@ -41,4 +41,9 @@ interface if_configuration;
         input output_mode
     );
 
+    modport array_relu (
+        input conv_parallel,
+        input mem_select
+    );
+
 endinterface

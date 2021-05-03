@@ -86,12 +86,13 @@ module conv_output_tb;
         .HEIGHT(CONV_SIZE[ID])
     ) mem (
         .clk       (clk),
-        .enable    (conf.enable[ID]),
+        .en_a      (conf.enable[ID]),
         .addr_a    (bram_addr),
-        .addr_b    (0),
-        .wr_data   (bram_wr_data),
-        .wr_en     (bram_wr_en),
         .rd_data_a (bram_rd_data),
+        .wr_en_a   (bram_wr_en),
+        .wr_data_a (bram_wr_data),
+        .rd_en_b   (0),
+        .rd_addr_b (0),
         .rd_data_b ()
     );
 

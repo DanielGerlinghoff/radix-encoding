@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="conv_relu_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="conv_relu_tb" />
+            <top_module name="glbl" />
+            <top_module name="pkg_memory" />
+            <top_module name="pkg_processing" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="69166666fs"></ZoomStartTime>
+      <ZoomEndTime time="364166667fs"></ZoomEndTime>
+      <Cursor1Time time="315000000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="142"></NameColumnWidth>
+      <ValueColumnWidth column_width="66"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="5" />
+   <wvobject type="logic" fp_name="/conv_relu_tb/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/conv_relu_tb/act/conv_transfer_finish">
+      <obj_property name="ElementShortName">conv_transfer_finish</obj_property>
+      <obj_property name="ObjectShortName">conv_transfer_finish</obj_property>
+   </wvobject>
+   <wvobject type="group" fp_name="group1965">
+      <obj_property name="label">Unpacking</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="logic" fp_name="/conv_relu_tb/test/conv_unpack">
+         <obj_property name="ElementShortName">conv_unpack</obj_property>
+         <obj_property name="ObjectShortName">conv_unpack</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/conv_relu_tb/test/conv_data">
+         <obj_property name="ElementShortName">conv_data[0:127][11:0]</obj_property>
+         <obj_property name="ObjectShortName">conv_data[0:127][11:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/conv_relu_tb/test/conv_unpacked">
+         <obj_property name="ElementShortName">conv_unpacked[0:15][0:127][11:0]</obj_property>
+         <obj_property name="ObjectShortName">conv_unpacked[0:15][0:127][11:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group2369">
+      <obj_property name="label">Activation</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="logic" fp_name="/conv_relu_tb/test/conv_activate">
+         <obj_property name="ElementShortName">conv_activate</obj_property>
+         <obj_property name="ObjectShortName">conv_activate</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/conv_relu_tb/test/cnt_assign">
+         <obj_property name="ElementShortName">cnt_assign[3:0]</obj_property>
+         <obj_property name="ObjectShortName">cnt_assign[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/conv_relu_tb/test/conv_activated">
+         <obj_property name="ElementShortName">conv_activated[0:127][3:0]</obj_property>
+         <obj_property name="ObjectShortName">conv_activated[0:127][3:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group2501">
+      <obj_property name="label">Writing</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="logic" fp_name="/conv_relu_tb/test/conv_write">
+         <obj_property name="ElementShortName">conv_write</obj_property>
+         <obj_property name="ObjectShortName">conv_write</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/conv_relu_tb/test/cnt_bits">
+         <obj_property name="ElementShortName">cnt_bits[1:0]</obj_property>
+         <obj_property name="ObjectShortName">cnt_bits[1:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/conv_relu_tb/act/wr_addr_offset">
+         <obj_property name="ElementShortName">wr_addr_offset[3:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_addr_offset[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/conv_relu_tb/act/wr_add_addr">
+         <obj_property name="ElementShortName">wr_add_addr</obj_property>
+         <obj_property name="ObjectShortName">wr_add_addr</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/conv_relu_tb/act/addr">
+         <obj_property name="ElementShortName">addr[3:0]</obj_property>
+         <obj_property name="ObjectShortName">addr[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/conv_relu_tb/act/wr_en[0]">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">[0]</obj_property>
+         <obj_property name="ObjectShortName">[0]</obj_property>
+         <obj_property name="label">wr_en[0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/conv_relu_tb/act/wr_data">
+         <obj_property name="ElementShortName">wr_data[223:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_data[223:0]</obj_property>
+      </wvobject>
+   </wvobject>
+</wave_config>

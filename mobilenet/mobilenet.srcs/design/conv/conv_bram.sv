@@ -14,25 +14,29 @@ module conv_bram #(
     HEIGHT
 ) (
     input  logic                      clk,
-    input  logic                      enable,
+    input  logic                      en_a,
     input  logic [$clog2(HEIGHT)-1:0] addr_a,
-    input  logic [$clog2(HEIGHT)-1:0] addr_b,
-    input  logic [WIDTH-1:0]          wr_data,
-    input  logic                      wr_en,
     output logic [WIDTH-1:0]          rd_data_a,
+    input  logic                      wr_en_a,
+    input  logic [WIDTH-1:0]          wr_data_a,
+    input  logic                      rd_en_b,
+    input  logic [$clog2(HEIGHT)-1:0] rd_addr_b,
     output logic [WIDTH-1:0]          rd_data_b
 );
 
     logic [WIDTH-1:0] ram [HEIGHT-1:0];
 
     always_ff @(posedge clk) begin
-        if (enable) begin
+        if (en_a) begin
             rd_data_a <= ram[addr_a];
-            rd_data_b <= ram[addr_b];
 
-            if (wr_en) begin
-                ram[addr_a] <= wr_data;
+            if (wr_en_a) begin
+                ram[addr_a] <= wr_data_a;
             end
+        end
+
+        if (rd_en_b) begin
+            rd_data_b <= ram[rd_addr_b];
         end
     end
 
