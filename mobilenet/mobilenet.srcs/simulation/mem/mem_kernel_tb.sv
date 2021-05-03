@@ -37,7 +37,7 @@ module mem_kernel_tb;
 
         #(RST_PERIOD);
         for (int h = 0; h < KER_HEIGHT_MAX[1]; h++) begin
-            for (int w = 0; w < DRAM_WIDTH; w++)
+            for (int w = 0; w < DRAM_DATA_BITS; w++)
                 ker.bram_wr_data[w] = $random();
             ker.bram_wr_addr = h;
             ker.bram_wr_en[ID] = 1;

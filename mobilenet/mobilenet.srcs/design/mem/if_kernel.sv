@@ -17,7 +17,7 @@ interface if_kernel (
 
     logic                                 bram_wr_en [KER_NUM];
     logic [$clog2(KER_HEIGHT_MAX[1])-1:0] bram_wr_addr;
-    logic [DRAM_WIDTH-1:0]                bram_wr_data;
+    logic [DRAM_DATA_BITS-1:0]            bram_wr_data;
     logic                                 bram_rd_en [KER_NUM];
     logic                                 bram_rd_val [KER_NUM];
     logic [$clog2(KER_HEIGHT_MAX[0])-1:0] bram_rd_addr;

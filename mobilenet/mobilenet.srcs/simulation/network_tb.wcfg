@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="network_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="network_tb" />
+            <top_module name="pkg_memory" />
+            <top_module name="pkg_processing" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="1323604800fs"></ZoomStartTime>
+      <ZoomEndTime time="1657104801fs"></ZoomEndTime>
+      <Cursor1Time time="1415000000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="146"></NameColumnWidth>
+      <ValueColumnWidth column_width="66"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="8" />
+   <wvobject type="logic" fp_name="/network_tb/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/network_tb/test/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/network_tb/test/start">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/network_tb/test/finish[0]">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[0]</obj_property>
+      <obj_property name="ObjectShortName">[0]</obj_property>
+      <obj_property name="label">finish</obj_property>
+   </wvobject>
+   <wvobject type="group" fp_name="group63">
+      <obj_property name="label">Load Kernel</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="array" fp_name="/network_tb/test/ker/bram_rd_val">
+         <obj_property name="ElementShortName">bram_rd_val[0:0]</obj_property>
+         <obj_property name="ObjectShortName">bram_rd_val[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /array/kernel_cnt">
+         <obj_property name="ElementShortName">kernel_cnt[4:0]</obj_property>
+         <obj_property name="ObjectShortName">kernel_cnt[4:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /array/kernel_regs">
+         <obj_property name="ElementShortName">kernel_regs[0:15][8:0][7:0]</obj_property>
+         <obj_property name="ObjectShortName">kernel_regs[0:15][8:0][7:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group86">
+      <obj_property name="label">Load Activation</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="logic" fp_name="/network_tb/test/act/rd_val[0]">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">[0]</obj_property>
+         <obj_property name="ObjectShortName">[0]</obj_property>
+         <obj_property name="label">rd_val[0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /inp/act_reg">
+         <obj_property name="ElementShortName">act_reg[223:0]</obj_property>
+         <obj_property name="ObjectShortName">act_reg[223:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group114">
+      <obj_property name="label">Convolution</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /array/state">
+         <obj_property name="ElementShortName">state[3:0]</obj_property>
+         <obj_property name="ObjectShortName">state[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /conv_finish">
+         <obj_property name="ElementShortName">conv_finish</obj_property>
+         <obj_property name="ObjectShortName">conv_finish</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /array/sum_out">
+         <obj_property name="ElementShortName">sum_out[0:2][0:127][11:0]</obj_property>
+         <obj_property name="ObjectShortName">sum_out[0:2][0:127][11:0]</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /conv_output">
+         <obj_property name="ElementShortName">conv_output[0:127][11:0]</obj_property>
+         <obj_property name="ObjectShortName">conv_output[0:127][11:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/network_tb/test/conf/output_mode">
+         <obj_property name="ElementShortName">output_mode[0:1]</obj_property>
+         <obj_property name="ObjectShortName">output_mode[0:1]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /out/bram_wr_en">
+         <obj_property name="ElementShortName">bram_wr_en</obj_property>
+         <obj_property name="ObjectShortName">bram_wr_en</obj_property>
+      </wvobject>
+      <wvobject type="vbus" fp_name="vbus129">
+         <obj_property name="label">bram</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /bram/ram[1]">
+            <obj_property name="ElementShortName">[1][1535:0]</obj_property>
+            <obj_property name="ObjectShortName">[1][1535:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /bram/ram[0]">
+            <obj_property name="ElementShortName">[0][1535:0]</obj_property>
+            <obj_property name="ObjectShortName">[0][1535:0]</obj_property>
+         </wvobject>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group139">
+      <obj_property name="label">Result Transfer</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="logic" fp_name="/network_tb/test/act/conv_rd_val[0]">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">[0]</obj_property>
+         <obj_property name="ObjectShortName">[0]</obj_property>
+         <obj_property name="label">conv_rd_val[0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/network_tb/test/act/conv_transfer_finish">
+         <obj_property name="ElementShortName">conv_transfer_finish</obj_property>
+         <obj_property name="ObjectShortName">conv_transfer_finish</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /relu/conv_unpacked">
+         <obj_property name="ElementShortName">conv_unpacked[0:15][0:127][11:0]</obj_property>
+         <obj_property name="ObjectShortName">conv_unpacked[0:15][0:127][11:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /relu/conv_activated">
+         <obj_property name="ElementShortName">conv_activated[0:127][3:0]</obj_property>
+         <obj_property name="ObjectShortName">conv_activated[0:127][3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/network_tb/test/act/addr">
+         <obj_property name="ElementShortName">addr[3:0]</obj_property>
+         <obj_property name="ObjectShortName">addr[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/network_tb/test/act/wr_en[1]">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">[1]</obj_property>
+         <obj_property name="ObjectShortName">[1]</obj_property>
+         <obj_property name="label">wr_en[1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/network_tb/test/act/wr_data">
+         <obj_property name="ElementShortName">wr_data[223:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_data[223:0]</obj_property>
+      </wvobject>
+   </wvobject>
+</wave_config>

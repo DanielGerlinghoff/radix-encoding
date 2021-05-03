@@ -25,7 +25,8 @@ interface if_configuration;
     enum logic [0:1] {
         DIR = 2'b10,
         ADD = 2'b01,
-        SFT = 2'b00
+        SFT = 2'b00,
+        DEL = 2'b11
     } output_mode;
 
     /* Modports */

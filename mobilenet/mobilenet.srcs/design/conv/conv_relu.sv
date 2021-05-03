@@ -30,7 +30,7 @@ import pkg_processing::*;
         for (genvar p = 0; p < PARALLEL_DIM[ID][0]; p++) begin :gen_parallel
             for (genvar a = 0; a < PARALLEL_NUM[ID][p]; a++) begin :gen_parallel_assign
                 localparam int pos [2] = PARALLEL_KER[ID][p][a];
-                localparam int pad = CONV_SIZE[ID] - pos[1] + pos[0];
+                localparam int pad = CONV_SIZE[ID] - (pos[1] - pos[0] + 1);
                 assign conv_parallel[a] = (conf.conv_parallel == p) ? {conv_data[pos[0]:pos[1]], {pad*CONV_BITS {1'bx}}} : 'z;
             end
         end

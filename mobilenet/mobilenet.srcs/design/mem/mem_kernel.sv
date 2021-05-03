@@ -4,7 +4,7 @@
 // Engineer:    Gerlinghoff Daniel
 // Create Date: 29/04/2021
 //
-// Description: Contrainer for all BRAMs which store kernel values
+// Description: Container for all BRAMs which store kernel values
 //
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -18,15 +18,15 @@ module mem_kernel (
 
     generate
         for (genvar n = 0; n < KER_NUM; n++) begin :gen_bram
-            localparam WR_HEIGHT = KER_HEIGHT[n] * KER_WIDTH[n] / DRAM_WIDTH;
+            localparam WR_HEIGHT = KER_HEIGHT[n] * KER_WIDTH[n] / DRAM_DATA_BITS;
 
             bram_kernel #(
                 .RD_WIDTH  (KER_WIDTH[n]),
                 .RD_HEIGHT (KER_HEIGHT[n]),
-                .WR_WIDTH  (DRAM_WIDTH),
+                .WR_WIDTH  (DRAM_DATA_BITS),
                 .WR_HEIGHT (WR_HEIGHT),
                 .INIT_FILE (KER_INIT[n])
-            ) bram_kernel_i (
+            ) bram_i (
                 .clk     (clk),
                 .wr_en   (ker.bram_wr_en[n]),
                 .wr_addr (ker.bram_wr_addr[$clog2(WR_HEIGHT)-1:0]),

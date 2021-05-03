@@ -39,7 +39,7 @@ import pkg_processing::*;
             bram_wr_en <= 0;
             act_cnt <= 0;
 
-        end else if (conf.enable[ID]) begin
+        end else if (conf.enable[ID] && conf.output_mode != conf.DEL) begin
             if (act_valid) begin
                 act_reg <= act_row;
                 act_add <= 1;
