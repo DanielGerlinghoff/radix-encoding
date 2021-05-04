@@ -23,11 +23,9 @@ import pkg_processing::*;
 );
 
     /* Kernel registers */
-    import pkg_mapping::KER_TO_CONV;
-
     localparam KER_REGS = PARALLEL_MAX[ID];
     localparam KER_VALS = KER_SIZE[ID] ** 2;
-    localparam ID_MEM   = KER_TO_CONV[ID];
+    localparam ID_MEM   = pkg_mapping::KER_TO_CONV[ID];
 
     logic [KER_VALS-1:0][KER_BITS-1:0] kernel_regs [KER_REGS];
     logic [$clog2(KER_REGS+1)-1:0] kernel_cnt = 0;

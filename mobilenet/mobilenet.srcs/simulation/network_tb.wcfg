@@ -13,32 +13,55 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="1323604800fs"></ZoomStartTime>
-      <ZoomEndTime time="1657104801fs"></ZoomEndTime>
-      <Cursor1Time time="1415000000fs"></Cursor1Time>
+      <ZoomStartTime time="720416666fs"></ZoomStartTime>
+      <ZoomEndTime time="1055916667fs"></ZoomEndTime>
+      <Cursor1Time time="1000000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="146"></NameColumnWidth>
+      <NameColumnWidth column_width="142"></NameColumnWidth>
       <ValueColumnWidth column_width="66"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="8" />
+   <WVObjectSize size="14" />
    <wvobject type="logic" fp_name="/network_tb/clk">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/network_tb/test/reset">
-      <obj_property name="ElementShortName">reset</obj_property>
-      <obj_property name="ObjectShortName">reset</obj_property>
+   <wvobject type="logic" fp_name="/network_tb/test/proc_reset">
+      <obj_property name="ElementShortName">proc_reset</obj_property>
+      <obj_property name="ObjectShortName">proc_reset</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/network_tb/test/start">
-      <obj_property name="ElementShortName">start</obj_property>
-      <obj_property name="ObjectShortName">start</obj_property>
+   <wvobject type="logic" fp_name="/network_tb/test/proc_start">
+      <obj_property name="ElementShortName">proc_start</obj_property>
+      <obj_property name="ObjectShortName">proc_start</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/network_tb/test/finish[0]">
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">[0]</obj_property>
-      <obj_property name="ObjectShortName">[0]</obj_property>
-      <obj_property name="label">finish</obj_property>
+   <wvobject type="logic" fp_name="/network_tb/test/proc_finish">
+      <obj_property name="ElementShortName">proc_finish</obj_property>
+      <obj_property name="ObjectShortName">proc_finish</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/network_tb/test/proc/next">
+      <obj_property name="ElementShortName">next</obj_property>
+      <obj_property name="ObjectShortName">next</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/network_tb/test/proc/instr_pnt">
+      <obj_property name="ElementShortName">instr_pnt[7:0]</obj_property>
+      <obj_property name="ObjectShortName">instr_pnt[7:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/network_tb/test/proc/instr_op">
+      <obj_property name="ElementShortName">instr_op[0:1][3:0]</obj_property>
+      <obj_property name="ObjectShortName">instr_op[0:1][3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/network_tb/test/proc/instr_conf">
+      <obj_property name="ElementShortName">instr_conf[2:0]</obj_property>
+      <obj_property name="ObjectShortName">instr_conf[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/network_tb/test/proc/instr_unit">
+      <obj_property name="ElementShortName">instr_unit[0:1][4:0]</obj_property>
+      <obj_property name="ObjectShortName">instr_unit[0:1][4:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/network_tb/test/proc/wait_cond">
+      <obj_property name="ElementShortName">wait_cond[0:1][1:0]</obj_property>
+      <obj_property name="ObjectShortName">wait_cond[0:1][1:0]</obj_property>
    </wvobject>
    <wvobject type="group" fp_name="group63">
       <obj_property name="label">Load Kernel</obj_property>
@@ -76,6 +99,14 @@
       <obj_property name="label">Convolution</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
+      <wvobject type="logic" fp_name="/network_tb/test/ctrl/reset">
+         <obj_property name="ElementShortName">reset</obj_property>
+         <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/network_tb/test/ctrl/start">
+         <obj_property name="ElementShortName">start</obj_property>
+         <obj_property name="ObjectShortName">start</obj_property>
+      </wvobject>
       <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /array/state">
          <obj_property name="ElementShortName">state[3:0]</obj_property>
          <obj_property name="ObjectShortName">state[3:0]</obj_property>
@@ -125,9 +156,9 @@
          <obj_property name="ObjectShortName">[0]</obj_property>
          <obj_property name="label">conv_rd_val[0]</obj_property>
       </wvobject>
-      <wvobject type="logic" fp_name="/network_tb/test/act/conv_transfer_finish">
-         <obj_property name="ElementShortName">conv_transfer_finish</obj_property>
-         <obj_property name="ObjectShortName">conv_transfer_finish</obj_property>
+      <wvobject type="array" fp_name="/network_tb/test/act/conv_transfer_finish">
+         <obj_property name="ElementShortName">conv_transfer_finish[0:0]</obj_property>
+         <obj_property name="ObjectShortName">conv_transfer_finish[0:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /relu/conv_unpacked">
          <obj_property name="ElementShortName">conv_unpacked[0:15][0:127][11:0]</obj_property>
@@ -136,10 +167,6 @@
       <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /relu/conv_activated">
          <obj_property name="ElementShortName">conv_activated[0:127][3:0]</obj_property>
          <obj_property name="ObjectShortName">conv_activated[0:127][3:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/network_tb/test/act/addr">
-         <obj_property name="ElementShortName">addr[3:0]</obj_property>
-         <obj_property name="ObjectShortName">addr[3:0]</obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/network_tb/test/act/wr_en[1]">
          <obj_property name="DisplayName">label</obj_property>

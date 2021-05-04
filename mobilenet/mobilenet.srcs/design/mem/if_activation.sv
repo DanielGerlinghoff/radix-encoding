@@ -16,8 +16,10 @@ interface if_activation (
     import pkg_memory::*;
     import pkg_processing::CONVUNITS;
     import pkg_processing::CONV_SIZE_MAX;
-    import pkg_processing::CONV_BITS;
 
+    logic [$clog2(ACT_NUM)-1:0] mem_select;
+
+    /* Activation BRAMs */
     logic [$clog2(ACT_HEIGHT_MAX)-1:0] wr_addr;
     logic [$clog2(ACT_HEIGHT_MAX)-1:0] wr_addr_base;
     logic [$clog2(ACT_HEIGHT_MAX)-1:0] wr_addr_offset;
@@ -39,12 +41,13 @@ interface if_activation (
         end
     end
 
+    /* Intermediate convolution BRAM */
+    logic                              conv_wr_en [CONVUNITS];
     logic                              conv_rd_en [CONVUNITS];
     logic                              conv_rd_val [CONVUNITS];
     logic [$clog2(CONV_SIZE_MAX)-1:0]  conv_rd_addr;
-    logic [$clog2(CONV_BITS)-1:0]      conv_scale;
     logic [$clog2(ACT_HEIGHT_MAX)-1:0] conv_addr_step [2];
-    logic                              conv_transfer_finish = 0;
+    logic                              conv_transfer_finish [CONVUNITS] = '{default: 0};
 
     always_ff @(posedge clk) begin
         for (int n = 0; n < CONVUNITS; n++) begin
@@ -54,14 +57,19 @@ interface if_activation (
 
     /* Modports */
     modport proc(
+        output mem_select,
         output rd_en,
         output rd_addr,
         output wr_addr_base,
         output conv_rd_en,
-        output conv_rd_addr
+        output conv_rd_addr,
+        output conv_addr_step,
+        input  conv_wr_en,
+        input  conv_transfer_finish
     );
 
     modport array_in (
+        input mem_select,
         input rd_data,
         input rd_val
     );
@@ -76,8 +84,8 @@ interface if_activation (
     );
 
     modport array_relu (
+        input  mem_select,
         input  conv_rd_val,
-        input  conv_scale,
         input  conv_addr_step,
         output conv_transfer_finish,
         output wr_addr_offset,

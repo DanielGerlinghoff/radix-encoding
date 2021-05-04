@@ -95,6 +95,7 @@ import pkg_processing::*;
     );
 
     assign ctrl.finish[ID] = conv_finish;
+    assign act.conv_wr_en[ID] = bram_wr_en;
 
 endmodule
 

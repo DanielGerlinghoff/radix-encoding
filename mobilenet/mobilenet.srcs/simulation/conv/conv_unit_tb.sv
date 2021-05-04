@@ -45,10 +45,10 @@ module conv_unit_tb;
         /* Configuration */
         #(RST_PERIOD);
         conf.enable[0]     = 1;
-        conf.mem_select    = ID_MEM;
         conf.conv_parallel = 0;
         conf.conv_stride   = 0;
         conf.output_mode   = conf.DIR;
+        act.mem_select     = ID_MEM;
 
         /* Load kernel */
         #(RST_PERIOD);

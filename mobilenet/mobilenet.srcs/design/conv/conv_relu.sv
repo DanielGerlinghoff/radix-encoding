@@ -53,7 +53,7 @@ import pkg_processing::*;
     endfunction
 
     function logic [ACT_BITS-1:0] quantize (input logic [CONV_BITS-1:0] conv_relu);
-        automatic logic [CONV_BITS-1:0] conv_shifted = conv_relu >> act.conv_scale;
+        automatic logic [CONV_BITS-1:0] conv_shifted = conv_relu >> conf.act_scale;
 
         if (|conv_shifted[CONV_BITS-1:ACT_BITS-1]) quantize = 2 ** (ACT_BITS - 1) - 1;
         else                                       quantize = conv_shifted[ACT_BITS-1:0];
@@ -72,12 +72,12 @@ import pkg_processing::*;
 
     always_ff @(posedge clk) begin
         if (conv_write) begin
-            act.wr_en[conf.mem_select] <= 1;
+            act.wr_en[act.mem_select] <= 1;
             for (int val = 0; val < CONV_SIZE[ID]; val++) begin
                 act.wr_data[CONV_SIZE[ID]-val-1] <= conv_activated[val][cnt_bits];
             end
         end else begin
-            act.wr_en[conf.mem_select] <= 0;
+            act.wr_en[act.mem_select] <= 0;
             act.wr_data       <= 'z;
         end
 
@@ -118,7 +118,7 @@ import pkg_processing::*;
                     cnt_assign    <= cnt_assign + 1;
                 end else begin
                     cnt_assign <= 0;
-                    act.conv_transfer_finish <= 1;
+                    act.conv_transfer_finish[ID] <= 1;
                 end
             end else if (cnt_bits == 0) begin
                 conv_write <= conv_activate;
@@ -127,8 +127,8 @@ import pkg_processing::*;
             end
         end
 
-        if (act.conv_transfer_finish) begin
-            act.conv_transfer_finish <= 0;
+        if (act.conv_transfer_finish[ID]) begin
+            act.conv_transfer_finish[ID] <= 0;
         end
 
     end

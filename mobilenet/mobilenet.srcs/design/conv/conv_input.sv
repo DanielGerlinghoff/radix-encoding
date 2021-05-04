@@ -30,8 +30,8 @@ import pkg_processing::*;
     logic [ACT_WIDTH_MAX-1:0] act_reg;
 
     always_ff @(posedge clk) begin
-        if (conf.enable[ID] && act.rd_val[conf.mem_select]) begin
-            act_reg <= act.rd_data[conf.mem_select];
+        if (conf.enable[ID] && act.rd_val[act.mem_select]) begin
+            act_reg <= act.rd_data[act.mem_select];
         end
     end
 

@@ -31,7 +31,6 @@ module conv_relu_tb;
     logic [0:CONV_SIZE[ID]*CONV_BITS-1] conv_data;
 
     if_configuration conf ();
-
     if_activation act (.clk);
 
     generate
@@ -44,16 +43,16 @@ module conv_relu_tb;
 
     initial begin
         conf.conv_parallel = PAR;
-        conf.mem_select    = 0;
+        conf.act_scale     = 4;
+        act.mem_select     = 0;
         act.wr_addr_base   = 0;
         act.conv_rd_en[ID] = 0;
-        act.conv_scale     = 4;
         act.conv_addr_step = '{4, 10};
 
         #(RST_PERIOD) act.conv_rd_en[ID] = 1;
         #(CLK_PERIOD) act.conv_rd_en[ID] = 0;
 
-        wait(act.conv_transfer_finish);
+        wait(act.conv_transfer_finish[ID]);
         #(4*CLK_PERIOD);
         $finish();
 

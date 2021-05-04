@@ -35,14 +35,14 @@ module conv_array_tb;
 
     if_configuration conf ();
 
-    if_kernel ker ();
+    if_kernel ker (.clk);
 
     initial begin
-        rst                = 0;
-        start              = 0;
-        activation         = '{default: 0};
-        conf.enable[ID]    = 1;
-        conf.conv_parallel = 2;
+        rst                      = 0;
+        start                    = 0;
+        activation               = '{default: 0};
+        conf.enable[ID]          = 1;
+        conf.conv_parallel       = 2;
         ker.bram_rd_data[ID_MEM] = 0;
         ker.bram_rd_val[ID_MEM]  = 0;
 

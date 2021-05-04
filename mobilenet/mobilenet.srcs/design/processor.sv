@@ -26,7 +26,7 @@ module processor (
     localparam OP_BITS   = 4;
     localparam UNIT_BITS = 5;
     localparam VAL_BITS  = INS_WIDTH - OP_BITS - UNIT_BITS;
-    localparam CONF_BITS = 2;
+    localparam CONF_BITS = 3;
     localparam COND_BITS = 2;
 
     typedef enum logic [OP_BITS-1:0] {
@@ -36,16 +36,22 @@ module processor (
         KERL = 4,
         ACTL = 5,
         ACTS = 6,
-        WAIT = 7
+        WAIT = 7,
+        END  = 8
     } ops;
     typedef enum logic [CONF_BITS-1:0] {
-        PAR = 0,
-        STR = 1,
-        OUT = 2,
-        MEM = 3
+        PAR  = 0,
+        STR  = 1,
+        OUT  = 2,
+        MEM  = 3,
+        SCL  = 4,
+        ASTF = 5,
+        ASTB = 6
     } confs;
     typedef enum logic [COND_BITS-1:0] {
-        CONV = 0
+        CONV = 0,
+        CWR  = 1,
+        TRAN = 2
     } conds;
 
     logic                                   next;
@@ -74,16 +80,20 @@ module processor (
             ker.bram_rd_en <= '{default: 0};
             act.rd_en      <= '{default: 0};
             act.conv_rd_en <= '{default: 0};
+            finish         <= 0;
 
         end else if (start || next) begin
             case (instr_op[0])
                 CONF: begin
                     if (instr_unit[0] == '1) begin
                         case (instr_conf)
-                            PAR: conf.conv_parallel <= instr_val[VAL_BITS-CONF_BITS-1:0];
-                            STR: conf.conv_stride   <= instr_val[VAL_BITS-CONF_BITS-1:0];
-                            OUT: conf.output_mode   <= conf.output_modes'(instr_val[VAL_BITS-CONF_BITS-1:0]);
-                            MEM: conf.mem_select    <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            PAR:  conf.conv_parallel    <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            STR:  conf.conv_stride      <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            OUT:  conf.output_mode      <= conf.output_modes'(instr_val[VAL_BITS-CONF_BITS-1:0]);
+                            MEM:  act.mem_select        <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            SCL:  conf.act_scale        <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            ASTF: act.conv_addr_step[0] <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            ASTB: act.conv_addr_step[1] <= instr_val[VAL_BITS-CONF_BITS-1:0];
                         endcase
                     end else begin
                         conf.enable[instr_unit[0]] <= instr_val;
@@ -123,6 +133,11 @@ module processor (
                 WAIT: begin
                     next <= 0;
                 end
+
+                END: begin
+                    finish <= 1;
+                    next <= 0;
+                end
             endcase
 
             instr_pnt     <= instr_pnt + 1;
@@ -159,11 +174,15 @@ module processor (
 
                 WAIT: begin
                     case (wait_cond[1])
-                        CONV: begin
-                            if (ctrl.finish[instr_unit[1]])
-                                next <= 1;
-                        end
+                        CONV: if (ctrl.finish[instr_unit[1]]) next <= 1;
+                        CWR:  if (act.conv_wr_en[instr_unit[1]]) next <= 1;
+                        TRAN: if (act.conv_transfer_finish[instr_unit[1]]) next <= 1;
                     endcase
+                end
+
+                END: begin
+                    finish <= 0;
+                    instr_pnt <= 0;
                 end
             endcase
         end

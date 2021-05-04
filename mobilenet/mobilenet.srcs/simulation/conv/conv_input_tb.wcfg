@@ -29,7 +29,7 @@
    <wvobject type="group" fp_name="group976">
       <obj_property name="label">Register</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <wvobject type="array" fp_name="/conv_input_tb/conf/mem_select">
+      <wvobject type="array" fp_name="/conv_input_tb/act/mem_select">
          <obj_property name="ElementShortName">mem_select[0:0]</obj_property>
          <obj_property name="ObjectShortName">mem_select[0:0]</obj_property>
       </wvobject>
