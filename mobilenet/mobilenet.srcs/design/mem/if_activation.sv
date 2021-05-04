@@ -18,13 +18,14 @@ interface if_activation (
     import pkg_processing::CONV_SIZE_MAX;
     import pkg_processing::CONV_BITS;
 
-    logic [$clog2(ACT_HEIGHT_MAX)-1:0] addr;
+    logic [$clog2(ACT_HEIGHT_MAX)-1:0] wr_addr;
     logic [$clog2(ACT_HEIGHT_MAX)-1:0] wr_addr_base;
     logic [$clog2(ACT_HEIGHT_MAX)-1:0] wr_addr_offset;
     logic                              wr_add_addr;
     logic                              wr_en [ACT_NUM];
     logic [ACT_WIDTH_MAX-1:0]          wr_data;
     logic                              rd_en [ACT_NUM];
+    logic [$clog2(ACT_HEIGHT_MAX)-1:0] rd_addr;
     logic                              rd_val [ACT_NUM];
     logic [ACT_WIDTH_MAX-1:0]          rd_data [ACT_NUM];
 
@@ -34,7 +35,7 @@ interface if_activation (
         end
 
         if (wr_add_addr) begin
-            addr <= wr_addr_base + wr_addr_offset;
+            wr_addr <= wr_addr_base + wr_addr_offset;
         end
     end
 
@@ -52,16 +53,25 @@ interface if_activation (
     end
 
     /* Modports */
+    modport proc(
+        output rd_en,
+        output rd_addr,
+        output wr_addr_base,
+        output conv_rd_en,
+        output conv_rd_addr
+    );
+
     modport array_in (
         input rd_data,
         input rd_val
     );
 
     modport bram (
-        input  addr,
         input  wr_en,
+        input  wr_addr,
         input  wr_data,
         input  rd_en,
+        input  rd_addr,
         output rd_data
     );
 

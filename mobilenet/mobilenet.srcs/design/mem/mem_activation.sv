@@ -22,10 +22,11 @@ module mem_activation (
                 .HEIGHT (ACT_HEIGHT[n])
             ) bram_i (
                 .clk     (clk),
-                .addr    (act.addr),
                 .wr_en   (act.wr_en[n]),
+                .wr_addr (act.wr_addr),
                 .wr_data (act.wr_data),
                 .rd_en   (act.rd_en[n]),
+                .rd_addr (act.rd_addr),
                 .rd_data (act.rd_data[n])
             );
         end

@@ -35,7 +35,7 @@ module mem_activation_tb;
         for (int mem = 0; mem < ACT_NUM; mem++) begin
             #(RST_PERIOD);
             for (int val = 0; val < 4; val++) begin
-                act.addr       = val;
+                act.wr_addr    = val;
                 act.wr_data    = $random();
                 act.wr_en[mem] = 1;
                 #(CLK_PERIOD);
@@ -44,7 +44,7 @@ module mem_activation_tb;
 
             #(RST_PERIOD);
             for (int val = 0; val < 4; val++) begin
-                act.addr       = val;
+                act.rd_addr    = val;
                 act.rd_en[mem] = 1;
                 #(CLK_PERIOD);
             end

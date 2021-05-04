@@ -14,12 +14,11 @@ import pkg_processing::*;
 #(
     ID
 ) (
+    input logic clk,
     if_configuration conf,
+    if_control.array ctrl,
     if_kernel ker,
-    if_activation act,
-    input  logic clk, rst,
-    input  logic start,
-    output logic finish
+    if_activation act
 );
 
     /* Convolution modules */
@@ -39,7 +38,7 @@ import pkg_processing::*;
         .conf    (conf),
         .act     (act),
         .clk     (clk),
-        .start   (start),
+        .start   (ctrl.start),
         .act_row (conv_input)
     );
 
@@ -48,8 +47,8 @@ import pkg_processing::*;
     ) array (
         .ker        (ker),
         .clk        (clk),
-        .rst        (rst),
-        .start      (start),
+        .rst        (ctrl.reset),
+        .start      (ctrl.start),
         .finish     (conv_finish),
         .activation (conv_input),
         .row_conv   (conv_output)
@@ -60,7 +59,7 @@ import pkg_processing::*;
     ) out (
         .conf      (conf),
         .clk       (clk),
-        .rst       (rst),
+        .rst       (ctrl.reset),
         .act_row   (conv_output),
         .act_valid (conv_finish),
 
@@ -95,7 +94,7 @@ import pkg_processing::*;
         .conv_data (conv_result)
     );
 
-    assign finish = conv_finish;
+    assign ctrl.finish[ID] = conv_finish;
 
 endmodule
 

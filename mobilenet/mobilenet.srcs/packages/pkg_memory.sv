@@ -26,6 +26,11 @@ package pkg_memory;
     localparam int ACT_HEIGHT [ACT_NUM] = '{16, 16};
     localparam int ACT_HEIGHT_MAX = 16;
 
+    /* Instruction memory */
+    localparam int INS_WIDTH = 32;
+    localparam int INS_HEIGHT = 100;
+    localparam string INS_INIT = "";
+
     /* External DRAM */
     localparam int DRAM_DATA_BITS = 512;
     localparam int DRAM_ADDR_BITS = 29;

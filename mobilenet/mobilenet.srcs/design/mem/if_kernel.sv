@@ -30,6 +30,11 @@ interface if_kernel (
     end
 
     /* Modports */
+    modport proc (
+        output bram_rd_en,
+        output bram_rd_addr
+    );
+
     modport array (
         input bram_rd_data,
         input bram_rd_val
@@ -42,9 +47,6 @@ interface if_kernel (
         input  bram_rd_en,
         input  bram_rd_addr,
         output bram_rd_data
-    );
-
-    modport dram (
     );
 
 

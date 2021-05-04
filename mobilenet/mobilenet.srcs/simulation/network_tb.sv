@@ -28,15 +28,16 @@ module network_tb;
     localparam KER     = pkg_processing::KER_SIZE[ID_CONV];
 
     /* Module input signals */
+    logic proc_reset, proc_start, proc_finish;
     logic dram_enable;
     logic [pkg_memory::DRAM_ADDR_BITS-1:0] dram_addr;
     logic [pkg_memory::DRAM_DATA_BITS-1:0] dram_data;
 
     task reset;
         #(RST_PERIOD);
-        test.reset = 1;
+        test.ctrl.reset = 1;
         #(CLK_PERIOD);
-        test.reset = 0;
+        test.ctrl.reset = 0;
     endtask
 
     task load_kernels (int addr, int cnt);
@@ -52,16 +53,16 @@ module network_tb;
     task load_activation (int addr);
         #(CLK_PERIOD);
         test.act.rd_en[ID_ACT] = 1;
-        test.act.addr = addr;
+        test.act.rd_addr = addr;
         #(CLK_PERIOD);
         test.act.rd_en[ID_ACT] = 0;
     endtask
 
     task start_convolution;
         #(CLK_PERIOD);
-        test.start = 1;
+        test.ctrl.start = 1;
         #(CLK_PERIOD);
-        test.start = 0;
+        test.ctrl.start = 0;
     endtask
 
     task transfer_result (int addr_read, int addr_base);
@@ -75,7 +76,7 @@ module network_tb;
 
     initial begin
         test.ker.bram_rd_en[0] = 0;
-        test.start = 0;
+        test.ctrl.start = 0;
         test.act.conv_rd_en[ID_CONV] = 0;
 
         /* Configure convolution */
@@ -105,7 +106,7 @@ module network_tb;
         for (int i = 0; i < 4; i++) begin
             start_convolution();
             load_activation(i + 1);
-            wait(test.finish[ID_CONV]);
+            wait(test.ctrl.finish[ID_CONV]);
             #(CLK_PERIOD/2);
             test.conf.output_mode = (i < KER - 1) ? test.conf.DEL : test.conf.DIR;
         end
@@ -116,7 +117,7 @@ module network_tb;
         for (int i = 0; i < 4; i++) begin
             start_convolution();
             load_activation(i + 1);
-            wait(test.finish[ID_CONV]);
+            wait(test.ctrl.finish[ID_CONV]);
             #(CLK_PERIOD/2);
             test.conf.output_mode = (i < KER - 1) ? test.conf.DEL : test.conf.ADD;
         end
@@ -127,7 +128,7 @@ module network_tb;
         for (int i = 0; i < 4; i++) begin
             start_convolution();
             load_activation(i + 1);
-            wait(test.finish[ID_CONV]);
+            wait(test.ctrl.finish[ID_CONV]);
             #(CLK_PERIOD/2);
             test.conf.output_mode = (i < KER - 1) ? test.conf.DEL : test.conf.SFT;
         end

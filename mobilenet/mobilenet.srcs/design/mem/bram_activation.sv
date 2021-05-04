@@ -14,10 +14,11 @@ module bram_activation #(
     HEIGHT
 ) (
     input  logic                      clk,
-    input  logic [$clog2(HEIGHT)-1:0] addr,
     input  logic                      wr_en,
+    input  logic [$clog2(HEIGHT)-1:0] wr_addr,
     input  logic [WIDTH-1:0]          wr_data,
     input  logic                      rd_en,
+    input  logic [$clog2(HEIGHT)-1:0] rd_addr,
     output logic [WIDTH-1:0]          rd_data
 );
 
@@ -25,11 +26,11 @@ module bram_activation #(
 
     always_ff @(posedge clk) begin
         if (rd_en) begin
-            rd_data <= ram[addr];
+            rd_data <= ram[rd_addr];
         end
 
         if (wr_en) begin
-            ram[addr] <= wr_data;
+            ram[wr_addr] <= wr_data;
         end
     end
 

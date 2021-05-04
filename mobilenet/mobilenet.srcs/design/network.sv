@@ -11,6 +11,9 @@
 
 module network (
     input  logic                                  clk,
+    input  logic                                  proc_reset,
+    input  logic                                  proc_start,
+    output logic                                  proc_finish,
     output logic                                  dram_enable,
     output logic [pkg_memory::DRAM_ADDR_BITS-1:0] dram_addr,
     input  logic [pkg_memory::DRAM_DATA_BITS-1:0] dram_data
@@ -20,12 +23,18 @@ module network (
 
     /* Interfaces */
     if_configuration conf ();
+    if_control ctrl ();
     if_activation act (.clk);
     if_kernel ker (.clk);
 
-    logic reset = 0;
-    logic start = 0;
-    logic finish [CONVUNITS];
+    /* Control unit */
+    processor proc (
+        .clk,
+        .conf, .ctrl, .ker, .act,
+        .reset  (proc_reset),
+        .start  (proc_start),
+        .finish (proc_finish)
+    );
 
     /* Processing units */
     generate
@@ -34,12 +43,7 @@ module network (
                 .ID (cu)
             ) conv_unit_i (
                 .clk,
-                .conf,
-                .ker,
-                .act,
-                .rst    (reset),
-                .start  (start),
-                .finish (finish[cu])
+                .conf, .ctrl, .ker, .act
             );
         end
     endgenerate
