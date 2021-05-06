@@ -15,6 +15,8 @@ interface if_kernel (
 
     import pkg_memory::*;
 
+    logic [$clog2(KER_NUM)-1:0] mem_select;
+
     logic                                 bram_wr_en [KER_NUM];
     logic [$clog2(KER_HEIGHT_MAX[1])-1:0] bram_wr_addr;
     logic [DRAM_DATA_BITS-1:0]            bram_wr_data;
@@ -31,11 +33,13 @@ interface if_kernel (
 
     /* Modports */
     modport proc (
+        output mem_select,
         output bram_rd_en,
         output bram_rd_addr
     );
 
     modport array (
+        input mem_select,
         input bram_rd_data,
         input bram_rd_val
     );

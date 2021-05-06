@@ -34,7 +34,6 @@ module conv_array_tb;
     logic [CONV_BITS-1:0] row_conv [CONV_SIZE[ID]];
 
     if_configuration conf ();
-
     if_kernel ker (.clk);
 
     initial begin
@@ -43,8 +42,10 @@ module conv_array_tb;
         activation               = '{default: 0};
         conf.enable[ID]          = 1;
         conf.conv_parallel       = 2;
+        conf.conv_padding        = 0;
         ker.bram_rd_data[ID_MEM] = 0;
         ker.bram_rd_val[ID_MEM]  = 0;
+        ker.mem_select           = ID_MEM;
 
         #(CLK_PERIOD) rst = 1;
         #(CLK_PERIOD) rst = 0;

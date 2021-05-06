@@ -47,8 +47,10 @@ module conv_unit_tb;
         conf.enable[0]     = 1;
         conf.conv_parallel = 0;
         conf.conv_stride   = 0;
+        conf.conv_padding  = 0;
         conf.output_mode   = conf.DIR;
         act.mem_select     = ID_MEM;
+        ker.mem_select     = ID_MEM;
 
         /* Load kernel */
         #(RST_PERIOD);

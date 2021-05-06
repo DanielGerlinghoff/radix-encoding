@@ -45,6 +45,7 @@ import pkg_processing::*;
     conv_array #(
         .ID(ID)
     ) array (
+        .conf       (conf),
         .ker        (ker),
         .clk        (clk),
         .rst        (ctrl.reset),

@@ -29,7 +29,6 @@ module conv_input_tb;
     logic start;
 
     if_configuration conf ();
-
     if_activation act (.clk);
 
     initial begin

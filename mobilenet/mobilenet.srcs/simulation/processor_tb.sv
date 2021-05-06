@@ -24,17 +24,19 @@ module processor_tb;
     /* Memory initialization */
     initial begin
         test.bram.rom[ 0] = {4'h1, 5'h00, 23'h1};        // CONF UNIT EN
-        test.bram.rom[ 1] = {4'h1, 5'h1f, 3'h0, 20'h1};  // CONF ALL PAR
-        test.bram.rom[ 2] = {4'h1, 5'h1f, 3'h1, 20'h0};  // CONF ALL STR
-        test.bram.rom[ 3] = {4'h2, 28'h0};               // RST
-        test.bram.rom[ 4] = {4'h4, 5'h00, 23'h0};        // KERL UNIT ADDR
-        test.bram.rom[ 5] = {4'h4, 5'h00, 23'h1};        // KERL UNIT ADDR
-        test.bram.rom[ 6] = {4'h1, 5'h1f, 3'h3, 20'h0};  // CONF ALL MEM
-        test.bram.rom[ 8] = {4'h1, 5'h1f, 3'h2, 20'h3};  // CONF ALL OUT DEL
-        test.bram.rom[ 7] = {4'h5, 5'h00, 23'h0};        // ACTL UNIT ADDR
-        test.bram.rom[ 9] = {4'h3, 28'h0};               // PROC
-        test.bram.rom[10] = {4'h5, 5'h00, 23'h1};        // ACTL UNIT ADDR
-        test.bram.rom[11] = {4'h7, 5'h00, 2'h0, 21'h0};  // WAIT UNIT CONV
+        test.bram.rom[ 1] = {4'h1, 5'h1f, 4'h0, 19'h1};  // CONF ALL PAR
+        test.bram.rom[ 2] = {4'h1, 5'h1f, 4'h1, 19'h0};  // CONF ALL STR
+        test.bram.rom[ 3] = {4'h1, 5'h1f, 4'h2, 19'h0};  // CONF ALL PAD
+        test.bram.rom[ 4] = {4'h2, 28'h0};               // RST
+        test.bram.rom[ 5] = {4'h1, 5'h1f, 4'h4, 19'h0};  // CONF ALL KSEL
+        test.bram.rom[ 6] = {4'h4, 5'h00, 23'h0};        // KERL UNIT ADDR
+        test.bram.rom[ 7] = {4'h4, 5'h00, 23'h1};        // KERL UNIT ADDR
+        test.bram.rom[ 8] = {4'h1, 5'h1f, 4'h5, 19'h0};  // CONF ALL ASEL
+        test.bram.rom[ 9] = {4'h1, 5'h1f, 4'h3, 19'h3};  // CONF ALL OUT DEL
+        test.bram.rom[10] = {4'h5, 5'h00, 23'h0};        // ACTL UNIT ADDR
+        test.bram.rom[11] = {4'h3, 28'h0};               // PROC
+        test.bram.rom[12] = {4'h5, 5'h00, 23'h1};        // ACTL UNIT ADDR
+        test.bram.rom[13] = {4'h7, 5'h00, 2'h0, 21'h0};  // WAIT UNIT CONV
     end
 
     initial begin

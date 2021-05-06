@@ -14,6 +14,7 @@ import pkg_processing::*;
 #(
     ID
 ) (
+    if_configuration.array conf,
     if_kernel.array ker,
     input  logic clk, rst,
     input  logic start,
@@ -25,7 +26,6 @@ import pkg_processing::*;
     /* Kernel registers */
     localparam KER_REGS = PARALLEL_MAX[ID];
     localparam KER_VALS = KER_SIZE[ID] ** 2;
-    localparam ID_MEM   = pkg_mapping::KER_TO_CONV[ID];
 
     logic [KER_VALS-1:0][KER_BITS-1:0] kernel_regs [KER_REGS];
     logic [$clog2(KER_REGS+1)-1:0] kernel_cnt = 0;
@@ -33,11 +33,19 @@ import pkg_processing::*;
     always_ff @(posedge clk) begin
         if (rst) begin
             kernel_cnt <= 0;
-        end else if (conf.enable[ID] && ker.bram_rd_val[ID_MEM]) begin
-            kernel_regs[kernel_cnt] <= ker.bram_rd_data[ID_MEM][KER_VALS*KER_BITS-1:0];
+        end else if (conf.enable[ID] && ker.bram_rd_val[ker.mem_select]) begin
+            kernel_regs[kernel_cnt] <= ker.bram_rd_data[ker.mem_select][KER_VALS*KER_BITS-1:0];
             kernel_cnt <= kernel_cnt + 1;
         end
     end
+
+    /* Activation padding */
+    logic activation_padding [CONV_SIZE[ID]];
+    generate
+        for (genvar a = 0; a < CONV_SIZE[ID]; a++) begin :gen_act_padding
+            assign activation_padding[a] = !conf.conv_padding ? activation[a] : 0;
+        end
+    endgenerate
 
     /* Process control */
     enum logic [3:0] {
@@ -136,7 +144,7 @@ import pkg_processing::*;
             .clk        (clk),
             .enable     (conv_enable),
             .clear      (conv_clear),
-            .activation (activation),
+            .activation (activation_padding),
             .kernel     (kernel_rows[row]),
             .sum_wren   (sum_wren),
             .sum_in     (sum_in[row]),

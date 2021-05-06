@@ -26,6 +26,7 @@ interface if_configuration;
     logic                         enable [CONVUNITS];
     logic [PARALLEL_BITS-1:0]     conv_parallel;
     logic [STRIDE_BITS-1:0]       conv_stride;
+    logic                         conv_padding;
     output_modes                  output_mode;
     logic [$clog2(CONV_BITS)-1:0] act_scale;
 
@@ -34,6 +35,7 @@ interface if_configuration;
         output enable,
         output conv_parallel,
         output conv_stride,
+        output conv_padding,
         output output_mode,
         output act_scale
     );
@@ -42,6 +44,12 @@ interface if_configuration;
         input enable,
         input conv_parallel,
         input conv_stride
+    );
+
+    modport array (
+        input enable,
+        input conv_parallel,
+        input conv_padding
     );
 
     modport array_out (

@@ -26,7 +26,7 @@ module processor (
     localparam OP_BITS   = 4;
     localparam UNIT_BITS = 5;
     localparam VAL_BITS  = INS_WIDTH - OP_BITS - UNIT_BITS;
-    localparam CONF_BITS = 3;
+    localparam CONF_BITS = 4;
     localparam COND_BITS = 2;
 
     typedef enum logic [OP_BITS-1:0] {
@@ -42,11 +42,13 @@ module processor (
     typedef enum logic [CONF_BITS-1:0] {
         PAR  = 0,
         STR  = 1,
-        OUT  = 2,
-        MEM  = 3,
-        SCL  = 4,
-        ASTF = 5,
-        ASTB = 6
+        PAD  = 2,
+        OUT  = 3,
+        KSEL = 4,
+        ASEL = 5,
+        SCL  = 6,
+        ASTF = 7,
+        ASTB = 8
     } confs;
     typedef enum logic [COND_BITS-1:0] {
         CONV = 0,
@@ -89,8 +91,10 @@ module processor (
                         case (instr_conf)
                             PAR:  conf.conv_parallel    <= instr_val[VAL_BITS-CONF_BITS-1:0];
                             STR:  conf.conv_stride      <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            PAD:  conf.conv_padding     <= instr_val[VAL_BITS-CONF_BITS-1:0];
                             OUT:  conf.output_mode      <= conf.output_modes'(instr_val[VAL_BITS-CONF_BITS-1:0]);
-                            MEM:  act.mem_select        <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            ASEL: act.mem_select        <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            KSEL: ker.mem_select        <= instr_val[VAL_BITS-CONF_BITS-1:0];
                             SCL:  conf.act_scale        <= instr_val[VAL_BITS-CONF_BITS-1:0];
                             ASTF: act.conv_addr_step[0] <= instr_val[VAL_BITS-CONF_BITS-1:0];
                             ASTB: act.conv_addr_step[1] <= instr_val[VAL_BITS-CONF_BITS-1:0];
