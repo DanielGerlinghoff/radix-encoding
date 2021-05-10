@@ -27,7 +27,7 @@ import pkg_processing::*;
     localparam KER_REGS = PARALLEL_MAX[ID];
     localparam KER_VALS = KER_SIZE[ID] ** 2;
 
-    logic [KER_VALS-1:0][KER_BITS-1:0] kernel_regs [KER_REGS];
+    logic [0:KER_VALS-1][KER_BITS-1:0] kernel_regs [KER_REGS];
     logic [$clog2(KER_REGS+1)-1:0] kernel_cnt = 0;
 
     always_ff @(posedge clk) begin
@@ -98,7 +98,7 @@ import pkg_processing::*;
         for (genvar r = 0; r < KER_SIZE[ID]; r++) begin :gen_parallel_rows
             for (genvar p = 0; p < PARALLEL_DIM[ID][0]; p++) begin :gen_parallel
                 for (genvar a = 0; a < PARALLEL_NUM[ID][p]; a++) begin :gen_parallel_assign
-                    for (genvar v = PARALLEL_KER[ID][p][a][0]; v <= PARALLEL_KER[ID][p][a][1]; v++) begin :gen_parallel_values
+                    for (genvar v = PARALLEL_OUT[ID][p][a][0]; v <= PARALLEL_OUT[ID][p][a][1]; v++) begin :gen_parallel_values
                         assign kernel_parallel[r][v] = (conf.conv_parallel == p) ? kernel_regs[a][col_cnt+r*KER_SIZE[ID]] : 'z;
                     end
                 end

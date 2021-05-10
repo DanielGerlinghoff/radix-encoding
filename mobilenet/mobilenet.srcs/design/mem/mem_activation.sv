@@ -18,8 +18,9 @@ module mem_activation (
     generate
         for (genvar n = 0; n < ACT_NUM; n++) begin :gen_bram
             bram_activation #(
-                .WIDTH  (ACT_WIDTH[n]),
-                .HEIGHT (ACT_HEIGHT[n])
+                .WIDTH     (ACT_WIDTH[n]),
+                .HEIGHT    (ACT_HEIGHT[n]),
+                .INIT_FILE (n == 0 ? ACT_INIT : "")
             ) bram_i (
                 .clk     (clk),
                 .wr_en   (act.wr_en[n]),

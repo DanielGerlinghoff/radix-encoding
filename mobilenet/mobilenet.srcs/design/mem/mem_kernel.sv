@@ -18,7 +18,8 @@ module mem_kernel (
 
     generate
         for (genvar n = 0; n < KER_NUM; n++) begin :gen_bram
-            localparam WR_HEIGHT = KER_HEIGHT[n] * KER_WIDTH[n] / DRAM_DATA_BITS;
+            localparam int RATIO = KER_HEIGHT[n] * KER_WIDTH[n] / DRAM_DATA_BITS;
+            localparam int WR_HEIGHT = RATIO < 2 ? 2 : RATIO;
 
             bram_kernel #(
                 .RD_WIDTH  (KER_WIDTH[n]),

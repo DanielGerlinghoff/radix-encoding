@@ -14,13 +14,13 @@ module conv_accumulator #(
     INP_SIZE,
     OUT_SIZE
 ) (
-    input  logic                clk,
-    input  logic [INP_SIZE-1:0] addend,
-    input  logic                select,
-    input  logic                clear,
-    input  logic                acc_wren,
-    input  logic [OUT_SIZE-1:0] acc_in,
-    output logic [OUT_SIZE-1:0] acc_out
+    input  logic                       clk,
+    input  logic signed [INP_SIZE-1:0] addend,
+    input  logic                       select,
+    input  logic                       clear,
+    input  logic                       acc_wren,
+    input  logic signed [OUT_SIZE-1:0] acc_in,
+    output logic signed [OUT_SIZE-1:0] acc_out
 );
 
     always_ff @(posedge clk) begin

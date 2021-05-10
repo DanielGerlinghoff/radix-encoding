@@ -35,8 +35,8 @@ module conv_relu_tb;
 
     generate
         for (genvar a = 0; a < PARALLEL_NUM[ID][PAR]; a++) begin
-            localparam low  = PARALLEL_KER[ID][PAR][a][0] * CONV_BITS;
-            localparam high = (PARALLEL_KER[ID][PAR][a][1] + 1) * CONV_BITS - 1;
+            localparam low  = PARALLEL_OUT[ID][PAR][a][0] * CONV_BITS;
+            localparam high = (PARALLEL_OUT[ID][PAR][a][1] + 1) * CONV_BITS - 1;
             initial conv_data[low:high] = $random();
         end
     endgenerate

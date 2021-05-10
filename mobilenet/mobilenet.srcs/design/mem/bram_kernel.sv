@@ -33,7 +33,7 @@ module bram_kernel #(
 
     initial begin
         if (INIT_FILE != "") begin
-            $readmemh(INIT_FILE, ram);
+            $readmemb(INIT_FILE, ram);
         end
     end
 

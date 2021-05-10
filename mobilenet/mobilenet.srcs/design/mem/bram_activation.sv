@@ -11,7 +11,8 @@
 
 module bram_activation #(
     WIDTH,
-    HEIGHT
+    HEIGHT,
+    INIT_FILE = ""
 ) (
     input  logic                      clk,
     input  logic                      wr_en,
@@ -23,6 +24,12 @@ module bram_activation #(
 );
 
     logic [WIDTH-1:0] ram [HEIGHT];
+
+    initial begin
+        if (INIT_FILE != "") begin
+            $readmemb(INIT_FILE, ram);
+        end
+    end
 
     always_ff @(posedge clk) begin
         if (rd_en) begin

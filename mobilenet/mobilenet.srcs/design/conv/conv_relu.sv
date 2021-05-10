@@ -29,7 +29,7 @@ import pkg_processing::*;
     generate
         for (genvar p = 0; p < PARALLEL_DIM[ID][0]; p++) begin :gen_parallel
             for (genvar a = 0; a < PARALLEL_NUM[ID][p]; a++) begin :gen_parallel_assign
-                localparam int pos [2] = PARALLEL_KER[ID][p][a];
+                localparam int pos [2] = PARALLEL_OUT[ID][p][a];
                 localparam int pad = CONV_SIZE[ID] - (pos[1] - pos[0] + 1);
                 assign conv_parallel[a] = (conf.conv_parallel == p) ? {conv_data[pos[0]:pos[1]], {pad*CONV_BITS {1'bx}}} : 'z;
             end
@@ -47,16 +47,17 @@ import pkg_processing::*;
     logic [ACT_BITS-1:0] conv_activated [CONV_SIZE[ID]];
     logic conv_activate;
 
-    function logic [CONV_BITS-1:0] relu (input logic [CONV_BITS-1:0] conv_output);
+    function logic [CONV_BITS-2:0] relu (input logic [CONV_BITS-1:0] conv_output);
         if (!conv_output[CONV_BITS-1]) relu = conv_output;
         else                           relu = 0;
     endfunction
 
-    function logic [ACT_BITS-1:0] quantize (input logic [CONV_BITS-1:0] conv_relu);
-        automatic logic [CONV_BITS-1:0] conv_shifted = conv_relu >> conf.act_scale;
+    function logic [ACT_BITS-1:0] quantize (input logic [CONV_BITS-2:0] conv_relu);
+        automatic logic [CONV_BITS-2:0] conv_shifted = conv_relu >> conf.act_scale;
+        automatic logic rounding = conv_relu[conf.act_scale-1];
 
-        if (|conv_shifted[CONV_BITS-1:ACT_BITS-1]) quantize = 2 ** (ACT_BITS - 1) - 1;
-        else                                       quantize = conv_shifted[ACT_BITS-1:0];
+        if (|conv_shifted[CONV_BITS-2:ACT_BITS]) quantize = 2 ** ACT_BITS - 1;
+        else                                     quantize = conv_shifted[ACT_BITS-1:0] + rounding;
     endfunction
 
     always_ff @(posedge clk) begin
@@ -67,35 +68,42 @@ import pkg_processing::*;
     end
 
     /* Write to activation BRAM */
-    logic [$clog2(ACT_BITS)-1:0] cnt_bits;
-    logic conv_write;
+    logic                               conv_write = 0;
+    logic [$clog2(ACT_BITS)-1:0]        cnt_bits;
+    logic [$high(act.wr_addr_offset):0] act_addr_offset;
+    logic                               act_add_addr;
+    logic                               act_en [$size(act.wr_en)];
+    logic [$high(act.wr_data):0]        act_data;
 
     always_ff @(posedge clk) begin
         if (conv_write) begin
-            act.wr_en[act.mem_select] <= 1;
+            act_en[act.mem_select] <= 1;
             for (int val = 0; val < CONV_SIZE[ID]; val++) begin
-                act.wr_data[CONV_SIZE[ID]-val-1] <= conv_activated[val][cnt_bits];
+                act_data[CONV_SIZE[ID]-val-1] <= conv_activated[val][cnt_bits];
             end
         end else begin
-            act.wr_en[act.mem_select] <= 0;
-            act.wr_data       <= 'z;
+            act_en   <= '{default: 'z};
+            act_data <= 'z;
         end
 
         if (conv_activate) begin
             if (!cnt_assign) begin
-                act.wr_addr_offset <= 0;
+                act_addr_offset <= 0;
             end else begin
-                act.wr_addr_offset <= act.wr_addr_offset - act.conv_addr_step[1];
+                act_addr_offset <= act.wr_addr_offset - act.conv_addr_step[1];
             end
         end else if (conv_write) begin
-            act.wr_addr_offset <= act.wr_addr_offset + act.conv_addr_step[0];
+            act_addr_offset <= act_addr_offset + act.conv_addr_step[0];
         end else begin
-            act.wr_addr_offset <= 'z;
+            act_addr_offset <= 'z;
         end
 
     end
 
-    assign act.wr_add_addr = conv_write ? 1'b1 : 1'bz;
+    assign act.wr_en          = act_en;
+    assign act.wr_addr_offset = act_addr_offset;
+    assign act.wr_add_addr    = conv_write ? 1'b1 : 1'bz;
+    assign act.wr_data        = act_data;
 
     /* Process control */
     always_ff @(posedge clk) begin

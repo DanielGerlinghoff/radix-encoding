@@ -28,6 +28,7 @@ module processor (
     localparam VAL_BITS  = INS_WIDTH - OP_BITS - UNIT_BITS;
     localparam CONF_BITS = 4;
     localparam COND_BITS = 2;
+    localparam ADDR_BITS = 8;
 
     typedef enum logic [OP_BITS-1:0] {
         CONF = 1,
@@ -129,8 +130,8 @@ module processor (
 
                 ACTS: begin
                     act.conv_rd_en[instr_unit[0]] <= 1;
-                    act.conv_rd_addr <= instr_val;
-                    act.wr_addr_base <= instr_val;
+                    act.conv_rd_addr <= instr_val[ADDR_BITS-1:0];
+                    act.wr_addr_base <= instr_val[VAL_BITS-1:ADDR_BITS];
                     next <= 0;
                 end
 

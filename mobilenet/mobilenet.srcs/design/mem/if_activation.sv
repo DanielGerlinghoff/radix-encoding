@@ -22,10 +22,10 @@ interface if_activation (
     /* Activation BRAMs */
     logic [$clog2(ACT_HEIGHT_MAX)-1:0] wr_addr;
     logic [$clog2(ACT_HEIGHT_MAX)-1:0] wr_addr_base;
-    logic [$clog2(ACT_HEIGHT_MAX)-1:0] wr_addr_offset;
-    logic                              wr_add_addr;
-    logic                              wr_en [ACT_NUM];
-    logic [ACT_WIDTH_MAX-1:0]          wr_data;
+    tri0  [$clog2(ACT_HEIGHT_MAX)-1:0] wr_addr_offset;
+    tri0                               wr_add_addr;
+    tri0                               wr_en [ACT_NUM];
+    tri0  [ACT_WIDTH_MAX-1:0]          wr_data;
     logic                              rd_en [ACT_NUM];
     logic [$clog2(ACT_HEIGHT_MAX)-1:0] rd_addr;
     logic                              rd_val [ACT_NUM];

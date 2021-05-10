@@ -28,19 +28,22 @@ module mem_activation_tb;
         .clk (clk)
     );
 
+    logic                        act_wr_en [$size(act.wr_en)];
+    logic [$high(act.wr_data):0] act_wr_data;
+
     initial begin
-        act.wr_en = '{0, 0};
+        act_wr_en = '{0, 0};
         act.rd_en = '{0, 0};
 
         for (int mem = 0; mem < ACT_NUM; mem++) begin
             #(RST_PERIOD);
             for (int val = 0; val < 4; val++) begin
                 act.wr_addr    = val;
-                act.wr_data    = $random();
-                act.wr_en[mem] = 1;
+                act_wr_data    = $random();
+                act_wr_en[mem] = 1;
                 #(CLK_PERIOD);
             end
-            act.wr_en[mem] = 0;
+            act_wr_en[mem] = 0;
 
             #(RST_PERIOD);
             for (int val = 0; val < 4; val++) begin
@@ -54,6 +57,9 @@ module mem_activation_tb;
         #(RST_PERIOD);
         $finish();
     end
+
+    assign act.wr_en   = act_wr_en;
+    assign act.wr_data = act_wr_data;
 
     /* Module instantiation */
     mem_activation test (

@@ -27,7 +27,7 @@ import pkg_processing::*;
 
     /* Activation register */
     import pkg_memory::ACT_WIDTH_MAX;
-    logic [ACT_WIDTH_MAX-1:0] act_reg;
+    logic [0:ACT_WIDTH_MAX-1] act_reg;
 
     always_ff @(posedge clk) begin
         if (conf.enable[ID] && act.rd_val[act.mem_select]) begin
@@ -36,26 +36,26 @@ import pkg_processing::*;
     end
 
     /* Parallel assignment */
-    tri0 [SIZE_INPUT-1:0] act_parallel;
+    tri0 [0:SIZE_INPUT-1] act_parallel;
 
     generate
         for (genvar p = 0; p < PARALLEL_DIM[ID][0]; p++) begin :gen_parallel
             for (genvar a = 0; a < PARALLEL_NUM[ID][p]; a++) begin :gen_parallel_assign
-                assign act_parallel[PARALLEL_ACT[ID][p][a][1]:PARALLEL_ACT[ID][p][a][0]] = (conf.conv_parallel == p) ? act_reg : 'z;
+                assign act_parallel[PARALLEL_IN[ID][p][a][0]:PARALLEL_IN[ID][p][a][1]] = (conf.conv_parallel == p) ? act_reg : 'z;
             end
         end
     endgenerate
 
     /* Row shift */
-    logic [SIZE_INPUT-1:0] act_shift;
+    logic [0:SIZE_INPUT-1] act_shift;
     logic [$clog2(KER_SIZE[ID])-1:0] shift_cnt;
 
     always_ff @(posedge clk) begin
         if (conf.enable[ID] && start) begin
-            act_shift <= act_parallel << KER_SIZE_HALF;
+            act_shift <= act_parallel >> KER_SIZE_HALF;
             shift_cnt <= 1;
         end else if (shift_cnt > 0 && shift_cnt < KER_SIZE[ID]) begin
-            act_shift <= act_shift >> 1;
+            act_shift <= act_shift << 1;
             shift_cnt <= shift_cnt + 1;
         end else begin
             shift_cnt <= 0;
@@ -63,7 +63,7 @@ import pkg_processing::*;
     end
 
     /* Stride selection */
-    wire [SIZE-1:0] act_stride;
+    wire [0:SIZE-1] act_stride;
 
     generate
         for (genvar s = 0; s < STRIDE_DIM[ID]; s++) begin :gen_stride
@@ -76,9 +76,7 @@ import pkg_processing::*;
     /* Register output */
     always_ff @(posedge clk) begin
         if (shift_cnt) begin
-            for (int i = 0; i < SIZE; i++) begin
-                act_row[i] <= act_stride[i];
-            end
+            {>>{act_row}} <= act_stride;
         end
     end
 
