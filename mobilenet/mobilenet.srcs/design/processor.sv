@@ -90,15 +90,15 @@ module processor (
                 CONF: begin
                     if (instr_unit[0] == '1) begin
                         case (instr_conf)
-                            PAR:  conf.conv_parallel    <= instr_val[VAL_BITS-CONF_BITS-1:0];
-                            STR:  conf.conv_stride      <= instr_val[VAL_BITS-CONF_BITS-1:0];
-                            PAD:  conf.conv_padding     <= instr_val[VAL_BITS-CONF_BITS-1:0];
-                            OUT:  conf.output_mode      <= conf.output_modes'(instr_val[VAL_BITS-CONF_BITS-1:0]);
-                            ASEL: act.mem_select        <= instr_val[VAL_BITS-CONF_BITS-1:0];
-                            KSEL: ker.mem_select        <= instr_val[VAL_BITS-CONF_BITS-1:0];
-                            SCL:  conf.act_scale        <= instr_val[VAL_BITS-CONF_BITS-1:0];
-                            ASTF: act.conv_addr_step[0] <= instr_val[VAL_BITS-CONF_BITS-1:0];
-                            ASTB: act.conv_addr_step[1] <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            PAR:  conf.conv_parallel <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            STR:  conf.conv_stride   <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            PAD:  conf.conv_padding  <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            OUT:  conf.output_mode   <= conf.output_modes'(instr_val[VAL_BITS-CONF_BITS-1:0]);
+                            ASEL: act.mem_select     <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            KSEL: ker.mem_select     <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            SCL:  conf.act_scale     <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            ASTF: act.addr_step[0]   <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            ASTB: act.addr_step[1]   <= instr_val[VAL_BITS-CONF_BITS-1:0];
                         endcase
                     end else begin
                         conf.enable[instr_unit[0]] <= instr_val;
@@ -181,7 +181,7 @@ module processor (
                     case (wait_cond[1])
                         CONV: if (ctrl.finish[instr_unit[1]]) next <= 1;
                         CWR:  if (act.conv_wr_en[instr_unit[1]]) next <= 1;
-                        TRAN: if (act.conv_transfer_finish[instr_unit[1]]) next <= 1;
+                        TRAN: if (act.transfer_finish) next <= 1;
                     endcase
                 end
 

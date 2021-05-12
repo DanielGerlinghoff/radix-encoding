@@ -22,6 +22,12 @@ interface if_control;
         output finish
     );
 
+    modport pool (
+        input  reset,
+        input  start,
+        output finish
+    );
+
     modport proc (
         output reset,
         output start,

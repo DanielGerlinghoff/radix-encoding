@@ -61,8 +61,8 @@ import pkg_processing::*;
     endfunction
 
     always_ff @(posedge clk) begin
-        if (conv_activate)
-            for (int val = 0; val < CONV_SIZE[ID]; val++) begin
+        if (conv_activate) begin
+            for (int val = 0; val < CONV_SIZE[ID]; val++)
                 conv_activated[val] <= quantize(relu(conv_unpacked[cnt_assign][val]));
         end
     end
@@ -71,7 +71,6 @@ import pkg_processing::*;
     logic                               conv_write = 0;
     logic [$clog2(ACT_BITS)-1:0]        cnt_bits;
     logic [$high(act.wr_addr_offset):0] act_addr_offset;
-    logic                               act_add_addr;
     logic                               act_en [$size(act.wr_en)];
     logic [$high(act.wr_data):0]        act_data;
 
@@ -90,10 +89,10 @@ import pkg_processing::*;
             if (!cnt_assign) begin
                 act_addr_offset <= 0;
             end else begin
-                act_addr_offset <= act.wr_addr_offset - act.conv_addr_step[1];
+                act_addr_offset <= act_addr_offset - act.addr_step[1];
             end
         end else if (conv_write) begin
-            act_addr_offset <= act_addr_offset + act.conv_addr_step[0];
+            act_addr_offset <= act_addr_offset + act.addr_step[0];
         end else begin
             act_addr_offset <= 'z;
         end
@@ -106,6 +105,8 @@ import pkg_processing::*;
     assign act.wr_data        = act_data;
 
     /* Process control */
+    logic finish;
+
     always_ff @(posedge clk) begin
         if (conv_unpack) begin
             conv_activate <= 1;
@@ -118,6 +119,7 @@ import pkg_processing::*;
             cnt_bits      <= ACT_BITS - 1;
         end
 
+        finish <= 0;
         if (conv_write) begin
             if (cnt_bits == 1) begin
                 cnt_bits <= 0;
@@ -126,7 +128,7 @@ import pkg_processing::*;
                     cnt_assign    <= cnt_assign + 1;
                 end else begin
                     cnt_assign <= 0;
-                    act.conv_transfer_finish[ID] <= 1;
+                    finish <= 1;
                 end
             end else if (cnt_bits == 0) begin
                 conv_write <= conv_activate;
@@ -134,12 +136,10 @@ import pkg_processing::*;
                 cnt_bits <= cnt_bits - 1;
             end
         end
-
-        if (act.conv_transfer_finish[ID]) begin
-            act.conv_transfer_finish[ID] <= 0;
-        end
-
     end
+
+    assign act.transfer_finish = finish ? 1'b1 : 1'bz;
+
 
 endmodule
 

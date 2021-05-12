@@ -11,10 +11,9 @@
 
 interface if_configuration;
 
-    import pkg_processing::*;
-
-    localparam PARALLEL_BITS = $clog2($size(PARALLEL_NUM, 2) + 1);
-    localparam STRIDE_BITS   = $clog2($size(STRIDE, 2) + 1);
+    import pkg_processing::CONVUNITS, pkg_processing::CONV_BITS;
+    localparam PARALLEL_BITS = $clog2($size(pkg_processing::PARALLEL_NUM, 2) + 1);
+    localparam STRIDE_BITS   = $clog2($size(pkg_processing::STRIDE, 2) + 1);
 
     typedef enum logic [0:1] {
         DIR = 2'b10,
@@ -29,6 +28,10 @@ interface if_configuration;
     logic                         conv_padding;
     output_modes                  output_mode;
     logic [$clog2(CONV_BITS)-1:0] act_scale;
+
+    import pkg_pooling::POOLUNITS;
+    logic pool_enable [POOLUNITS];
+    logic [2-1:0] pool_parallel;
 
     /* Modports */
     modport proc (
@@ -60,6 +63,19 @@ interface if_configuration;
     modport array_relu (
         input conv_parallel,
         input act_scale
+    );
+
+    modport pool_in (
+        input pool_enable,
+        input pool_parallel
+    );
+
+    modport pool_array (
+        input pool_enable
+    );
+
+    modport pool_out (
+        input pool_parallel
     );
 
 endinterface

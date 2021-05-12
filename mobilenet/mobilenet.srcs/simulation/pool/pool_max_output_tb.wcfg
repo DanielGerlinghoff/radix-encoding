@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="pool_max_output_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="pkg_memory" />
+            <top_module name="pkg_pooling" />
+            <top_module name="pkg_processing" />
+            <top_module name="pool_max_output_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="710416666fs"></ZoomStartTime>
+      <ZoomEndTime time="1057916667fs"></ZoomEndTime>
+      <Cursor1Time time="1000000000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="118"></NameColumnWidth>
+      <ValueColumnWidth column_width="66"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="11" />
+   <wave_markers>
+      <marker label="" time="175000000" />
+   </wave_markers>
+   <wvobject type="logic" fp_name="/pool_max_output_tb/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/pool_max_output_tb/rst">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/pool_max_output_tb/pool_row">
+      <obj_property name="ElementShortName">pool_row[0:31][2:0]</obj_property>
+      <obj_property name="ObjectShortName">pool_row[0:31][2:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/pool_max_output_tb/test/pool_unpack">
+      <obj_property name="ElementShortName">pool_unpack</obj_property>
+      <obj_property name="ObjectShortName">pool_unpack</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/pool_max_output_tb/test/pool_unpacked">
+      <obj_property name="ElementShortName">pool_unpacked[0:5][0:31][2:0]</obj_property>
+      <obj_property name="ObjectShortName">pool_unpacked[0:5][0:31][2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/pool_max_output_tb/test/cnt_assign">
+      <obj_property name="ElementShortName">cnt_assign[2:0]</obj_property>
+      <obj_property name="ObjectShortName">cnt_assign[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/pool_max_output_tb/test/pool_write">
+      <obj_property name="ElementShortName">pool_write</obj_property>
+      <obj_property name="ObjectShortName">pool_write</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/pool_max_output_tb/test/cnt_bits">
+      <obj_property name="ElementShortName">cnt_bits[1:0]</obj_property>
+      <obj_property name="ObjectShortName">cnt_bits[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/pool_max_output_tb/test/act_en[0]">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[0]</obj_property>
+      <obj_property name="ObjectShortName">[0]</obj_property>
+      <obj_property name="label">act_en[0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/pool_max_output_tb/test/act_addr_offset">
+      <obj_property name="ElementShortName">act_addr_offset[8:0]</obj_property>
+      <obj_property name="ObjectShortName">act_addr_offset[8:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/pool_max_output_tb/test/act_data">
+      <obj_property name="ElementShortName">act_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">act_data[31:0]</obj_property>
+   </wvobject>
+</wave_config>
