@@ -24,7 +24,7 @@ module pool_max_output_tb;
     end
 
     /* Module parameters */
-    localparam ID     = 0;
+    localparam ID     = pkg_convolution::CONVUNITS + 0;
     localparam ID_MEM = 0;
 
     /* Module input signals */
@@ -39,7 +39,7 @@ module pool_max_output_tb;
         rst        = 0;
         pool_valid = 0;
 
-        conf.pool_enable   = '{1};
+        conf.enable        = '{0, 0, 1, 0};
         conf.pool_parallel = 1;
         act.mem_select     = ID_MEM;
         act.addr_step      = '{8, 12};

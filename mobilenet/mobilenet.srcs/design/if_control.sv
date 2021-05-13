@@ -11,12 +11,21 @@
 
 interface if_control;
 
+    import pkg_convolution::CONVUNITS;
+    import pkg_pooling::POOLUNITS;
+
     logic reset;
     logic start;
-    logic finish [pkg_processing::CONVUNITS];
+    logic finish [CONVUNITS+POOLUNITS];
 
     /* Modports */
-    modport array (
+    modport proc (
+        output reset,
+        output start,
+        input  finish
+    );
+
+    modport conv (
         input  reset,
         input  start,
         output finish
@@ -26,12 +35,6 @@ interface if_control;
         input  reset,
         input  start,
         output finish
-    );
-
-    modport proc (
-        output reset,
-        output start,
-        input  finish
     );
 
 endinterface

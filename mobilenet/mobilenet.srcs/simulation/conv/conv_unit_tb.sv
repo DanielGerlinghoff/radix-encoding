@@ -12,7 +12,7 @@
 
 
 module conv_unit_tb;
-    import pkg_processing::*;
+    import pkg_convolution::*;
     import pkg_memory::*;
 
     /* Clock signal */
@@ -44,13 +44,13 @@ module conv_unit_tb;
 
         /* Configuration */
         #(RST_PERIOD);
-        conf.enable[0]     = 1;
-        conf.conv_parallel = 0;
-        conf.conv_stride   = 0;
-        conf.conv_padding  = 0;
-        conf.output_mode   = conf.DIR;
-        act.mem_select     = ID_MEM;
-        ker.mem_select     = ID_MEM;
+        conf.enable[ID]       = 1;
+        conf.conv_parallel    = 0;
+        conf.conv_stride      = 0;
+        conf.conv_padding     = 0;
+        conf.conv_output_mode = conf.DIR;
+        act.mem_select        = ID_MEM;
+        ker.mem_select        = ID_MEM;
 
         /* Load kernel */
         #(RST_PERIOD);

@@ -10,12 +10,12 @@
 
 
 module conv_input
-import pkg_processing::*;
+import pkg_convolution::*;
 #(
     ID
 ) (
-    if_configuration.array_in conf,
-    if_activation.array_in act,
+    if_configuration.conv_in conf,
+    if_activation.conv_in act,
     input  logic clk,
     input  logic start,
     output logic act_row [CONV_SIZE[ID]]
@@ -48,7 +48,7 @@ import pkg_processing::*;
 
     /* Row shift */
     logic [0:SIZE_INPUT-1] act_shift;
-    logic [$clog2(KER_SIZE[ID])-1:0] shift_cnt;
+    logic [$clog2(KER_SIZE[ID]+1)-1:0] shift_cnt;
 
     always_ff @(posedge clk) begin
         if (conf.enable[ID] && start) begin

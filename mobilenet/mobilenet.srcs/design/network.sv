@@ -19,8 +19,6 @@ module network (
     input  logic [pkg_memory::DRAM_DATA_BITS-1:0] dram_data
 );
 
-    import pkg_processing::CONVUNITS;
-
     /* Interfaces */
     if_configuration conf ();
     if_control ctrl ();
@@ -37,6 +35,8 @@ module network (
     );
 
     /* Processing units */
+    import pkg_convolution::CONVUNITS, pkg_pooling::POOLUNITS;
+
     generate
         for (genvar cu = 0; cu < CONVUNITS; cu++) begin :gen_convunits
             conv_unit #(
@@ -45,6 +45,21 @@ module network (
                 .clk,
                 .conf, .ctrl, .ker, .act
             );
+        end
+    endgenerate
+
+    generate
+        for (genvar pu = 0; pu < POOLUNITS; pu++) begin :gen_poolunits
+            if (pkg_pooling::MAX_N_AVG) begin
+                pool_max_unit #(
+                    .ID (pu + CONVUNITS)
+                ) pool_unit_i (
+                    .clk,
+                    .conf, .ctrl, .act
+                );
+            end else begin
+                // TODO: Average pooling unit
+            end
         end
     endgenerate
 

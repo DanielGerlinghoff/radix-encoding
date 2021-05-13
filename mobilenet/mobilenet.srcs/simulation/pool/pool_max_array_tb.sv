@@ -24,7 +24,7 @@ module pool_max_array_tb;
     end
 
     /* Module parameters and signals */
-    localparam ID = 0;
+    localparam ID = pkg_convolution::CONVUNITS + 0;
 
     logic rst;
     logic start, finish;
@@ -34,10 +34,10 @@ module pool_max_array_tb;
     if_configuration conf ();
 
     initial begin
-        rst                  = 0;
-        start                = 0;
-        activation           = '{default: 0};
-        conf.pool_enable[ID] = 1;
+        rst             = 0;
+        start           = 0;
+        activation      = '{default: 0};
+        conf.enable[ID] = 1;
 
         #(CLK_PERIOD) rst = 1;
         #(CLK_PERIOD) rst = 0;

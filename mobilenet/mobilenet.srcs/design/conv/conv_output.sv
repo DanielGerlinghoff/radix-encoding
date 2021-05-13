@@ -11,11 +11,11 @@
 
 
 module conv_output
-import pkg_processing::*;
+import pkg_convolution::*;
 #(
     ID
 ) (
-    if_configuration.array_out conf,
+    if_configuration.conv_out conf,
     input  logic                               clk, rst,
     input  logic [CONV_BITS-1:0]               act_row [CONV_SIZE[ID]],
     input  logic                               act_valid,
@@ -39,7 +39,7 @@ import pkg_processing::*;
             bram_wr_en <= 0;
             act_cnt <= 0;
 
-        end else if (conf.enable[ID] && conf.output_mode != conf.DEL) begin
+        end else if (conf.enable[ID] && conf.conv_output_mode != conf.DEL) begin
             if (act_valid) begin
                 act_reg <= act_row;
                 act_add <= 1;
@@ -62,7 +62,8 @@ import pkg_processing::*;
     /* Adder array */
     generate
         for (genvar s = 0; s < SIZE; s++) begin :gen_adders
-            assign act_data_new[s] = act_reg[s] + (conf.output_mode[0] ? 0 : (conf.output_mode[1] ? act_data_old[s] : act_data_old[s] << 1));
+            assign act_data_new[s] = act_reg[s] +
+                (conf.conv_output_mode[0] ? 0 : (conf.conv_output_mode[1] ? act_data_old[s] : act_data_old[s] << 1));
         end
     endgenerate
 

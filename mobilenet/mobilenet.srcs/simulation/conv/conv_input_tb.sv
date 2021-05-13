@@ -12,6 +12,8 @@
 
 
 module conv_input_tb;
+    import pkg_convolution::*;
+
     /* Clock signal */
     logic clk;
     initial begin
@@ -22,8 +24,8 @@ module conv_input_tb;
     end
 
     /* Module parameters */
-    localparam CONVUNITS = 1;
-    localparam ID_MEM    = 0;
+    localparam ID     = 0;
+    localparam ID_MEM = 0;
 
     /* Module input signals */
     logic start;
@@ -33,7 +35,7 @@ module conv_input_tb;
 
     initial begin
         start               = 0;
-        conf.enable[0]      = 1;
+        conf.enable[ID]     = 1;
         act.mem_select      = ID_MEM;
         act.rd_data[ID_MEM] = {pkg_memory::ACT_WIDTH_MAX/4 {4'h4}};
         act.rd_val[ID_MEM]  = 0;
@@ -76,10 +78,10 @@ module conv_input_tb;
     end
 
     /* Module instantiation */
-    logic act_row [128];
+    logic act_row [CONV_SIZE[ID]];
 
     conv_input #(
-        .ID(0)
+        .ID(ID)
     ) test (
         .*
     );

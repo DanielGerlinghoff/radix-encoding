@@ -10,10 +10,13 @@
 
 
 interface if_configuration;
+    import pkg_convolution::CONVUNITS, pkg_pooling::POOLUNITS;
+    logic enable [CONVUNITS+POOLUNITS];
 
-    import pkg_processing::CONVUNITS, pkg_processing::CONV_BITS;
-    localparam PARALLEL_BITS = $clog2($size(pkg_processing::PARALLEL_NUM, 2) + 1);
-    localparam STRIDE_BITS   = $clog2($size(pkg_processing::STRIDE, 2) + 1);
+    /* Convolution settings */
+    import pkg_convolution::CONV_BITS;
+    localparam CONV_PARALLEL_BITS = $clog2($size(pkg_convolution::PARALLEL_NUM, 2) + 1);
+    localparam CONV_STRIDE_BITS   = $clog2($size(pkg_convolution::STRIDE, 2) + 1);
 
     typedef enum logic [0:1] {
         DIR = 2'b10,
@@ -22,16 +25,16 @@ interface if_configuration;
         DEL = 2'b11
     } output_modes;
 
-    logic                         enable [CONVUNITS];
-    logic [PARALLEL_BITS-1:0]     conv_parallel;
-    logic [STRIDE_BITS-1:0]       conv_stride;
-    logic                         conv_padding;
-    output_modes                  output_mode;
-    logic [$clog2(CONV_BITS)-1:0] act_scale;
+    logic [CONV_PARALLEL_BITS-1:0] conv_parallel;
+    logic [CONV_STRIDE_BITS-1:0]   conv_stride;
+    logic                          conv_padding;
+    output_modes                   conv_output_mode;
+    logic [$clog2(CONV_BITS)-1:0]  act_scale;
 
-    import pkg_pooling::POOLUNITS;
-    logic pool_enable [POOLUNITS];
-    logic [2-1:0] pool_parallel;
+    /* Pooling settings */
+    localparam POOL_PARALLEL_BITS = $clog2($size(pkg_pooling::PARALLEL_NUM, 2) + 1); 
+
+    logic [POOL_PARALLEL_BITS-1:0] pool_parallel;
 
     /* Modports */
     modport proc (
@@ -39,39 +42,39 @@ interface if_configuration;
         output conv_parallel,
         output conv_stride,
         output conv_padding,
-        output output_mode,
+        output conv_output_mode,
         output act_scale
     );
 
-    modport array_in (
+    modport conv_in (
         input enable,
         input conv_parallel,
         input conv_stride
     );
 
-    modport array (
+    modport conv_array (
         input enable,
         input conv_parallel,
         input conv_padding
     );
 
-    modport array_out (
+    modport conv_out (
         input enable,
-        input output_mode
+        input conv_output_mode
     );
 
-    modport array_relu (
+    modport conv_relu (
         input conv_parallel,
         input act_scale
     );
 
     modport pool_in (
-        input pool_enable,
+        input enable,
         input pool_parallel
     );
 
     modport pool_array (
-        input pool_enable
+        input enable
     );
 
     modport pool_out (

@@ -34,7 +34,7 @@ import pkg_pooling::*;
         unique case (state)
             IDLE: begin
                 finish <= 0;
-                if (conf.pool_enable[ID] && start) begin
+                if (conf.enable[ID] && start) begin
                     col_cnt <= 0;
                     state <= POOL;
                 end

@@ -10,11 +10,11 @@
 
 
 module conv_array
-import pkg_processing::*;
+import pkg_convolution::*;
 #(
     ID
 ) (
-    if_configuration.array conf,
+    if_configuration.conv_array conf,
     if_kernel.array ker,
     input  logic clk, rst,
     input  logic start,

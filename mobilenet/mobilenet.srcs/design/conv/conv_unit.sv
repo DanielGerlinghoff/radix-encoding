@@ -10,13 +10,13 @@
 
 
 module conv_unit
-import pkg_processing::*;
+import pkg_convolution::*;
 #(
     ID
 ) (
     input logic clk,
     if_configuration conf,
-    if_control.array ctrl,
+    if_control.conv ctrl,
     if_kernel ker,
     if_activation act
 );

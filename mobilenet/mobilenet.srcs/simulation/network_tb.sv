@@ -25,7 +25,7 @@ module network_tb;
     localparam ID_CONV = 0;
     localparam ID_KER  = 0;
     localparam ID_ACT  = 0;
-    localparam KER     = pkg_processing::KER_SIZE[ID_CONV];
+    localparam KER     = pkg_convolution::KER_SIZE[ID_CONV];
 
     /* Module input signals */
     logic proc_reset, proc_start, proc_finish;

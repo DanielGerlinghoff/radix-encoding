@@ -7,35 +7,25 @@
          <top_modules>
             <top_module name="conv_unit_tb" />
             <top_module name="glbl" />
-            <top_module name="pkg_configuration" />
+            <top_module name="pkg_memory" />
+            <top_module name="pkg_pooling" />
+            <top_module name="pkg_processing" />
          </top_modules>
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="1000833333fs"></ZoomStartTime>
-      <ZoomEndTime time="1131833334fs"></ZoomEndTime>
-      <Cursor1Time time="1110000000fs"></Cursor1Time>
+      <ZoomStartTime time="860842309fs"></ZoomStartTime>
+      <ZoomEndTime time="1015831539fs"></ZoomEndTime>
+      <Cursor1Time time="990000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="158"></NameColumnWidth>
+      <NameColumnWidth column_width="154"></NameColumnWidth>
       <ValueColumnWidth column_width="66"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="7" />
+   <WVObjectSize size="4" />
    <wvobject type="logic" fp_name="/conv_unit_tb/clk">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/conv_unit_tb/rst">
-      <obj_property name="ElementShortName">rst</obj_property>
-      <obj_property name="ObjectShortName">rst</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/conv_unit_tb/start">
-      <obj_property name="ElementShortName">start</obj_property>
-      <obj_property name="ObjectShortName">start</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/conv_unit_tb/finish">
-      <obj_property name="ElementShortName">finish</obj_property>
-      <obj_property name="ObjectShortName">finish</obj_property>
    </wvobject>
    <wvobject type="group" fp_name="group320">
       <obj_property name="label">Conv Input</obj_property>
@@ -46,12 +36,12 @@
          <obj_property name="ObjectShortName">start</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/conv_unit_tb/test/inp/act_reg">
-         <obj_property name="ElementShortName">act_reg[223:0]</obj_property>
-         <obj_property name="ObjectShortName">act_reg[223:0]</obj_property>
+         <obj_property name="ElementShortName">act_reg[0:31]</obj_property>
+         <obj_property name="ObjectShortName">act_reg[0:31]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/conv_unit_tb/test/inp/act_row">
-         <obj_property name="ElementShortName">act_row[0:127]</obj_property>
-         <obj_property name="ObjectShortName">act_row[0:127]</obj_property>
+         <obj_property name="ElementShortName">act_row[0:30]</obj_property>
+         <obj_property name="ObjectShortName">act_row[0:30]</obj_property>
       </wvobject>
    </wvobject>
    <wvobject type="group" fp_name="group548">
@@ -71,34 +61,20 @@
          <obj_property name="ObjectShortName">finish</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/conv_unit_tb/test/array/activation">
-         <obj_property name="ElementShortName">activation[0:127]</obj_property>
-         <obj_property name="ObjectShortName">activation[0:127]</obj_property>
+         <obj_property name="ElementShortName">activation[0:30]</obj_property>
+         <obj_property name="ObjectShortName">activation[0:30]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/conv_unit_tb/test/array/kernel_rows">
-         <obj_property name="ElementShortName">kernel_rows[0:2][0:127][7:0]</obj_property>
-         <obj_property name="ObjectShortName">kernel_rows[0:2][0:127][7:0]</obj_property>
-         <obj_property name="isExpanded"></obj_property>
+         <obj_property name="ElementShortName">kernel_rows[0:4][0:30][2:0]</obj_property>
+         <obj_property name="ObjectShortName">kernel_rows[0:4][0:30][2:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/conv_unit_tb/test/array/sum_out">
-         <obj_property name="ElementShortName">sum_out[0:2][0:127][11:0]</obj_property>
-         <obj_property name="ObjectShortName">sum_out[0:2][0:127][11:0]</obj_property>
-         <wvobject type="array" fp_name="/conv_unit_tb/test/array/sum_out[0]">
-            <obj_property name="ElementShortName">[0][0:127][11:0]</obj_property>
-            <obj_property name="ObjectShortName">[0][0:127][11:0]</obj_property>
-            <obj_property name="isExpanded"></obj_property>
-         </wvobject>
-         <wvobject type="array" fp_name="/conv_unit_tb/test/array/sum_out[1]">
-            <obj_property name="ElementShortName">[1][0:127][11:0]</obj_property>
-            <obj_property name="ObjectShortName">[1][0:127][11:0]</obj_property>
-         </wvobject>
-         <wvobject type="array" fp_name="/conv_unit_tb/test/array/sum_out[2]">
-            <obj_property name="ElementShortName">[2][0:127][11:0]</obj_property>
-            <obj_property name="ObjectShortName">[2][0:127][11:0]</obj_property>
-         </wvobject>
+         <obj_property name="ElementShortName">sum_out[0:4][0:30][7:0]</obj_property>
+         <obj_property name="ObjectShortName">sum_out[0:4][0:30][7:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/conv_unit_tb/test/array/row_conv">
-         <obj_property name="ElementShortName">row_conv[0:127][11:0]</obj_property>
-         <obj_property name="ObjectShortName">row_conv[0:127][11:0]</obj_property>
+         <obj_property name="ElementShortName">row_conv[0:30][7:0]</obj_property>
+         <obj_property name="ObjectShortName">row_conv[0:30][7:0]</obj_property>
       </wvobject>
    </wvobject>
    <wvobject type="group" fp_name="group687">
@@ -110,20 +86,20 @@
          <obj_property name="ObjectShortName">act_valid</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/conv_unit_tb/test/out/act_row">
-         <obj_property name="ElementShortName">act_row[0:127][11:0]</obj_property>
-         <obj_property name="ObjectShortName">act_row[0:127][11:0]</obj_property>
+         <obj_property name="ElementShortName">act_row[0:30][7:0]</obj_property>
+         <obj_property name="ObjectShortName">act_row[0:30][7:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/conv_unit_tb/test/out/act_reg">
-         <obj_property name="ElementShortName">act_reg[0:127][11:0]</obj_property>
-         <obj_property name="ObjectShortName">act_reg[0:127][11:0]</obj_property>
+         <obj_property name="ElementShortName">act_reg[0:30][7:0]</obj_property>
+         <obj_property name="ObjectShortName">act_reg[0:30][7:0]</obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/conv_unit_tb/test/out/bram_wr_en">
          <obj_property name="ElementShortName">bram_wr_en</obj_property>
          <obj_property name="ObjectShortName">bram_wr_en</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/conv_unit_tb/test/out/bram_wr_data">
-         <obj_property name="ElementShortName">bram_wr_data[1535:0]</obj_property>
-         <obj_property name="ObjectShortName">bram_wr_data[1535:0]</obj_property>
+         <obj_property name="ElementShortName">bram_wr_data[247:0]</obj_property>
+         <obj_property name="ObjectShortName">bram_wr_data[247:0]</obj_property>
       </wvobject>
    </wvobject>
 </wave_config>

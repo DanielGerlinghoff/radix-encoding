@@ -12,7 +12,7 @@
 
 
 module conv_relu_tb;
-    import pkg_processing::*;
+    import pkg_convolution::*;
 
     /* Clock signal */
     logic clk;

@@ -24,7 +24,7 @@ module pool_input_tb;
     end
 
     /* Module parameters */
-    localparam ID     = 0;
+    localparam ID     = pkg_convolution::CONVUNITS + 0;
     localparam ID_MEM = 0;
 
     /* Module input signals */
@@ -35,7 +35,7 @@ module pool_input_tb;
 
     initial begin
         start               = 0;
-        conf.pool_enable[0] = 1;
+        conf.enable[ID]     = 1;
         act.mem_select      = ID_MEM;
         act.rd_data[ID_MEM] = 0;
         act.rd_val[ID_MEM]  = 0;

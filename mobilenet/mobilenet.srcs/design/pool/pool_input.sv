@@ -31,7 +31,7 @@ import pkg_pooling::*;
     logic [$clog2(ACT_BITS)-1:0]            bit_cnt = 0;
 
     always_ff @(posedge clk) begin
-        if (conf.pool_enable[ID] && act.rd_val[act.mem_select]) begin
+        if (conf.enable[ID] && act.rd_val[act.mem_select]) begin
             for (int val = 0; val < ACT_WIDTH_MAX; val++) begin
                 act_reg[assign_cnt][ACT_WIDTH_MAX-val-1][bit_cnt] <= act.rd_data[act.mem_select][val];
             end
@@ -66,7 +66,7 @@ import pkg_pooling::*;
     logic [$clog2(KER_SIZE[ID]+1)-1:0] shift_cnt;
 
     always_ff @(posedge clk) begin
-        if (conf.pool_enable[ID] && start) begin
+        if (conf.enable[ID] && start) begin
             act_shift <= act_parallel;
             shift_cnt <= 1;
         end else if (shift_cnt > 0 && shift_cnt < KER_SIZE[ID]) begin

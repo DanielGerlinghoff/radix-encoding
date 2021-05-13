@@ -11,12 +11,12 @@
 
 
 module conv_relu
-import pkg_processing::*;
+import pkg_convolution::*;
 #(
     ID
 ) (
-    if_configuration.array_relu conf,
-    if_activation.array_relu act,
+    if_configuration.conv_relu conf,
+    if_activation.conv_relu act,
     input logic clk,
     input logic [0:CONV_SIZE[ID]-1][CONV_BITS-1:0] conv_data
 );

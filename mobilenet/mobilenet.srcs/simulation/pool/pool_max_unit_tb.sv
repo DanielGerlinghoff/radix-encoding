@@ -25,7 +25,7 @@ module pool_max_unit_tb;
     end
 
     /* Module parameters */
-    localparam ID     = 0;
+    localparam ID     = pkg_convolution::CONVUNITS + 0;
     localparam ID_MEM = 0;
     localparam PAR    = 1;
 
@@ -43,9 +43,9 @@ module pool_max_unit_tb;
 
         /* Configuration */
         #(RST_PERIOD);
-        conf.pool_enable[ID] = 1;
-        conf.pool_parallel   = PAR;
-        act.mem_select       = ID_MEM;
+        conf.enable[ID]    = 1;
+        conf.pool_parallel = PAR;
+        act.mem_select     = ID_MEM;
 
         /* Start and reset */
         #(RST_PERIOD);

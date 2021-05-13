@@ -14,8 +14,8 @@ interface if_activation (
 );
 
     import pkg_memory::*;
-    import pkg_processing::CONVUNITS;
-    import pkg_processing::CONV_SIZE_MAX;
+    import pkg_convolution::CONVUNITS;
+    import pkg_convolution::CONV_SIZE_MAX;
 
     logic [$clog2(ACT_NUM)-1:0]        mem_select;
     logic [$clog2(ACT_HEIGHT_MAX)-1:0] addr_step [2];
@@ -68,13 +68,13 @@ interface if_activation (
         input  conv_wr_en
     );
 
-    modport array_in (
+    modport conv_in (
         input mem_select,
         input rd_data,
         input rd_val
     );
 
-    modport bram (
+    modport conv_bram (
         input  wr_en,
         input  wr_addr,
         input  wr_data,
@@ -83,7 +83,7 @@ interface if_activation (
         output rd_data
     );
 
-    modport array_relu (
+    modport conv_relu (
         input  mem_select,
         input  addr_step,
         output transfer_finish,

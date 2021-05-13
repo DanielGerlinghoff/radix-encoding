@@ -2,15 +2,14 @@
 //////////////////////////////////////////////////////////////////////////////////
 // Company:     A*STAR IHPC
 // Engineer:    Gerlinghoff Daniel
-// Create Date: 10/05/2021
+// Create Date: 13/05/2021
 //
-// Description: Automatically generated package with config of processing units
+// Description: Automatically generated package with config of convolution units
 //
 //////////////////////////////////////////////////////////////////////////////////
 
 
-package pkg_processing;
-	/* Convolution settings */
+package pkg_convolution;
 	localparam int CONVUNITS = 2;
 	localparam int CONV_SIZE [CONVUNITS] = '{31, 31};
 	localparam int CONV_SIZE_MAX = 31;
@@ -21,7 +20,6 @@ package pkg_processing;
 
 	localparam int PARALLEL_DIM [CONVUNITS][2] = '{'{3, 6}, '{3, 6}};
 	localparam int PARALLEL_NUM [CONVUNITS][3] = '{'{1, 2, 6}, '{1, 2, 6}};
-	localparam int PARALLEL_WIDTH [CONVUNITS][3] = '{'{28, 10, 1}, '{28, 10, 1}};
 	localparam int PARALLEL_MAX [CONVUNITS] = '{6, 6};
 	localparam int PARALLEL_IN [CONVUNITS][3][6][2] = '{
 		'{
