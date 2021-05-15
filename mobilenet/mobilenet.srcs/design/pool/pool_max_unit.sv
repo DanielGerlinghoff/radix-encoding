@@ -54,7 +54,7 @@ import pkg_pooling::*;
 
     pool_max_output #(
         .ID(ID)
-    ) relu (
+    ) out (
         .clk        (clk),
         .conf       (conf),
         .act        (act),

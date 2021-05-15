@@ -39,9 +39,10 @@ module pool_max_output_tb;
         rst        = 0;
         pool_valid = 0;
 
-        conf.enable        = '{0, 0, 1, 0};
+        conf.enable[ID]    = 1;
         conf.pool_parallel = 1;
-        act.mem_select     = ID_MEM;
+        conf.output_mode   = conf.DIR;
+        act.mem_select     = ~ID_MEM;
         act.addr_step      = '{8, 12};
 
         #(CLK_PERIOD) rst = 1;

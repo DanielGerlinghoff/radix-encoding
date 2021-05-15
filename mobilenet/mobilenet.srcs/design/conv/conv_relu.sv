@@ -72,13 +72,13 @@ import pkg_convolution::*;
     logic [$clog2(ACT_BITS)-1:0]        cnt_bits;
     logic [$high(act.wr_addr_offset):0] act_addr_offset;
     logic                               act_en [$size(act.wr_en)];
-    logic [$high(act.wr_data):0]        act_data;
+    logic [0:$high(act.wr_data)]        act_data;
 
     always_ff @(posedge clk) begin
         if (conv_write) begin
-            act_en[act.mem_select] <= 1;
+            act_en[~act.mem_select] <= 1;
             for (int val = 0; val < CONV_SIZE[ID]; val++) begin
-                act_data[CONV_SIZE[ID]-val-1] <= conv_activated[val][cnt_bits];
+                act_data[val] <= conv_activated[val][cnt_bits];
             end
         end else begin
             act_en   <= '{default: 'z};

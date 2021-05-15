@@ -27,11 +27,11 @@ interface if_activation (
     tri0  [$clog2(ACT_HEIGHT_MAX)-1:0] wr_addr_offset;
     tri0                               wr_add_addr;
     tri0                               wr_en [ACT_NUM];
-    tri0  [ACT_WIDTH_MAX-1:0]          wr_data;
+    tri0  [0:ACT_WIDTH_MAX-1]          wr_data;
     logic                              rd_en [ACT_NUM];
     logic [$clog2(ACT_HEIGHT_MAX)-1:0] rd_addr;
     logic                              rd_val [ACT_NUM];
-    logic [ACT_WIDTH_MAX-1:0]          rd_data [ACT_NUM];
+    logic [0:ACT_WIDTH_MAX-1]          rd_data [ACT_NUM];
 
     always_ff @(posedge clk) begin
         for (int n = 0; n < ACT_NUM; n++) begin

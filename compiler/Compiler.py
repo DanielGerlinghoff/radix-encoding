@@ -25,7 +25,7 @@ class Compiler:
         input_channels = inputs[0][0].shape[0]
 
         self.initialization = Initialization(layers, inputs, weights)
-        self.processing     = Processing(layers, input_size)
+        self.processing     = Processing(layers, input_size, input_channels)
         self.memory         = Memory(layers, (input_size, input_channels))
         self.instructions   = Instructions(layers, (input_size, input_channels), self.processing, self.memory)
 

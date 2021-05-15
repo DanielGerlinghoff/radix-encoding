@@ -102,15 +102,16 @@ class PoolUnit:
         return act_out
 
 class Processing:
-    def __init__(self, layers, input_size):
+    def __init__(self, layers, input_size, input_channels):
         self.layers = layers._modules
         self.conv_units = dict()
         self.conv_units_dupl = list()
         self.pool_units = dict()
         self.pool_units_dupl = list()
         self.act_sizes = [input_size]
+        self.act_channels = [input_channels]
 
-        self.conv_bits_margin = 2
+        self.conv_bits_margin = 4
         self.max_duplication = 2
 
     def generate(self):
@@ -126,10 +127,12 @@ class Processing:
                 else:
                     act_out = self.conv_units[kernel].new_layer(layer, self.act_sizes[-1])
                 self.act_sizes.append(act_out)
+                self.act_channels.append(layer.out_channels)
 
             if type(layer) in (nn.MaxPool2d, nn.AvgPool2d):
                 layer.compiler_id = layer_cnt["pool"]
                 layer_cnt["pool"] = layer_cnt["pool"] + 1
+                layer.channels = self.act_channels[-1]
                 kernel = layer.kernel_size
                 if kernel not in self.pool_units.keys():
                     self.pool_units[kernel] = PoolUnit(kernel, type(layer) is nn.MaxPool2d)
@@ -144,8 +147,7 @@ class Processing:
             for _ in range(self.max_duplication):
                 self.conv_units_dupl.append(cu)
         for pu in self.pool_units.values():
-            for _ in range(self.max_duplication):
-                self.pool_units_dupl.append(pu)
+            self.pool_units_dupl.append(pu)
 
     def write_to_file(self):
         wr       = lambda indent, line="": pkg_file.write("\t" * indent + line + "\n")

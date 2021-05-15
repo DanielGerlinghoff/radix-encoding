@@ -46,6 +46,7 @@ module pool_max_unit_tb;
         conf.enable[ID]    = 1;
         conf.pool_parallel = PAR;
         act.mem_select     = ID_MEM;
+        act.addr_step      = '{8, 12};
 
         /* Start and reset */
         #(RST_PERIOD);
@@ -60,6 +61,7 @@ module pool_max_unit_tb;
                 end
             end
 
+            conf.output_mode = (i == KER_SIZE[ID] - 1) ? conf.DIR : conf.DEL;
             #(CLK_PERIOD) ctrl.start = 1;
             #(CLK_PERIOD) ctrl.start = 0;
 

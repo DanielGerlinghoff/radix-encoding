@@ -30,7 +30,7 @@ class Instructions:
 
     def generate(self):
         ops       = {"CONF": 1, "RST": 2, "PROC": 3, "KERL": 4, "ACTL": 5, "ACTS": 6, "WAIT": 7, "END": 8}
-        confs     = {"PAR": 0, "STR": 1, "PAD": 2, "OUT": 3, "KSEL": 4, "ASEL": 5, "SCL": 6, "ASTF": 7, "ASTB": 8}
+        confs     = {"CPAR": 0, "STR": 1, "PAD": 2, "OUT": 3, "KSEL": 4, "ASEL": 5, "SCL": 6, "ASTF": 7, "ASTB": 8, "PPAR": 9}
         conds     = {"CONV": 0, "CWR": 1, "TRAN": 2}
         out_mode  = {"DEL": 3, "DIR": 2, "ADD": 1, "SFT": 0}
         ops_off   = 28
@@ -53,16 +53,15 @@ class Instructions:
             self.instr.append((ops["WAIT"] << ops_off) + (unit << unit_off) + (conds[cond] << conds_off))
 
         act_ping_pong = False
-
         for layer in self.layers.values():
             if type(layer) is nn.Conv2d:
-                instr_conf(31, "PAR", layer.compiler_parallel)
+                instr_conf(31, "CPAR", layer.compiler_parallel)
                 instr_conf(31, "STR", layer.compiler_stride)
                 instr_conf(31, "PAD", 0)
                 instr_conf(31, "KSEL", layer.compiler_id)  # NOTE: assuming kernels fit into device
+                instr_conf(31, "ASEL", int(act_ping_pong))
                 chn_out = 0
-                while chn_out < layer.out_channels - 1:
-                    instr_conf(31, "ASEL", int(act_ping_pong))
+                while chn_out < layer.out_channels:
                     for tstep in range(self.tsteps):
                         for chn_in in range(layer.in_channels):
                             instr_cmd("RST")
@@ -76,7 +75,7 @@ class Instructions:
                                         if chn_out_cu < layer.out_channels - 1: chn_out_cu += 1
                                         else: break
                                     instr_en(cu_i, 0)
-                                    if chn_out_cu == layer.out_channels - 1: break
+                                    if chn_out_cu == layer.out_channels: break
                             cu_1st = None
                             for cu_i, cu in enumerate(self.processing.conv_units_dupl):
                                 if cu.kernel == layer.kernel_size[0]:
@@ -110,10 +109,9 @@ class Instructions:
                             for cu_i, cu in enumerate(self.processing.conv_units_dupl):
                                 if cu.kernel == layer.kernel_size[0]:
                                     instr_en(cu_i, 0)
-                    instr_conf(31, "ASEL", not act_ping_pong)
                     instr_conf(31, "SCL", layer.weight_scale + layer.act_in_scale - layer.act_out_scale)
                     instr_conf(31, "ASTF", layer.out_size * layer.out_channels)
-                    instr_conf(31, "ASTB", layer.out_size * (layer.out_channels * self.tsteps - 1))
+                    instr_conf(31, "ASTB", layer.out_size * (layer.out_channels * (self.tsteps - 1) - 1))
                     chn_out_cu = chn_out
                     for cu_i, cu in enumerate(self.processing.conv_units_dupl):
                         if cu.kernel == layer.kernel_size[0]:
@@ -122,8 +120,44 @@ class Instructions:
                                 instr_wait(cu_i, "TRAN")
                             chn_out_cu += layer.parallel
                     chn_out = chn_out_cu
+                act_ping_pong = not act_ping_pong
 
-                break  # TODO: remove
+            if type(layer) is nn.MaxPool2d:
+                instr_conf(31, "PPAR", layer.compiler_parallel)
+                instr_conf(31, "ASEL", int(act_ping_pong))
+                instr_conf(31, "ASTF", layer.out_size * layer.channels)
+                instr_conf(31, "ASTB", layer.out_size * (layer.channels * (self.tsteps - 1) - 1))
+                for pu_i, pu in enumerate(self.processing.pool_units_dupl):
+                    if pu.kernel == layer.kernel_size:
+                        pu_1st = pu_i
+                        break
+                instr_en(pu_1st + len(self.processing.conv_units_dupl), 1)
+                chn = 0
+                while chn < layer.channels:
+                    chn_pu = chn
+                    for _ in range(layer.parallel):
+                        for tstep in range(self.tsteps):
+                            instr_mem("ACTL", int(act_ping_pong), layer.in_size * (chn_pu + layer.channels * tstep))
+                        chn_pu += 1
+                        if chn_pu == layer.channels: break
+                    for row in range(layer.in_size):
+                        if row % layer.kernel_size == 0:
+                            instr_cmd("RST")
+                            instr_acts(pu_1st + len(self.processing.conv_units_dupl), 0, row // 2 + layer.out_size * chn)
+                        instr_cmd("PROC")
+                        instr_conf(31, "OUT", out_mode["DIR" if (row + 1) % layer.kernel_size == 0 else "DEL"])
+                        if row < layer.in_size - 1:
+                            chn_pu = chn
+                            for _ in range(layer.parallel):
+                                for tstep in range(self.tsteps):
+                                    instr_mem("ACTL", int(act_ping_pong), row + 1 + layer.in_size * (chn_pu + layer.channels * tstep))
+                                chn_pu += 1
+                                if chn_pu == layer.channels: break
+                        else:
+                            instr_wait(pu_1st, "TRAN")
+                    chn = chn_pu
+                instr_en(pu_1st + len(self.processing.conv_units_dupl), 0)
+                act_ping_pong = not act_ping_pong
 
         instr_cmd("END")
 

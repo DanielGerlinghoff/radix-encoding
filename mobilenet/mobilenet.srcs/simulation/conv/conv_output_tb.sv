@@ -38,8 +38,8 @@ module conv_output_tb;
         act_row   = '{default: 1};
         act_valid = 0;
 
-        conf.enable[ID]       = 1;
-        conf.conv_output_mode = conf.DIR;
+        conf.enable[ID]  = 1;
+        conf.output_mode = conf.DIR;
 
         #(CLK_PERIOD);
         rst = 1;
@@ -58,7 +58,7 @@ module conv_output_tb;
             end
 
             #(CLK_PERIOD);
-            conf.conv_output_mode = conf.conv_output_mode.next();
+            conf.output_mode = conf.output_mode.next();
             rst = 1;
             #(CLK_PERIOD);
             rst = 0;

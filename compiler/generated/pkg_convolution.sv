@@ -2,7 +2,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 // Company:     A*STAR IHPC
 // Engineer:    Gerlinghoff Daniel
-// Create Date: 13/05/2021
+// Create Date: 14/05/2021
 //
 // Description: Automatically generated package with config of convolution units
 //
@@ -13,7 +13,7 @@ package pkg_convolution;
 	localparam int CONVUNITS = 2;
 	localparam int CONV_SIZE [CONVUNITS] = '{31, 31};
 	localparam int CONV_SIZE_MAX = 31;
-	localparam int CONV_BITS = 8;
+	localparam int CONV_BITS = 10;
 	localparam int ACT_BITS = 3;
 	localparam int KER_BITS = 3;
 	localparam int KER_SIZE [CONVUNITS] = '{5, 5};

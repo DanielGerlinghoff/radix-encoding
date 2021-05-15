@@ -7,21 +7,22 @@
          <top_modules>
             <top_module name="glbl" />
             <top_module name="network_tb" />
+            <top_module name="pkg_convolution" />
             <top_module name="pkg_memory" />
-            <top_module name="pkg_processing" />
+            <top_module name="pkg_pooling" />
          </top_modules>
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="42595000001fs"></ZoomEndTime>
-      <Cursor1Time time="10995000000fs"></Cursor1Time>
+      <ZoomStartTime time="637917500000fs"></ZoomStartTime>
+      <ZoomEndTime time="639174500001fs"></ZoomEndTime>
+      <Cursor1Time time="638615000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="130"></NameColumnWidth>
+      <NameColumnWidth column_width="126"></NameColumnWidth>
       <ValueColumnWidth column_width="66"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="15" />
+   <WVObjectSize size="13" />
    <wvobject type="logic" fp_name="/network_tb/clk">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -43,8 +44,8 @@
       <obj_property name="ObjectShortName">next</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/network_tb/test/proc/instr_pnt">
-      <obj_property name="ElementShortName">instr_pnt[10:0]</obj_property>
-      <obj_property name="ObjectShortName">instr_pnt[10:0]</obj_property>
+      <obj_property name="ElementShortName">instr_pnt[14:0]</obj_property>
+      <obj_property name="ObjectShortName">instr_pnt[14:0]</obj_property>
       <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/network_tb/test/proc/instr_op">
@@ -67,183 +68,450 @@
       <obj_property name="ElementShortName">instr_val[22:0]</obj_property>
       <obj_property name="ObjectShortName">instr_val[22:0]</obj_property>
    </wvobject>
-   <wvobject type="group" fp_name="group63">
-      <obj_property name="label">Load Kernel</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-      <wvobject type="array" fp_name="/network_tb/test/ker/bram_rd_val">
-         <obj_property name="ElementShortName">bram_rd_val[0:2]</obj_property>
-         <obj_property name="ObjectShortName">bram_rd_val[0:2]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /array/kernel_cnt">
-         <obj_property name="ElementShortName">kernel_cnt[2:0]</obj_property>
-         <obj_property name="ObjectShortName">kernel_cnt[2:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /array/kernel_regs">
-         <obj_property name="ElementShortName">kernel_regs[0:5][0:24][2:0]</obj_property>
-         <obj_property name="ObjectShortName">kernel_regs[0:5][0:24][2:0]</obj_property>
-         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-      </wvobject>
-   </wvobject>
-   <wvobject type="group" fp_name="group86">
-      <obj_property name="label">Load Activation</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-      <wvobject type="array" fp_name="/network_tb/test/mem_act/\gen_bram[0].bram_i /ram">
-         <obj_property name="ElementShortName">ram[0:251][31:0]</obj_property>
-         <obj_property name="ObjectShortName">ram[0:251][31:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/network_tb/test/act/rd_addr">
-         <obj_property name="ElementShortName">rd_addr[8:0]</obj_property>
-         <obj_property name="ObjectShortName">rd_addr[8:0]</obj_property>
-         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/network_tb/test/act/rd_val[0]">
-         <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="ElementShortName">[0]</obj_property>
-         <obj_property name="ObjectShortName">[0]</obj_property>
-         <obj_property name="label">rd_val[0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /inp/act_reg">
-         <obj_property name="ElementShortName">act_reg[0:31]</obj_property>
-         <obj_property name="ObjectShortName">act_reg[0:31]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /array/activation_padding">
-         <obj_property name="ElementShortName">activation_padding[0:30]</obj_property>
-         <obj_property name="ObjectShortName">activation_padding[0:30]</obj_property>
-      </wvobject>
-   </wvobject>
-   <wvobject type="group" fp_name="group114">
+   <wvobject type="group" fp_name="group1473">
       <obj_property name="label">Convolution</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject type="logic" fp_name="/network_tb/test/ctrl/reset">
-         <obj_property name="ElementShortName">reset</obj_property>
-         <obj_property name="ObjectShortName">reset</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/network_tb/test/ctrl/start">
-         <obj_property name="ElementShortName">start</obj_property>
-         <obj_property name="ObjectShortName">start</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /array/state">
-         <obj_property name="ElementShortName">state[3:0]</obj_property>
-         <obj_property name="ObjectShortName">state[3:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /conv_finish">
-         <obj_property name="ElementShortName">conv_finish</obj_property>
-         <obj_property name="ObjectShortName">conv_finish</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /array/kernel_rows">
-         <obj_property name="ElementShortName">kernel_rows[0:4][0:30][2:0]</obj_property>
-         <obj_property name="ObjectShortName">kernel_rows[0:4][0:30][2:0]</obj_property>
-         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /conv_output">
-         <obj_property name="ElementShortName">conv_output[0:30][7:0]</obj_property>
-         <obj_property name="ObjectShortName">conv_output[0:30][7:0]</obj_property>
-         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/network_tb/test/conf/output_mode">
-         <obj_property name="ElementShortName">output_mode[0:1]</obj_property>
-         <obj_property name="ObjectShortName">output_mode[0:1]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /out/act_valid">
-         <obj_property name="ElementShortName">act_valid</obj_property>
-         <obj_property name="ObjectShortName">act_valid</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /out/act_add">
-         <obj_property name="ElementShortName">act_add</obj_property>
-         <obj_property name="ObjectShortName">act_add</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /out/bram_wr_en">
-         <obj_property name="ElementShortName">bram_wr_en</obj_property>
-         <obj_property name="ObjectShortName">bram_wr_en</obj_property>
-      </wvobject>
-      <wvobject type="vbus" fp_name="vbus129">
-         <obj_property name="label">bram</obj_property>
+      <wvobject type="group" fp_name="group63">
+         <obj_property name="label">Load Kernel</obj_property>
          <obj_property name="DisplayName">label</obj_property>
          <obj_property name="isExpanded"></obj_property>
-         <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /bram/ram[1]">
-            <obj_property name="ElementShortName">[1][247:0]</obj_property>
-            <obj_property name="ObjectShortName">[1][247:0]</obj_property>
+         <wvobject type="array" fp_name="/network_tb/test/ker/bram_rd_val">
+            <obj_property name="ElementShortName">bram_rd_val[0:2]</obj_property>
+            <obj_property name="ObjectShortName">bram_rd_val[0:2]</obj_property>
          </wvobject>
-         <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /bram/ram[0]">
-            <obj_property name="ElementShortName">[0][247:0]</obj_property>
-            <obj_property name="ObjectShortName">[0][247:0]</obj_property>
+         <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /array/kernel_cnt">
+            <obj_property name="ElementShortName">kernel_cnt[2:0]</obj_property>
+            <obj_property name="ObjectShortName">kernel_cnt[2:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /array/kernel_regs">
+            <obj_property name="ElementShortName">kernel_regs[0:5][0:24][2:0]</obj_property>
+            <obj_property name="ObjectShortName">kernel_regs[0:5][0:24][2:0]</obj_property>
+            <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+            <obj_property name="isExpanded"></obj_property>
+            <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /array/kernel_regs[0]">
+               <obj_property name="ElementShortName">[0][0:24][2:0]</obj_property>
+               <obj_property name="ObjectShortName">[0][0:24][2:0]</obj_property>
+               <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /array/kernel_regs[1]">
+               <obj_property name="ElementShortName">[1][0:24][2:0]</obj_property>
+               <obj_property name="ObjectShortName">[1][0:24][2:0]</obj_property>
+               <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /array/kernel_regs[2]">
+               <obj_property name="ElementShortName">[2][0:24][2:0]</obj_property>
+               <obj_property name="ObjectShortName">[2][0:24][2:0]</obj_property>
+               <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /array/kernel_regs[3]">
+               <obj_property name="ElementShortName">[3][0:24][2:0]</obj_property>
+               <obj_property name="ObjectShortName">[3][0:24][2:0]</obj_property>
+               <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /array/kernel_regs[4]">
+               <obj_property name="ElementShortName">[4][0:24][2:0]</obj_property>
+               <obj_property name="ObjectShortName">[4][0:24][2:0]</obj_property>
+               <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /array/kernel_regs[5]">
+               <obj_property name="ElementShortName">[5][0:24][2:0]</obj_property>
+               <obj_property name="ObjectShortName">[5][0:24][2:0]</obj_property>
+               <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+            </wvobject>
+         </wvobject>
+      </wvobject>
+      <wvobject type="group" fp_name="group86">
+         <obj_property name="label">Load Activation</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject type="array" fp_name="/network_tb/test/mem_act/\gen_bram[0].bram_i /ram">
+            <obj_property name="ElementShortName">ram[0:251][31:0]</obj_property>
+            <obj_property name="ObjectShortName">ram[0:251][31:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/act/rd_addr">
+            <obj_property name="ElementShortName">rd_addr[8:0]</obj_property>
+            <obj_property name="ObjectShortName">rd_addr[8:0]</obj_property>
+            <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/network_tb/test/act/rd_val[0]">
+            <obj_property name="DisplayName">label</obj_property>
+            <obj_property name="ElementShortName">[0]</obj_property>
+            <obj_property name="ObjectShortName">[0]</obj_property>
+            <obj_property name="label">rd_val[0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /inp/act_reg">
+            <obj_property name="ElementShortName">act_reg[0:31]</obj_property>
+            <obj_property name="ObjectShortName">act_reg[0:31]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/conf/conv_parallel">
+            <obj_property name="ElementShortName">conv_parallel[1:0]</obj_property>
+            <obj_property name="ObjectShortName">conv_parallel[1:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /array/activation_padding">
+            <obj_property name="ElementShortName">activation_padding[0:30]</obj_property>
+            <obj_property name="ObjectShortName">activation_padding[0:30]</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject type="group" fp_name="group114">
+         <obj_property name="label">Convolution</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject type="logic" fp_name="/network_tb/test/ctrl/reset">
+            <obj_property name="ElementShortName">reset</obj_property>
+            <obj_property name="ObjectShortName">reset</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/network_tb/test/ctrl/start">
+            <obj_property name="ElementShortName">start</obj_property>
+            <obj_property name="ObjectShortName">start</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /array/state">
+            <obj_property name="ElementShortName">state[3:0]</obj_property>
+            <obj_property name="ObjectShortName">state[3:0]</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /conv_finish">
+            <obj_property name="ElementShortName">conv_finish</obj_property>
+            <obj_property name="ObjectShortName">conv_finish</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /array/kernel_rows">
+            <obj_property name="ElementShortName">kernel_rows[0:4][0:30][2:0]</obj_property>
+            <obj_property name="ObjectShortName">kernel_rows[0:4][0:30][2:0]</obj_property>
+            <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+            <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /array/kernel_rows[0]">
+               <obj_property name="ElementShortName">[0][0:30][2:0]</obj_property>
+               <obj_property name="ObjectShortName">[0][0:30][2:0]</obj_property>
+               <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /array/kernel_rows[1]">
+               <obj_property name="ElementShortName">[1][0:30][2:0]</obj_property>
+               <obj_property name="ObjectShortName">[1][0:30][2:0]</obj_property>
+               <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /array/kernel_rows[2]">
+               <obj_property name="ElementShortName">[2][0:30][2:0]</obj_property>
+               <obj_property name="ObjectShortName">[2][0:30][2:0]</obj_property>
+               <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /array/kernel_rows[3]">
+               <obj_property name="ElementShortName">[3][0:30][2:0]</obj_property>
+               <obj_property name="ObjectShortName">[3][0:30][2:0]</obj_property>
+               <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /array/kernel_rows[4]">
+               <obj_property name="ElementShortName">[4][0:30][2:0]</obj_property>
+               <obj_property name="ObjectShortName">[4][0:30][2:0]</obj_property>
+               <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+            </wvobject>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /conv_output">
+            <obj_property name="ElementShortName">conv_output[0:30][9:0]</obj_property>
+            <obj_property name="ObjectShortName">conv_output[0:30][9:0]</obj_property>
+            <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/conf/output_mode">
+            <obj_property name="ElementShortName">output_mode[0:1]</obj_property>
+            <obj_property name="ObjectShortName">output_mode[0:1]</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /out/act_valid">
+            <obj_property name="ElementShortName">act_valid</obj_property>
+            <obj_property name="ObjectShortName">act_valid</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /out/act_add">
+            <obj_property name="ElementShortName">act_add</obj_property>
+            <obj_property name="ObjectShortName">act_add</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /out/bram_wr_en">
+            <obj_property name="ElementShortName">bram_wr_en</obj_property>
+            <obj_property name="ObjectShortName">bram_wr_en</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /out/act_data_new">
+            <obj_property name="ElementShortName">act_data_new[0:30][9:0]</obj_property>
+            <obj_property name="ObjectShortName">act_data_new[0:30][9:0]</obj_property>
+            <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+         </wvobject>
+         <wvobject type="vbus" fp_name="vbus129">
+            <obj_property name="label">bram</obj_property>
+            <obj_property name="DisplayName">label</obj_property>
+            <obj_property name="isExpanded"></obj_property>
+            <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /bram/ram[1]">
+               <obj_property name="ElementShortName">[1][309:0]</obj_property>
+               <obj_property name="ObjectShortName">[1][309:0]</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /bram/ram[0]">
+               <obj_property name="ElementShortName">[0][309:0]</obj_property>
+               <obj_property name="ObjectShortName">[0][309:0]</obj_property>
+            </wvobject>
+         </wvobject>
+      </wvobject>
+      <wvobject type="group" fp_name="group139">
+         <obj_property name="label">Result Transfer</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject type="logic" fp_name="/network_tb/test/act/conv_rd_val[0]">
+            <obj_property name="DisplayName">label</obj_property>
+            <obj_property name="ElementShortName">[0]</obj_property>
+            <obj_property name="ObjectShortName">[0]</obj_property>
+            <obj_property name="label">conv_rd_val[0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/conf/act_scale">
+            <obj_property name="ElementShortName">act_scale[3:0]</obj_property>
+            <obj_property name="ObjectShortName">act_scale[3:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /relu/conv_activated">
+            <obj_property name="ElementShortName">conv_activated[0:30][2:0]</obj_property>
+            <obj_property name="ObjectShortName">conv_activated[0:30][2:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[1].conv_unit_i /relu/conv_activated">
+            <obj_property name="ElementShortName">conv_activated[0:30][2:0]</obj_property>
+            <obj_property name="ObjectShortName">conv_activated[0:30][2:0]</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/network_tb/test/act/wr_en[1]">
+            <obj_property name="DisplayName">label</obj_property>
+            <obj_property name="ElementShortName">[1]</obj_property>
+            <obj_property name="ObjectShortName">[1]</obj_property>
+            <obj_property name="label">wr_en[1]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/act/addr_step">
+            <obj_property name="ElementShortName">addr_step[0:1][8:0]</obj_property>
+            <obj_property name="ObjectShortName">addr_step[0:1][8:0]</obj_property>
+            <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/act/wr_addr">
+            <obj_property name="ElementShortName">wr_addr[8:0]</obj_property>
+            <obj_property name="ObjectShortName">wr_addr[8:0]</obj_property>
+            <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/act/wr_data">
+            <obj_property name="ElementShortName">wr_data[0:31]</obj_property>
+            <obj_property name="ObjectShortName">wr_data[0:31]</obj_property>
          </wvobject>
       </wvobject>
    </wvobject>
-   <wvobject type="group" fp_name="group139">
-      <obj_property name="label">Result Transfer</obj_property>
+   <wvobject type="group" fp_name="group1474">
+      <obj_property name="label">Pooling</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-      <wvobject type="logic" fp_name="/network_tb/test/act/conv_rd_val[0]">
+      <wvobject type="group" fp_name="group1485">
+         <obj_property name="label">Load Activation</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="ElementShortName">[0]</obj_property>
-         <obj_property name="ObjectShortName">[0]</obj_property>
-         <obj_property name="label">conv_rd_val[0]</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject type="array" fp_name="/network_tb/test/act/rd_addr">
+            <obj_property name="ElementShortName">rd_addr[8:0]</obj_property>
+            <obj_property name="ObjectShortName">rd_addr[8:0]</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/network_tb/test/act/rd_val[1]">
+            <obj_property name="DisplayName">label</obj_property>
+            <obj_property name="ElementShortName">[1]</obj_property>
+            <obj_property name="ObjectShortName">[1]</obj_property>
+            <obj_property name="label">rd_val[1]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/act/rd_data[1]">
+            <obj_property name="DisplayName">label</obj_property>
+            <obj_property name="ElementShortName">[1][0:31]</obj_property>
+            <obj_property name="ObjectShortName">[1][0:31]</obj_property>
+            <obj_property name="label">rd_data[1][0:31]</obj_property>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][0]">
+               <obj_property name="ElementShortName">[0]</obj_property>
+               <obj_property name="ObjectShortName">[0]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][1]">
+               <obj_property name="ElementShortName">[1]</obj_property>
+               <obj_property name="ObjectShortName">[1]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][2]">
+               <obj_property name="ElementShortName">[2]</obj_property>
+               <obj_property name="ObjectShortName">[2]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][3]">
+               <obj_property name="ElementShortName">[3]</obj_property>
+               <obj_property name="ObjectShortName">[3]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][4]">
+               <obj_property name="ElementShortName">[4]</obj_property>
+               <obj_property name="ObjectShortName">[4]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][5]">
+               <obj_property name="ElementShortName">[5]</obj_property>
+               <obj_property name="ObjectShortName">[5]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][6]">
+               <obj_property name="ElementShortName">[6]</obj_property>
+               <obj_property name="ObjectShortName">[6]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][7]">
+               <obj_property name="ElementShortName">[7]</obj_property>
+               <obj_property name="ObjectShortName">[7]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][8]">
+               <obj_property name="ElementShortName">[8]</obj_property>
+               <obj_property name="ObjectShortName">[8]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][9]">
+               <obj_property name="ElementShortName">[9]</obj_property>
+               <obj_property name="ObjectShortName">[9]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][10]">
+               <obj_property name="ElementShortName">[10]</obj_property>
+               <obj_property name="ObjectShortName">[10]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][11]">
+               <obj_property name="ElementShortName">[11]</obj_property>
+               <obj_property name="ObjectShortName">[11]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][12]">
+               <obj_property name="ElementShortName">[12]</obj_property>
+               <obj_property name="ObjectShortName">[12]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][13]">
+               <obj_property name="ElementShortName">[13]</obj_property>
+               <obj_property name="ObjectShortName">[13]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][14]">
+               <obj_property name="ElementShortName">[14]</obj_property>
+               <obj_property name="ObjectShortName">[14]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][15]">
+               <obj_property name="ElementShortName">[15]</obj_property>
+               <obj_property name="ObjectShortName">[15]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][16]">
+               <obj_property name="ElementShortName">[16]</obj_property>
+               <obj_property name="ObjectShortName">[16]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][17]">
+               <obj_property name="ElementShortName">[17]</obj_property>
+               <obj_property name="ObjectShortName">[17]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][18]">
+               <obj_property name="ElementShortName">[18]</obj_property>
+               <obj_property name="ObjectShortName">[18]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][19]">
+               <obj_property name="ElementShortName">[19]</obj_property>
+               <obj_property name="ObjectShortName">[19]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][20]">
+               <obj_property name="ElementShortName">[20]</obj_property>
+               <obj_property name="ObjectShortName">[20]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][21]">
+               <obj_property name="ElementShortName">[21]</obj_property>
+               <obj_property name="ObjectShortName">[21]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][22]">
+               <obj_property name="ElementShortName">[22]</obj_property>
+               <obj_property name="ObjectShortName">[22]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][23]">
+               <obj_property name="ElementShortName">[23]</obj_property>
+               <obj_property name="ObjectShortName">[23]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][24]">
+               <obj_property name="ElementShortName">[24]</obj_property>
+               <obj_property name="ObjectShortName">[24]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][25]">
+               <obj_property name="ElementShortName">[25]</obj_property>
+               <obj_property name="ObjectShortName">[25]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][26]">
+               <obj_property name="ElementShortName">[26]</obj_property>
+               <obj_property name="ObjectShortName">[26]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][27]">
+               <obj_property name="ElementShortName">[27]</obj_property>
+               <obj_property name="ObjectShortName">[27]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][28]">
+               <obj_property name="ElementShortName">[28]</obj_property>
+               <obj_property name="ObjectShortName">[28]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][29]">
+               <obj_property name="ElementShortName">[29]</obj_property>
+               <obj_property name="ObjectShortName">[29]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][30]">
+               <obj_property name="ElementShortName">[30]</obj_property>
+               <obj_property name="ObjectShortName">[30]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/network_tb/test/act/rd_data[1][31]">
+               <obj_property name="ElementShortName">[31]</obj_property>
+               <obj_property name="ObjectShortName">[31]</obj_property>
+            </wvobject>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/\gen_poolunits[0].genblk1.pool_unit_i /inp/act_reg">
+            <obj_property name="ElementShortName">act_reg[0:1][0:31][2:0]</obj_property>
+            <obj_property name="ObjectShortName">act_reg[0:1][0:31][2:0]</obj_property>
+         </wvobject>
       </wvobject>
-      <wvobject type="array" fp_name="/network_tb/test/act/conv_transfer_finish">
-         <obj_property name="ElementShortName">conv_transfer_finish[0:1]</obj_property>
-         <obj_property name="ObjectShortName">conv_transfer_finish[0:1]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /relu/conv_unpacked">
-         <obj_property name="ElementShortName">conv_unpacked[0:5][0:30][7:0]</obj_property>
-         <obj_property name="ObjectShortName">conv_unpacked[0:5][0:30][7:0]</obj_property>
-         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-         <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /relu/conv_unpacked[0]">
-            <obj_property name="ElementShortName">[0][0:30][7:0]</obj_property>
-            <obj_property name="ObjectShortName">[0][0:30][7:0]</obj_property>
-            <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-         </wvobject>
-         <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /relu/conv_unpacked[1]">
-            <obj_property name="ElementShortName">[1][0:30][7:0]</obj_property>
-            <obj_property name="ObjectShortName">[1][0:30][7:0]</obj_property>
-            <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-         </wvobject>
-         <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /relu/conv_unpacked[2]">
-            <obj_property name="ElementShortName">[2][0:30][7:0]</obj_property>
-            <obj_property name="ObjectShortName">[2][0:30][7:0]</obj_property>
-            <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-         </wvobject>
-         <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /relu/conv_unpacked[3]">
-            <obj_property name="ElementShortName">[3][0:30][7:0]</obj_property>
-            <obj_property name="ObjectShortName">[3][0:30][7:0]</obj_property>
-            <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-         </wvobject>
-         <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /relu/conv_unpacked[4]">
-            <obj_property name="ElementShortName">[4][0:30][7:0]</obj_property>
-            <obj_property name="ObjectShortName">[4][0:30][7:0]</obj_property>
-            <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-         </wvobject>
-         <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /relu/conv_unpacked[5]">
-            <obj_property name="ElementShortName">[5][0:30][7:0]</obj_property>
-            <obj_property name="ObjectShortName">[5][0:30][7:0]</obj_property>
-            <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-         </wvobject>
-      </wvobject>
-      <wvobject type="array" fp_name="/network_tb/test/conf/act_scale">
-         <obj_property name="ElementShortName">act_scale[2:0]</obj_property>
-         <obj_property name="ObjectShortName">act_scale[2:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/network_tb/test/\gen_convunits[0].conv_unit_i /relu/conv_activated">
-         <obj_property name="ElementShortName">conv_activated[0:30][2:0]</obj_property>
-         <obj_property name="ObjectShortName">conv_activated[0:30][2:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/network_tb/test/act/wr_en[1]">
+      <wvobject type="group" fp_name="group1593">
+         <obj_property name="label">Pooling</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="ElementShortName">[1]</obj_property>
-         <obj_property name="ObjectShortName">[1]</obj_property>
-         <obj_property name="label">wr_en[1]</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject type="logic" fp_name="/network_tb/test/\gen_poolunits[0].genblk1.pool_unit_i /array/rst">
+            <obj_property name="ElementShortName">rst</obj_property>
+            <obj_property name="ObjectShortName">rst</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/network_tb/test/ctrl/start">
+            <obj_property name="ElementShortName">start</obj_property>
+            <obj_property name="ObjectShortName">start</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/network_tb/test/ctrl/finish[2]">
+            <obj_property name="DisplayName">label</obj_property>
+            <obj_property name="ElementShortName">[2]</obj_property>
+            <obj_property name="ObjectShortName">[2]</obj_property>
+            <obj_property name="label">finish[2]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/\gen_poolunits[0].genblk1.pool_unit_i /pool_input">
+            <obj_property name="ElementShortName">pool_input[0:13][2:0]</obj_property>
+            <obj_property name="ObjectShortName">pool_input[0:13][2:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/\gen_poolunits[0].genblk1.pool_unit_i /pool_output">
+            <obj_property name="ElementShortName">pool_output[0:13][2:0]</obj_property>
+            <obj_property name="ObjectShortName">pool_output[0:13][2:0]</obj_property>
+         </wvobject>
       </wvobject>
-      <wvobject type="array" fp_name="/network_tb/test/act/wr_addr">
-         <obj_property name="ElementShortName">wr_addr[8:0]</obj_property>
-         <obj_property name="ObjectShortName">wr_addr[8:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/network_tb/test/act/wr_data">
-         <obj_property name="ElementShortName">wr_data[31:0]</obj_property>
-         <obj_property name="ObjectShortName">wr_data[31:0]</obj_property>
+      <wvobject type="group" fp_name="group1594">
+         <obj_property name="label">Write</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject type="array" fp_name="/network_tb/test/\gen_poolunits[0].genblk1.pool_unit_i /out/pool_unpacked">
+            <obj_property name="ElementShortName">pool_unpacked[0:1][0:13][2:0]</obj_property>
+            <obj_property name="ObjectShortName">pool_unpacked[0:1][0:13][2:0]</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/network_tb/test/act/wr_en[0]">
+            <obj_property name="DisplayName">label</obj_property>
+            <obj_property name="ElementShortName">[0]</obj_property>
+            <obj_property name="ObjectShortName">[0]</obj_property>
+            <obj_property name="label">wr_en[0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/act/wr_addr_base">
+            <obj_property name="ElementShortName">wr_addr_base[8:0]</obj_property>
+            <obj_property name="ObjectShortName">wr_addr_base[8:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/act/wr_addr_offset">
+            <obj_property name="ElementShortName">wr_addr_offset[8:0]</obj_property>
+            <obj_property name="ObjectShortName">wr_addr_offset[8:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/act/addr_step">
+            <obj_property name="ElementShortName">addr_step[0:1][8:0]</obj_property>
+            <obj_property name="ObjectShortName">addr_step[0:1][8:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/\gen_poolunits[0].genblk1.pool_unit_i /out/cnt_assign">
+            <obj_property name="ElementShortName">cnt_assign[0:0]</obj_property>
+            <obj_property name="ObjectShortName">cnt_assign[0:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/\gen_poolunits[0].genblk1.pool_unit_i /out/cnt_bits">
+            <obj_property name="ElementShortName">cnt_bits[1:0]</obj_property>
+            <obj_property name="ObjectShortName">cnt_bits[1:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/act/wr_addr">
+            <obj_property name="ElementShortName">wr_addr[8:0]</obj_property>
+            <obj_property name="ObjectShortName">wr_addr[8:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/act/wr_data">
+            <obj_property name="ElementShortName">wr_data[0:31]</obj_property>
+            <obj_property name="ObjectShortName">wr_data[0:31]</obj_property>
+         </wvobject>
       </wvobject>
    </wvobject>
 </wave_config>

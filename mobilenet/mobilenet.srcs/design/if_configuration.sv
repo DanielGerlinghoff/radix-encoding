@@ -28,11 +28,11 @@ interface if_configuration;
     logic [CONV_PARALLEL_BITS-1:0] conv_parallel;
     logic [CONV_STRIDE_BITS-1:0]   conv_stride;
     logic                          conv_padding;
-    output_modes                   conv_output_mode;
+    output_modes                   output_mode;
     logic [$clog2(CONV_BITS)-1:0]  act_scale;
 
     /* Pooling settings */
-    localparam POOL_PARALLEL_BITS = $clog2($size(pkg_pooling::PARALLEL_NUM, 2) + 1); 
+    localparam POOL_PARALLEL_BITS = $clog2($size(pkg_pooling::PARALLEL_NUM, 2) + 1);
 
     logic [POOL_PARALLEL_BITS-1:0] pool_parallel;
 
@@ -42,7 +42,8 @@ interface if_configuration;
         output conv_parallel,
         output conv_stride,
         output conv_padding,
-        output conv_output_mode,
+        output pool_parallel,
+        output output_mode,
         output act_scale
     );
 
@@ -60,7 +61,7 @@ interface if_configuration;
 
     modport conv_out (
         input enable,
-        input conv_output_mode
+        input output_mode
     );
 
     modport conv_relu (
@@ -78,7 +79,8 @@ interface if_configuration;
     );
 
     modport pool_out (
-        input pool_parallel
+        input pool_parallel,
+        input output_mode
     );
 
 endinterface

@@ -36,18 +36,19 @@ import pkg_convolution::*;
     end
 
     /* Parallel assignment */
-    tri0 [0:SIZE_INPUT-1] act_parallel;
+    tri0 [0:SIZE_INPUT+KER_SIZE_HALF-1] act_parallel;
 
     generate
         for (genvar p = 0; p < PARALLEL_DIM[ID][0]; p++) begin :gen_parallel
             for (genvar a = 0; a < PARALLEL_NUM[ID][p]; a++) begin :gen_parallel_assign
-                assign act_parallel[PARALLEL_IN[ID][p][a][0]:PARALLEL_IN[ID][p][a][1]] = (conf.conv_parallel == p) ? act_reg : 'z;
+                localparam int pos [2] = PARALLEL_IN[ID][p][a];
+                assign act_parallel[pos[0]:pos[1]] = (conf.conv_parallel == p) ? act_reg[0:pos[1]-pos[0]] : 'z;
             end
         end
     endgenerate
 
     /* Row shift */
-    logic [0:SIZE_INPUT-1] act_shift;
+    logic [0:SIZE_INPUT+KER_SIZE_HALF-1] act_shift;
     logic [$clog2(KER_SIZE[ID]+1)-1:0] shift_cnt;
 
     always_ff @(posedge clk) begin

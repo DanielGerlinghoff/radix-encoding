@@ -25,7 +25,7 @@ import pkg_pooling::*;
     /* Parallel unpacking */
     tri0  [ACT_BITS-1:0] pool_parallel [PARALLEL_MAX[ID]][POOL_SIZE[ID]];
     logic [ACT_BITS-1:0] pool_unpacked [PARALLEL_MAX[ID]][POOL_SIZE[ID]];
-    wire  pool_unpack = pool_valid;
+    wire  pool_unpack = (conf.output_mode == conf.DIR) && pool_valid;
 
     generate
         for (genvar p = 0; p < PARALLEL_DIM[ID][0]; p++) begin :gen_parallel
@@ -50,21 +50,19 @@ import pkg_pooling::*;
     logic [$clog2(ACT_BITS)-1:0]         cnt_bits;
     logic [$high(act.wr_addr_offset):0]  act_addr_offset;
     logic                                act_en [$size(act.wr_en)];
-    logic [$high(act.wr_data):0]         act_data;
+    logic [0:$high(act.wr_data)]         act_data;
 
     always_ff @(posedge clk) begin
-        if (pool_write) begin
-            act_en[act.mem_select] <= 1;
+        if (pool_unpack) begin
+            act_addr_offset <= 0;
+        end else if (pool_write) begin
+            act_en[~act.mem_select] <= 1;
             for (int val = 0; val < POOL_SIZE[ID]; val++) begin
-                act_data[POOL_SIZE[ID]-val-1] <= pool_unpacked[cnt_assign][val][cnt_bits];
+                act_data[val] <= pool_unpacked[cnt_assign][val][cnt_bits];
             end
 
-            if (cnt_bits == ACT_BITS - 1) begin
-                if (!cnt_assign) begin
-                    act_addr_offset <= 0;
-                end else begin
-                    act_addr_offset <= act_addr_offset - act.addr_step[1];
-                end
+            if (!cnt_bits) begin
+                act_addr_offset <= act_addr_offset - act.addr_step[1];
             end else begin
                 act_addr_offset <= act_addr_offset + act.addr_step[0];
             end
@@ -92,7 +90,7 @@ import pkg_pooling::*;
 
         finish <= 0;
         if (pool_write) begin
-            if (cnt_bits == 0) begin
+            if (!cnt_bits) begin
                 cnt_bits <= ACT_BITS - 1;
                 if (cnt_assign != PARALLEL_NUM[ID][conf.pool_parallel] - 1) begin
                     cnt_assign <= cnt_assign + 1;

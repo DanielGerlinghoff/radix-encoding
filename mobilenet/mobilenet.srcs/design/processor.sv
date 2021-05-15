@@ -41,7 +41,7 @@ module processor (
         END  = 8
     } ops;
     typedef enum logic [CONF_BITS-1:0] {
-        PAR  = 0,
+        CPAR = 0,
         STR  = 1,
         PAD  = 2,
         OUT  = 3,
@@ -49,7 +49,8 @@ module processor (
         ASEL = 5,
         SCL  = 6,
         ASTF = 7,
-        ASTB = 8
+        ASTB = 8,
+        PPAR = 9
     } confs;
     typedef enum logic [COND_BITS-1:0] {
         CONV = 0,
@@ -90,7 +91,7 @@ module processor (
                 CONF: begin
                     if (instr_unit[0] == '1) begin
                         case (instr_conf)
-                            PAR:  conf.conv_parallel <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            CPAR: conf.conv_parallel <= instr_val[VAL_BITS-CONF_BITS-1:0];
                             STR:  conf.conv_stride   <= instr_val[VAL_BITS-CONF_BITS-1:0];
                             PAD:  conf.conv_padding  <= instr_val[VAL_BITS-CONF_BITS-1:0];
                             OUT:  conf.output_mode   <= conf.output_modes'(instr_val[VAL_BITS-CONF_BITS-1:0]);
@@ -99,6 +100,7 @@ module processor (
                             SCL:  conf.act_scale     <= instr_val[VAL_BITS-CONF_BITS-1:0];
                             ASTF: act.addr_step[0]   <= instr_val[VAL_BITS-CONF_BITS-1:0];
                             ASTB: act.addr_step[1]   <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            PPAR: conf.pool_parallel <= instr_val[VAL_BITS-CONF_BITS-1:0];
                         endcase
                     end else begin
                         conf.enable[instr_unit[0]] <= instr_val;
