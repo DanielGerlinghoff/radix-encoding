@@ -18,6 +18,7 @@ from Memory import Memory
 from Instructions import Instructions
 from Simulation import Simulation
 from spikes.Lenet import LeNet
+from spikes import Config
 
 class Compiler:
     def __init__(self, layers, weights, inputs):
@@ -48,7 +49,7 @@ class Compiler:
 if __name__ == "__main__":
     network    = LeNet()
     layers     = network.layer_list
-    model_path = "spikes/models/0_0.pt"
+    model_path = "spikes/models/0_0" + ("_3,3_qat.pt" if Config.if_pretrained() else ".pt")
 
     data_train = MNIST('spikes/data', download=True, transform=transforms.Compose([transforms.Resize((32, 32)), transforms.ToTensor()]))
     data_test  = MNIST('spikes/data', train=False, download=True, transform=transforms.Compose([transforms.Resize((32, 32)), transforms.ToTensor()]))
@@ -64,4 +65,4 @@ if __name__ == "__main__":
     output = sim(torch.stack([image for image, label in data_test]))
     pred = output.detach().max(1)[1]
     total_correct = pred.eq(torch.tensor([label for image, label in data_test]).view_as(pred)).sum()
-    print("Coorect: {} / {}".format(total_correct, len(data_test)))
+    print("Correct: {} / {}".format(total_correct, len(data_test)))

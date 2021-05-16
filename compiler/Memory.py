@@ -11,6 +11,7 @@ import torch.nn as nn
 import math
 from datetime import date
 from spikes import Config
+from spikes import Quantize as Q
 
 class BramKernel:
     def __init__(self, kernel):
@@ -42,14 +43,14 @@ class Memory:
         act_ping_pong = False
         for layer in self.layers.values():
 
-            if type(layer) is nn.Conv2d or type(layer) in (nn.MaxPool2d, nn.AvgPool2d):
+            if type(layer) in [nn.Conv2d, Q.Conv2dPrune, nn.MaxPool2d, nn.AvgPool2d]:
                 self.act_brams[act_ping_pong].width  = max(self.act_brams[act_ping_pong].width,
                                                            self.act_sizes[-1])
                 self.act_brams[act_ping_pong].height = max(self.act_brams[act_ping_pong].height,
                                                            self.act_sizes[-1] * self.act_channels[-1] * Config.resolution()[0])
                 act_ping_pong = not act_ping_pong
 
-                if type(layer) is nn.Conv2d:
+                if type(layer) in [nn.Conv2d, Q.Conv2dPrune]:
                     kernel = layer.kernel_size[0]
                     if kernel not in self.ker_brams_nofit.keys():
                         self.ker_brams_nofit[kernel] = BramKernel(kernel)

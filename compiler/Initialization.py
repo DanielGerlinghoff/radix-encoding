@@ -12,6 +12,7 @@ import torch
 import torch.nn as nn
 import math
 from spikes import Config
+from spikes import Quantize as Q
 
 class Network(nn.Module):
     def __init__(self, layer_list):
@@ -20,15 +21,15 @@ class Network(nn.Module):
 
         self.act_res   = Config.resolution()[0]
         self.wgt_res   = Config.resolution()[1]
-        self.wgt_sigma = 2
+        self.wgt_sigma = 3
 
     def forward(self, x):
         for layer in self.layer_list:
-            if type(layer) is nn.Conv2d:
+            if type(layer) in [nn.Conv2d, Q.Conv2dPrune, nn.Linear]:
                 if not hasattr(layer, "act_in_limit"): layer.act_in_limit = 0
                 self.quantize_act_in(layer, x)
             x = layer(x)
-            if type(layer) is nn.Conv2d:
+            if type(layer) in [nn.Conv2d, Q.Conv2dPrune, nn.Linear]:
                 if not hasattr(layer, "weight_qt"): self.quantize_wgt(layer)
                 if not hasattr(layer, "act_out_limit"): layer.act_out_limit = 0
                 self.quantize_act_out(layer, x)
@@ -67,7 +68,7 @@ class Initialization:
         # NOTE: Only if kernels fit into FPGA
         layer_cnt = 0
         for layer in self.network.layer_list:
-            if type(layer) is nn.Conv2d:
+            if type(layer) in [nn.Conv2d, Q.Conv2dPrune]:
                 wgt_file = open(f"generated/bram_kernel_{layer_cnt:02d}.mif", "w")
                 layer_cnt += 1
                 for ch_out in range(layer.out_channels):

@@ -27,9 +27,10 @@ def num_class():
 
 def device_id():
     device_to_run = 0
+    return device_to_run
    
 def if_pretrained(): 
-    ifPretrained = 0  # 0 for regular, 1 for pre-train with high precision
+    ifPretrained = 0  # 0 for regular, 1 quantization aware training
     return ifPretrained 
      
      

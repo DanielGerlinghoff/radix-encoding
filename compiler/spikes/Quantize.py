@@ -64,7 +64,7 @@ class Conv2dPrune(nn.Conv2d):
         res_activation, res_weight = C.resolution()
         self.input_quantized =   QuantizeThrough.apply(input, res_activation, 0) 
         self.weight_quantized =  QuantizeThrough.apply(self.weight, res_weight-1, 1) 
-        if (C.if_pretrained()):
+        if not C.if_pretrained():
             return F.conv2d(input, self.weight, self.bias, self.stride, self.padding, self.dilation, self.groups)
         else:
             #return F.conv2d(input, self.weight, self.bias, self.stride, self.padding, self.dilation, self.groups)       
@@ -77,7 +77,7 @@ class LinearPrune(nn.Linear):
         res_activation, res_weight = C.resolution()
         self.input_quantized =   QuantizeThrough.apply(input, res_activation, 0) 
         self.weight_quantized =  QuantizeThrough.apply(self.weight, res_weight-1, 1) 
-        if (C.if_pretrained()):
+        if not C.if_pretrained():
             return F.linear(input, self.weight, self.bias)
         else:
             #return F.linear(input, self.weight, self.bias)

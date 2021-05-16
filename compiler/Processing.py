@@ -12,6 +12,7 @@ import math
 from datetime import date
 from collections import OrderedDict
 from spikes import Config
+from spikes import Quantize as Q
 
 class ConvUnit:
     def __init__(self, kernel):
@@ -117,7 +118,7 @@ class Processing:
     def generate(self):
         layer_cnt = {"conv": 0, "pool": 0}
         for layer in self.layers.values():
-            if type(layer) is nn.Conv2d:
+            if type(layer) in [nn.Conv2d, Q.Conv2dPrune]:
                 layer.compiler_id = layer_cnt["conv"]
                 layer_cnt["conv"] = layer_cnt["conv"] + 1
                 kernel = layer.kernel_size[0]

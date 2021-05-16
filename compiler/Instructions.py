@@ -9,6 +9,7 @@
 
 import torch.nn as nn
 from spikes import Config
+from spikes import Quantize as Q
 
 class Configuration:
     def __init__(self, convunits):
@@ -54,7 +55,7 @@ class Instructions:
 
         act_ping_pong = False
         for layer in self.layers.values():
-            if type(layer) is nn.Conv2d:
+            if type(layer) in [nn.Conv2d, Q.Conv2dPrune]:
                 instr_conf(31, "CPAR", layer.compiler_parallel)
                 instr_conf(31, "STR", layer.compiler_stride)
                 instr_conf(31, "PAD", 0)

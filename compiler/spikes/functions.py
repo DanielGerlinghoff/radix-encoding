@@ -24,13 +24,7 @@ from torch.utils.data import DataLoader
 from torch.distributions import Categorical
 from torch.distributions import Normal
 from collections import namedtuple
- 
 
-   
-#print(torch.__version__)
-#switch to GPU
-#print(torch.cuda.is_available()) 
-cuda = torch.device('cuda')
    
 #flag for network and dataset types
 network_type = C.network_type()
@@ -66,7 +60,6 @@ def train(epoch):
     net.train()
     for i, (images, labels) in enumerate(data_train_loader):      
         optimizer.zero_grad()
-        #send to GPU
         images, labels=images.cuda(device_id), labels.cuda(device_id)
         images, labels=Variable(images), Variable(labels)
         output = net(images)
@@ -81,7 +74,6 @@ def test():
     avg_loss = 0.0
     with torch.no_grad():
         for i, (images, labels) in enumerate(data_test_loader):
-            #send to GPU
             images, labels=images.cuda(device_id), labels.cuda(device_id)
             images, labels=Variable(images), Variable(labels)
             output = net(images)
@@ -122,16 +114,18 @@ if (network_type == 3):  optimizer = optim.SGD(net.parameters(), 0.05, momentum=
 if (network_type == 5):  optimizer = optim.SGD(net.parameters(), 0.1, momentum=0.9, weight_decay=1e-4)
 if (network_type == 6):  optimizer = optim.SGD(net.parameters(), 0.05, momentum=0.9, weight_decay=5e-4)
 
-num_epoch = 500
-
-#if (network_type == 5):  lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[100, 150], last_epoch=0)
-  
+num_epoch = 50
 if __name__ == '__main__':
+    if C.if_pretrained():
+        net.load_state_dict(torch.load('models/' + str(network_type) + '_' + str(dataset_type) + '.pt'))
 
     for epoch in range(num_epoch):
         adjust_learning_rate(optimizer, epoch)
-        test() 
-        #torch.save({'network': net.state_dict()}, './pretrain/lenet.pth') 
+        test()
         train(epoch)
 
-    torch.save(net.state_dict(), 'models/' + str(network_type) + '_' + str(dataset_type) + '.pt')
+    if not C.if_pretrained():
+        torch.save(net.state_dict(), 'models/' + str(network_type) + '_' + str(dataset_type) + '.pt')
+    else:
+        torch.save(net.state_dict(), 'models/' + str(network_type) + '_' + str(dataset_type) + '_' +
+                                     str(C.resolution()[0]) + ',' + str(C.resolution()[1]) + '_qat.pt')

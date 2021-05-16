@@ -19,22 +19,21 @@ class Simulation(nn.Module):
     def quantize_weights(self):
         for layer in self.layer_list:
             if hasattr(layer, "weight_qt"):
-                layer.weight = nn.Parameter(layer.weight_qt, requires_grad=False)
+                layer.weight = nn.Parameter(layer.weight_qt.type(torch.float))
 
     def quantize_activations(self, x, scale):
-        return x.mul(2 ** scale - 1).round().type(torch.int32)
+        return x.mul(2 ** scale - 1).round()
 
     def requantize_activations(self, x, scale_w, scale_in, scale_out):
         shift = scale_w + scale_in - scale_out
-        return (x >> shift) + (x >> (shift - 1)).bitwise_and(torch.ones_like(x))
+        x = x.type(torch.int)
+        x = (x >> shift) + (x >> (shift - 1)).bitwise_and(torch.ones_like(x))
+        return x.type(torch.float)
 
     def forward(self, x):
         x = self.quantize_activations(x, self.layer_list[0].act_in_scale)
         for layer in self.layer_list:
-            if type(layer) not in [nn.MaxPool2d, nn.AvgPool2d]:
-                x = layer(x)
-            else:
-                x = layer(x.type(torch.float)).type(torch.int32)
+            x = layer(x)
             if hasattr(layer, "weight_scale"):
                 scales = (layer.weight_scale, layer.act_in_scale, layer.act_out_scale)
             else:
