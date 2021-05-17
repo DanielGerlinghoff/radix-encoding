@@ -37,15 +37,15 @@ module conv_array_tb;
     if_kernel ker (.clk);
 
     initial begin
-        rst                      = 0;
-        start                    = 0;
-        activation               = '{default: 0};
-        conf.enable[ID]          = 1;
-        conf.conv_parallel       = 2;
-        conf.conv_padding        = 0;
-        ker.bram_rd_data[ID_MEM] = 0;
-        ker.bram_rd_val[ID_MEM]  = 0;
-        ker.mem_select           = ID_MEM;
+        rst                          = 0;
+        start                        = 0;
+        activation                   = '{default: 0};
+        conf.enable[ID]              = 1;
+        conf.conv_parallel           = 2;
+        conf.conv_padding            = 0;
+        ker.ker_bram_rd_data[ID_MEM] = 0;
+        ker.ker_bram_rd_val[ID_MEM]  = 0;
+        ker.ker_select               = ID_MEM;
 
         #(CLK_PERIOD) rst = 1;
         #(CLK_PERIOD) rst = 0;
@@ -54,12 +54,12 @@ module conv_array_tb;
         for (int k = 0; k < PARALLEL_MAX[ID]; k++) begin
             #(CLK_PERIOD);
             for (int val = 0; val < KER_VALS * KER_BITS; val++) begin
-                ker.bram_rd_data[ID_MEM][val] = $random();
+                ker.ker_bram_rd_data[ID_MEM][val] = $random();
             end
-            ker.bram_rd_val[ID_MEM] = 1'b1;
+            ker.ker_bram_rd_val[ID_MEM] = 1'b1;
 
             #(CLK_PERIOD);
-            ker.bram_rd_val[ID_MEM] = 1'b0;
+            ker.ker_bram_rd_val[ID_MEM] = 1'b0;
         end
 
         #(RST_PERIOD) start = 1;

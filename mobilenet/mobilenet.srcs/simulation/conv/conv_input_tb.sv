@@ -36,7 +36,7 @@ module conv_input_tb;
     initial begin
         start               = 0;
         conf.enable[ID]     = 1;
-        act.mem_select      = ID_MEM;
+        act.mem_rd_select   = ID_MEM;
         act.rd_data[ID_MEM] = {pkg_memory::ACT_WIDTH_MAX/4 {4'h4}};
         act.rd_val[ID_MEM]  = 0;
 

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="lin_unit_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="lin_unit_tb" />
+            <top_module name="pkg_convolution" />
+            <top_module name="pkg_linear" />
+            <top_module name="pkg_memory" />
+            <top_module name="pkg_pooling" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="188459005fs"></ZoomStartTime>
+      <ZoomEndTime time="550308199fs"></ZoomEndTime>
+      <Cursor1Time time="439931000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="118"></NameColumnWidth>
+      <ValueColumnWidth column_width="66"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="10" />
+   <wvobject type="logic" fp_name="/lin_unit_tb/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/lin_unit_tb/test/finish">
+      <obj_property name="ElementShortName">finish</obj_property>
+      <obj_property name="ObjectShortName">finish</obj_property>
+   </wvobject>
+   <wvobject type="group" fp_name="group194">
+      <obj_property name="label">Register and add</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="logic" fp_name="/lin_unit_tb/ker/wgt_bram_rd_val[0]">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">[0]</obj_property>
+         <obj_property name="ObjectShortName">[0]</obj_property>
+         <obj_property name="label">wgt_bram_rd_val[0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/lin_unit_tb/ker/wgt_bram_rd_data[0]">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">[0][511:0]</obj_property>
+         <obj_property name="ObjectShortName">[0][511:0]</obj_property>
+         <obj_property name="label">wgt_bram_rd_data[0][511:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/lin_unit_tb/test/weights_reg">
+         <obj_property name="ElementShortName">weights_reg[0:3][2:0]</obj_property>
+         <obj_property name="ObjectShortName">weights_reg[0:3][2:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/lin_unit_tb/test/act_reg">
+         <obj_property name="ElementShortName">act_reg</obj_property>
+         <obj_property name="ObjectShortName">act_reg</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/lin_unit_tb/test/enable">
+         <obj_property name="ElementShortName">enable</obj_property>
+         <obj_property name="ObjectShortName">enable</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/lin_unit_tb/test/lin_sum">
+         <obj_property name="ElementShortName">lin_sum[0:3][9:0]</obj_property>
+         <obj_property name="ObjectShortName">lin_sum[0:3][9:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group195">
+      <obj_property name="label">Shift</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="array" fp_name="/lin_unit_tb/test/cnt_chn">
+         <obj_property name="ElementShortName">cnt_chn[6:0]</obj_property>
+         <obj_property name="ObjectShortName">cnt_chn[6:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/lin_unit_tb/test/cnt_tstep">
+         <obj_property name="ElementShortName">cnt_tstep[1:0]</obj_property>
+         <obj_property name="ObjectShortName">cnt_tstep[1:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="logic" fp_name="/lin_unit_tb/test/activate">
+      <obj_property name="ElementShortName">activate</obj_property>
+      <obj_property name="ObjectShortName">activate</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/lin_unit_tb/test/lin_activated">
+      <obj_property name="ElementShortName">lin_activated[0:3][2:0]</obj_property>
+      <obj_property name="ObjectShortName">lin_activated[0:3][2:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/lin_unit_tb/test/write">
+      <obj_property name="ElementShortName">write</obj_property>
+      <obj_property name="ObjectShortName">write</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/lin_unit_tb/test/act_en">
+      <obj_property name="ElementShortName">act_en[0:3]</obj_property>
+      <obj_property name="ObjectShortName">act_en[0:3]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/lin_unit_tb/test/act_addr_offset">
+      <obj_property name="ElementShortName">act_addr_offset[8:0]</obj_property>
+      <obj_property name="ObjectShortName">act_addr_offset[8:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/lin_unit_tb/test/act_data">
+      <obj_property name="ElementShortName">act_data[0:31]</obj_property>
+      <obj_property name="ObjectShortName">act_data[0:31]</obj_property>
+   </wvobject>
+</wave_config>

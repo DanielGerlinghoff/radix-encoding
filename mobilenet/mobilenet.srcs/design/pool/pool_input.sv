@@ -31,9 +31,9 @@ import pkg_pooling::*;
     logic [$clog2(ACT_BITS)-1:0]            bit_cnt = 0;
 
     always_ff @(posedge clk) begin
-        if (conf.enable[ID] && act.rd_val[act.mem_select]) begin
+        if (conf.enable[ID] && act.rd_val[act.mem_rd_select]) begin
             for (int val = 0; val < ACT_WIDTH_MAX; val++) begin
-                act_reg[assign_cnt][val][ACT_BITS-bit_cnt-1] <= act.rd_data[act.mem_select][val];
+                act_reg[assign_cnt][val][ACT_BITS-bit_cnt-1] <= act.rd_data[act.mem_rd_select][val];
             end
 
             if (bit_cnt < ACT_BITS - 1) begin

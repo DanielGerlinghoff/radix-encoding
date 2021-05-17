@@ -30,8 +30,8 @@ import pkg_convolution::*;
     logic [0:ACT_WIDTH_MAX-1] act_reg;
 
     always_ff @(posedge clk) begin
-        if (conf.enable[ID] && act.rd_val[act.mem_select]) begin
-            act_reg <= act.rd_data[act.mem_select];
+        if (conf.enable[ID] && act.rd_val[act.mem_rd_select]) begin
+            act_reg <= act.rd_data[act.mem_rd_select];
         end
     end
 

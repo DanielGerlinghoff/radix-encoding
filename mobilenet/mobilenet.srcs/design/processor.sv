@@ -38,7 +38,8 @@ module processor (
         ACTL = 5,
         ACTS = 6,
         WAIT = 7,
-        END  = 8
+        END  = 8,
+        LIN  = 9
     } ops;
     typedef enum logic [CONF_BITS-1:0] {
         CPAR = 0,
@@ -50,7 +51,13 @@ module processor (
         SCL  = 6,
         ASTF = 7,
         ASTB = 8,
-        PPAR = 9
+        PPAR = 9,
+        WSEL = 10,
+        LCHN = 11,
+        WADR = 12,
+        ASRC = 13,
+        ADST = 14,
+        RELU = 15
     } confs;
     typedef enum logic [COND_BITS-1:0] {
         CONV = 0,
@@ -58,14 +65,15 @@ module processor (
         TRAN = 2
     } conds;
 
-    logic                                   next;
-    logic [$clog2(INS_HEIGHT)-1:0]          instr_pnt;
-    logic [INS_WIDTH-1:0]                   instr;
-    ops                                     instr_op [2];
-    logic [UNIT_BITS-1:0]                   instr_unit [2];
-    confs                                   instr_conf;
-    logic [INS_WIDTH-OP_BITS-UNIT_BITS-1:0] instr_val;
-    conds                                   wait_cond [2];
+    logic                              next;
+    logic [$clog2(INS_HEIGHT)-1:0]     instr_pnt;
+    logic [INS_WIDTH-1:0]              instr;
+    ops                                instr_op [2];
+    logic [UNIT_BITS-1:0]              instr_unit [2];
+    confs                              instr_conf;
+    logic [VAL_BITS-1:0]               instr_val;
+    conds                              wait_cond [2];
+    logic [$clog2(WGT_HEIGHT_MAX)-1:0] lin_cnt;
 
     assign instr_op[0]   = ops'(instr[INS_WIDTH-1-:OP_BITS]);
     assign instr_unit[0] = instr[INS_WIDTH-OP_BITS-1-:UNIT_BITS];
@@ -78,29 +86,36 @@ module processor (
             instr_pnt <= 0;
             next <= 0;
 
-            conf.enable    <= '{default: 0};
-            ctrl.reset     <= 0;
-            ctrl.start     <= 0;
-            ker.bram_rd_en <= '{default: 0};
-            act.rd_en      <= '{default: 0};
-            act.conv_rd_en <= '{default: 0};
-            finish         <= 0;
+            conf.enable        <= '{default: 0};
+            ctrl.reset         <= 0;
+            ctrl.start         <= 0;
+            ker.ker_bram_rd_en <= '{default: 0};
+            ker.wgt_bram_rd_en <= '{default: 0};
+            act.rd_en          <= '{default: 0};
+            act.conv_rd_en     <= '{default: 0};
+            finish             <= 0;
 
         end else if (start || next) begin
             case (instr_op[0])
                 CONF: begin
                     if (instr_unit[0] == '1) begin
                         case (instr_conf)
-                            CPAR: conf.conv_parallel <= instr_val[VAL_BITS-CONF_BITS-1:0];
-                            STR:  conf.conv_stride   <= instr_val[VAL_BITS-CONF_BITS-1:0];
-                            PAD:  conf.conv_padding  <= instr_val[VAL_BITS-CONF_BITS-1:0];
-                            OUT:  conf.output_mode   <= conf.output_modes'(instr_val[VAL_BITS-CONF_BITS-1:0]);
-                            ASEL: act.mem_select     <= instr_val[VAL_BITS-CONF_BITS-1:0];
-                            KSEL: ker.mem_select     <= instr_val[VAL_BITS-CONF_BITS-1:0];
-                            SCL:  conf.act_scale     <= instr_val[VAL_BITS-CONF_BITS-1:0];
-                            ASTF: act.addr_step[0]   <= instr_val[VAL_BITS-CONF_BITS-1:0];
-                            ASTB: act.addr_step[1]   <= instr_val[VAL_BITS-CONF_BITS-1:0];
-                            PPAR: conf.pool_parallel <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            CPAR: conf.conv_parallel   <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            STR:  conf.conv_stride     <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            PAD:  conf.conv_padding    <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            OUT:  conf.output_mode     <= conf.output_modes'(instr_val[VAL_BITS-CONF_BITS-1:0]);
+                            LCHN: conf.lin_channels    <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            WADR: ker.wgt_bram_rd_addr <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            ASEL: {act.mem_rd_select, act.mem_wr_select} <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            KSEL: ker.ker_select       <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            WSEL: ker.wgt_select       <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            SCL:  conf.act_scale       <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            ASTF: act.addr_step[0]     <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            ASTB: act.addr_step[1]     <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            PPAR: conf.pool_parallel   <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            ASRC: act.rd_addr          <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            ADST: act.wr_addr_base     <= instr_val[VAL_BITS-CONF_BITS-1:0];
+                            RELU: conf.lin_relu        <= instr_val[VAL_BITS-CONF_BITS-1:0];
                         endcase
                     end else begin
                         conf.enable[instr_unit[0]] <= instr_val;
@@ -118,9 +133,16 @@ module processor (
                     next <= 0;
                 end
 
+                LIN: begin
+                    act.rd_en[act.mem_rd_select] <= 1;
+                    ker.wgt_bram_rd_en[ker.wgt_select] <= 1;
+                    lin_cnt <= 0;
+                    next <= 0;
+                end
+
                 KERL: begin
-                    ker.bram_rd_en[instr_unit[0]] <= 1;
-                    ker.bram_rd_addr <= instr_val;
+                    ker.ker_bram_rd_en[instr_unit[0]] <= 1;
+                    ker.ker_bram_rd_addr <= instr_val;
                     next <= 0;
                 end
 
@@ -164,8 +186,21 @@ module processor (
                     next <= 1;
                 end
 
+                LIN: begin
+                    if (lin_cnt != conf.lin_channels - 1) begin
+                        lin_cnt <= lin_cnt + 1;
+                        act.rd_addr          <= act.rd_addr + 1;
+                        ker.wgt_bram_rd_addr <= ker.wgt_bram_rd_addr + 1;
+                    end else begin
+                        act.rd_en[act.mem_rd_select] <= 0;
+                        ker.wgt_bram_rd_en[ker.wgt_select] <= 0;
+                        lin_cnt <= 0;
+                        next <= 1;
+                    end
+                end
+
                 KERL: begin
-                    ker.bram_rd_en[instr_unit[1]] <= 0;
+                    ker.ker_bram_rd_en[instr_unit[1]] <= 0;
                     next <= 1;
                 end
 

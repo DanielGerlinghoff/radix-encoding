@@ -76,7 +76,7 @@ import pkg_convolution::*;
 
     always_ff @(posedge clk) begin
         if (conv_write) begin
-            act_en[~act.mem_select] <= 1;
+            act_en[act.mem_wr_select] <= 1;
             for (int val = 0; val < CONV_SIZE[ID]; val++) begin
                 act_data[val] <= conv_activated[val][cnt_bits];
             end

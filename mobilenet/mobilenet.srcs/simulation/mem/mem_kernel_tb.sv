@@ -32,28 +32,28 @@ module mem_kernel_tb;
     );
 
     initial begin
-        ker.bram_wr_en[ID] = 0;
-        ker.bram_rd_en[ID] = 0;
+        ker.ker_bram_wr_en = '{default: 0};
+        ker.ker_bram_rd_en = '{default: 0};
 
         #(RST_PERIOD);
-        for (int h = 0; h < KER_HEIGHT_MAX[1]; h++) begin
+        for (int h = 0; h < 1; h++) begin
             for (int w = 0; w < DRAM_DATA_BITS; w++)
-                ker.bram_wr_data[w] = $random();
-            ker.bram_wr_addr = h;
-            ker.bram_wr_en[ID] = 1;
+                ker.ker_bram_wr_data[w] = $random();
+            ker.ker_bram_wr_addr = h;
+            ker.ker_bram_wr_en[ID] = 1;
             #(CLK_PERIOD);
         end
 
-        ker.bram_wr_en[ID] = 0;
+        ker.ker_bram_wr_en[ID] = 0;
 
         #(RST_PERIOD);
         for (int h = 0; h < KER_HEIGHT[ID]; h++) begin
-            ker.bram_rd_addr = h;
-            ker.bram_rd_en[ID] = 1;
+            ker.ker_bram_rd_addr = h;
+            ker.ker_bram_rd_en[ID] = 1;
             #(CLK_PERIOD);
         end
 
-        ker.bram_rd_en[ID] = 0;
+        ker.ker_bram_rd_en[ID] = 0;
 
         #(RST_PERIOD);
         $finish();

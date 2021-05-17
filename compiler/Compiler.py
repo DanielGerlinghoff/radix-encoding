@@ -31,13 +31,13 @@ class Compiler:
         self.instructions   = Instructions(layers, (input_size, input_channels), self.processing, self.memory)
 
     def generate_config(self):
-        self.initialization.layer_scaling_factors()
-        self.initialization.write_weight_files()
-        self.initialization.write_input_file(0)
-
         self.processing.generate()
         self.processing.duplicate()
         self.processing.write_to_file()
+
+        self.initialization.layer_scaling_factors()
+        self.initialization.write_weight_files()
+        self.initialization.write_input_file(0)
 
         self.instructions.generate()
         self.instructions.write_to_file()

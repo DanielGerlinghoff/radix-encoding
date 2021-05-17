@@ -40,8 +40,8 @@ module processor_tb;
     end
 
     initial begin
-        mem_ker.gen_bram[0].bram_i.ram[0] = {9 {8'h01}};
-        mem_ker.gen_bram[0].bram_i.ram[1] = {9 {8'h02}};
+        mem_ker.gen_conv_bram[0].bram_i.ram[0] = {9 {8'h01}};
+        mem_ker.gen_conv_bram[0].bram_i.ram[1] = {9 {8'h02}};
 
         mem_act.gen_bram[0].bram_i.ram[0] = {38 {3'b010}};
         mem_act.gen_bram[0].bram_i.ram[1] = {38 {3'b101}};

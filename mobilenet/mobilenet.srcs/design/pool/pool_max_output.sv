@@ -56,7 +56,7 @@ import pkg_pooling::*;
         if (pool_unpack) begin
             act_addr_offset <= 0;
         end else if (pool_write) begin
-            act_en[~act.mem_select] <= 1;
+            act_en[act.mem_wr_select] <= 1;
             for (int val = 0; val < POOL_SIZE[ID]; val++) begin
                 act_data[val] <= pool_unpacked[cnt_assign][val][cnt_bits];
             end

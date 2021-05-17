@@ -15,7 +15,7 @@ import pkg_convolution::*;
     ID
 ) (
     if_configuration.conv_array conf,
-    if_kernel.array ker,
+    if_kernel.conv ker,
     input  logic clk, rst,
     input  logic start,
     output logic finish,
@@ -33,8 +33,8 @@ import pkg_convolution::*;
     always_ff @(posedge clk) begin
         if (rst) begin
             kernel_cnt <= 0;
-        end else if (conf.enable[ID] && ker.bram_rd_val[ker.mem_select]) begin
-            kernel_regs[kernel_cnt] <= ker.bram_rd_data[ker.mem_select][KER_VALS*KER_BITS-1:0];
+        end else if (conf.enable[ID] && ker.ker_bram_rd_val[ker.ker_select]) begin
+            kernel_regs[kernel_cnt] <= ker.ker_bram_rd_data[ker.ker_select][KER_VALS*KER_BITS-1:0];
             kernel_cnt <= kernel_cnt + 1;
         end
     end

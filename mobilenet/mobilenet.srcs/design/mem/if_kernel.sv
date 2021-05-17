@@ -15,44 +15,77 @@ interface if_kernel (
 
     import pkg_memory::*;
 
-    logic [$clog2(KER_NUM)-1:0] mem_select;
+    /* Convolution kernel BRAM */
+    logic [$clog2(KER_NUM+1)-1:0] ker_select;
 
-    logic                                 bram_wr_en [KER_NUM];
-    logic [DRAM_ADDR_BITS-1:0]            bram_wr_addr;
-    logic [DRAM_DATA_BITS-1:0]            bram_wr_data;
-    logic                                 bram_rd_en [KER_NUM];
-    logic                                 bram_rd_val [KER_NUM];
-    logic [$clog2(KER_HEIGHT_MAX[0])-1:0] bram_rd_addr;
-    logic [KER_WIDTH_MAX-1:0]             bram_rd_data [KER_NUM];
+    logic                                 ker_bram_wr_en [KER_NUM];
+    logic [DRAM_ADDR_BITS-1:0]            ker_bram_wr_addr;
+    logic [DRAM_DATA_BITS-1:0]            ker_bram_wr_data;
+    logic                                 ker_bram_rd_en [KER_NUM];
+    logic                                 ker_bram_rd_val [KER_NUM];
+    logic [$clog2(KER_HEIGHT_MAX[0])-1:0] ker_bram_rd_addr;
+    logic [KER_WIDTH_MAX-1:0]             ker_bram_rd_data [KER_NUM];
 
     always_ff @(posedge clk) begin
         for (int n = 0; n < KER_NUM; n++) begin
-            bram_rd_val[n] <= bram_rd_en[n];
+            ker_bram_rd_val[n] <= ker_bram_rd_en[n];
+        end
+    end
+
+    /* Linear weights BRAM */
+    logic [$clog2(WGT_NUM+1)-1:0] wgt_select;
+
+    logic                              wgt_bram_wr_en [WGT_NUM];
+    logic [$clog2(WGT_HEIGHT_MAX)-1:0] wgt_bram_wr_addr;
+    logic [DRAM_DATA_BITS-1:0]         wgt_bram_wr_data;
+    logic                              wgt_bram_rd_en [WGT_NUM];
+    logic                              wgt_bram_rd_val [WGT_NUM];
+    logic [$clog2(WGT_HEIGHT_MAX)-1:0] wgt_bram_rd_addr;
+    logic [DRAM_DATA_BITS-1:0]         wgt_bram_rd_data [WGT_NUM];
+
+    always_ff @(posedge clk) begin
+        for (int n = 0; n < KER_NUM; n++) begin
+            wgt_bram_rd_val[n] <= wgt_bram_rd_en[n];
         end
     end
 
     /* Modports */
     modport proc (
-        output mem_select,
-        output bram_rd_en,
-        output bram_rd_addr
+        output ker_select,
+        output wgt_select,
+        output ker_bram_rd_en,
+        output ker_bram_rd_addr,
+        output wgt_bram_rd_en,
+        output wgt_bram_rd_addr
     );
 
-    modport array (
-        input mem_select,
-        input bram_rd_data,
-        input bram_rd_val
+    modport conv (
+        input ker_select,
+        input ker_bram_rd_data,
+        input ker_bram_rd_val
+    );
+
+    modport lin (
+        input wgt_select,
+        input wgt_bram_rd_data,
+        input wgt_bram_rd_val
     );
 
     modport bram (
-        input  bram_wr_en,
-        input  bram_wr_addr,
-        input  bram_wr_data,
-        input  bram_rd_en,
-        input  bram_rd_addr,
-        output bram_rd_data
-    );
+        input  ker_bram_wr_en,
+        input  ker_bram_wr_addr,
+        input  ker_bram_wr_data,
+        input  ker_bram_rd_en,
+        input  ker_bram_rd_addr,
+        output ker_bram_rd_data,
 
+        input  wgt_bram_wr_en,
+        input  wgt_bram_wr_addr,
+        input  wgt_bram_wr_data,
+        input  wgt_bram_rd_en,
+        input  wgt_bram_rd_addr,
+        output wgt_bram_rd_data
+    );
 
 endinterface
 

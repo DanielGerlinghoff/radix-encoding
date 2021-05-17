@@ -102,6 +102,18 @@ class PoolUnit:
 
         return act_out
 
+class LinearUnit:
+    def __init__(self):
+        self.dram_data_bits = 512
+        self.parallel = math.floor(self.dram_data_bits / Config.resolution()[1])
+        self.lin_size = 0
+        self.lin_channels_max = 0
+
+    def new_layer(self, layer):
+        layer.parallel = self.parallel
+        self.lin_size = min(max(self.lin_size, layer.out_features), self.parallel)
+        self.lin_channels_max = max(self.lin_channels_max, layer.in_features)
+
 class Processing:
     def __init__(self, layers, input_size, input_channels):
         self.layers = layers._modules
@@ -109,6 +121,7 @@ class Processing:
         self.conv_units_dupl = list()
         self.pool_units = dict()
         self.pool_units_dupl = list()
+        self.lin_unit = LinearUnit()
         self.act_sizes = [input_size]
         self.act_channels = [input_channels]
 
@@ -116,11 +129,8 @@ class Processing:
         self.max_duplication = 2
 
     def generate(self):
-        layer_cnt = {"conv": 0, "pool": 0}
         for layer in self.layers.values():
             if type(layer) in [nn.Conv2d, Q.Conv2dPrune]:
-                layer.compiler_id = layer_cnt["conv"]
-                layer_cnt["conv"] = layer_cnt["conv"] + 1
                 kernel = layer.kernel_size[0]
                 if kernel not in self.conv_units.keys():
                     self.conv_units[kernel] = ConvUnit(kernel)
@@ -131,8 +141,6 @@ class Processing:
                 self.act_channels.append(layer.out_channels)
 
             if type(layer) in (nn.MaxPool2d, nn.AvgPool2d):
-                layer.compiler_id = layer_cnt["pool"]
-                layer_cnt["pool"] = layer_cnt["pool"] + 1
                 layer.channels = self.act_channels[-1]
                 kernel = layer.kernel_size
                 if kernel not in self.pool_units.keys():
@@ -141,6 +149,9 @@ class Processing:
                 else:
                     act_out = self.pool_units[kernel].new_layer(layer, self.act_sizes[-1])
                 self.act_sizes.append(act_out)
+
+            if type(layer) in [nn.Linear, Q.LinearPrune]:
+                self.lin_unit.new_layer(layer)
 
     def duplicate(self):
         # TODO: Duplicate based on number of output channels
@@ -307,3 +318,28 @@ class Processing:
         wr(0, "endpackage")
         pkg_file.close()
 
+        # Write linear unit file
+        pkg_file = open("generated/pkg_linear.sv", "w")
+        wr(0, "`timescale 1ns / 1ps")
+        wr(0, "//////////////////////////////////////////////////////////////////////////////////")
+        wr(0, "// Company:     A*STAR IHPC")
+        wr(0, "// Engineer:    Gerlinghoff Daniel")
+        wr(0, "// Create Date: " + date.today().strftime("%d/%m/%Y"))
+        wr(0, "//")
+        wr(0, "// Description: Automatically generated package with config for linear layers")
+        wr(0, "//")
+        wr(0, "//////////////////////////////////////////////////////////////////////////////////")
+        wr(0)
+        wr(0)
+        wr(0, "package pkg_linear;")
+
+        wr(1, "localparam int LINUNITS = {};".format(1))
+        wr(1, "localparam int LIN_SIZE = {};".format(self.lin_unit.lin_size))
+        wr(1, "localparam int LIN_CHANNELS_MAX = {};".format(self.lin_unit.lin_channels_max))
+        wr(1, "localparam int ACT_BITS = {};".format(Config.resolution()[0]))
+        wr(1, "localparam int WGT_BITS = {};".format(Config.resolution()[0]))
+        wr(1, "localparam int SUM_BITS = {};".format(sum(Config.resolution()) + self.conv_bits_margin))
+
+        wr(0)
+        wr(0, "endpackage")
+        pkg_file.close()

@@ -10,8 +10,8 @@
 
 
 interface if_configuration;
-    import pkg_convolution::CONVUNITS, pkg_pooling::POOLUNITS;
-    logic enable [CONVUNITS+POOLUNITS];
+    import pkg_convolution::CONVUNITS, pkg_pooling::POOLUNITS, pkg_linear::LINUNITS;
+    logic enable [CONVUNITS+POOLUNITS+LINUNITS];
 
     /* Convolution settings */
     import pkg_convolution::CONV_BITS;
@@ -36,6 +36,10 @@ interface if_configuration;
 
     logic [POOL_PARALLEL_BITS-1:0] pool_parallel;
 
+    /* Linear settings */
+    logic [$clog2(pkg_linear::LIN_CHANNELS_MAX+1)-1:0] lin_channels;
+    logic lin_relu;
+
     /* Modports */
     modport proc (
         output enable,
@@ -43,6 +47,8 @@ interface if_configuration;
         output conv_stride,
         output conv_padding,
         output pool_parallel,
+        output lin_channels,
+        output lin_relu,
         output output_mode,
         output act_scale
     );
@@ -81,6 +87,13 @@ interface if_configuration;
     modport pool_out (
         input pool_parallel,
         input output_mode
+    );
+
+    modport lin (
+        input enable,
+        input lin_channels,
+        input lin_relu,
+        input act_scale
     );
 
 endinterface

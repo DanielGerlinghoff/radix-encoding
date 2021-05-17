@@ -36,7 +36,7 @@ module pool_input_tb;
     initial begin
         start               = 0;
         conf.enable[ID]     = 1;
-        act.mem_select      = ID_MEM;
+        act.mem_rd_select   = ID_MEM;
         act.rd_data[ID_MEM] = 0;
         act.rd_val[ID_MEM]  = 0;
 

@@ -45,7 +45,7 @@ module pool_max_unit_tb;
         #(RST_PERIOD);
         conf.enable[ID]    = 1;
         conf.pool_parallel = PAR;
-        act.mem_select     = ID_MEM;
+        act.mem_rd_select  = ID_MEM;
         act.addr_step      = '{8, 12};
 
         /* Start and reset */

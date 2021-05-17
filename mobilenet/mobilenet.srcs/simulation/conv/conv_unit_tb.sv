@@ -49,20 +49,21 @@ module conv_unit_tb;
         conf.conv_stride   = 0;
         conf.conv_padding  = 0;
         conf.output_mode   = conf.DIR;
-        act.mem_select     = ID_MEM;
-        ker.mem_select     = ID_MEM;
+        act.mem_rd_select  = ID_MEM;
+        act.mem_wr_select  = ID_MEM + 1;
+        ker.ker_select     = ID_MEM;
 
         /* Load kernel */
         #(RST_PERIOD);
         for (int k = 0; k < PARALLEL_MAX[ID]; k++) begin
             #(CLK_PERIOD);
             for (int val = 0; val < KER_VALS * KER_BITS; val++) begin
-                ker.bram_rd_data[ID_MEM][val] = $random();
+                ker.ker_bram_rd_data[ID_MEM][val] = $random();
             end
-            ker.bram_rd_val[ID_MEM] = 1'b1;
+            ker.ker_bram_rd_val[ID_MEM] = 1'b1;
 
             #(CLK_PERIOD);
-            ker.bram_rd_val[ID_MEM] = 1'b0;
+            ker.ker_bram_rd_val[ID_MEM] = 1'b0;
         end
 
         /* Load activation */

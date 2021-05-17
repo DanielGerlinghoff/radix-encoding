@@ -20,6 +20,12 @@ class BramKernel:
         self.width_wr  = 512
         self.height_rd = 0
 
+class BramWeight:
+    def __init__(self):
+        self.width_rd  = 512
+        self.width_wr  = 512
+        self.height_rd = 0
+
 class BramActivation:
     def __init__(self):
         self.width  = 0
@@ -30,7 +36,9 @@ class Memory:
         self.layers          = layers._modules
         self.ker_brams_fit   = list()
         self.ker_brams_nofit = dict()
-        self.act_brams       = [BramActivation(), BramActivation()]
+        self.wgt_brams_fit   = list()
+        self.wgt_brams_nofit = BramWeight()
+        self.act_brams       = [BramActivation(), BramActivation(), BramActivation(), BramActivation()]
         self.act_sizes       = [input_dim[0]]
         self.act_channels    = [input_dim[1]]
 
@@ -40,22 +48,21 @@ class Memory:
         self.dram_addr_bits = 29
 
     def generate(self):
-        act_ping_pong = False
+        conv_ping_pong = 0
+        lin_ping_pong = 2
         for layer in self.layers.values():
-
             if type(layer) in [nn.Conv2d, Q.Conv2dPrune, nn.MaxPool2d, nn.AvgPool2d]:
-                self.act_brams[act_ping_pong].width  = max(self.act_brams[act_ping_pong].width,
-                                                           self.act_sizes[-1])
-                self.act_brams[act_ping_pong].height = max(self.act_brams[act_ping_pong].height,
-                                                           self.act_sizes[-1] * self.act_channels[-1] * Config.resolution()[0])
-                act_ping_pong = not act_ping_pong
+                self.act_brams[conv_ping_pong].width  = max(self.act_brams[conv_ping_pong].width,
+                                                            self.act_sizes[-1])
+                self.act_brams[conv_ping_pong].height = max(self.act_brams[conv_ping_pong].height,
+                                                            self.act_sizes[-1] * self.act_channels[-1] * Config.resolution()[0])
+                conv_ping_pong = 1 if conv_ping_pong == 0 else 0
 
                 if type(layer) in [nn.Conv2d, Q.Conv2dPrune]:
                     kernel = layer.kernel_size[0]
                     if kernel not in self.ker_brams_nofit.keys():
                         self.ker_brams_nofit[kernel] = BramKernel(kernel)
                         self.ker_brams_nofit[kernel].width_rd = 2 ** math.ceil(math.log2(kernel ** 2 * Config.resolution()[1]))
-
                     self.ker_brams_nofit[kernel].height_rd = max(self.ker_brams_nofit[kernel].height_rd, layer.in_channels * layer.out_channels) 
 
                     self.ker_brams_fit.append(BramKernel(kernel))
@@ -68,6 +75,21 @@ class Memory:
                 elif type(layer) in (nn.MaxPool2d, nn.AvgPool2d):
                     self.act_sizes.append(math.floor((self.act_sizes[-1] + 2 * layer.padding - layer.kernel_size) / layer.stride + 1))
                     self.act_channels.append(self.act_channels[-1])
+
+            elif type(layer) in [nn.Linear, Q.LinearPrune]:
+                self.act_brams[lin_ping_pong].width  = 1
+                self.act_brams[lin_ping_pong].height = max(self.act_brams[lin_ping_pong].height,
+                                                           self.act_channels[-1] * Config.resolution()[0])
+                lin_ping_pong = 3 if lin_ping_pong == 2 else 2
+
+                self.wgt_brams_nofit.height_rd = \
+                    max(self.wgt_brams_nofit.height_rd, 
+                    layer.in_features * math.ceil(layer.out_features / layer.parallel))
+
+                self.wgt_brams_fit.append(BramWeight())
+                self.wgt_brams_fit[-1].height_rd = layer.in_features * math.ceil(layer.out_features / layer.parallel)
+
+                self.act_channels.append(layer.out_features)
 
     def write_to_file(self, instr_height):
         pkg_file = open("generated/pkg_memory.sv", "w")
@@ -96,7 +118,14 @@ class Memory:
         for bram_i, bram in enumerate(self.ker_brams_fit):
             ker_width[bram_i]  = bram.width_rd
             ker_height[bram_i] = bram.height_rd
-        if sum([w * h for w, h in zip(ker_width, ker_height)]) > self.memory_limit:
+        wgt_num           = len(self.wgt_brams_fit)
+        wgt_width         = [None] * wgt_num
+        wgt_height        = [None] * wgt_num
+        wgt_height_wr_max = 0
+        for bram_i, bram in enumerate(self.wgt_brams_fit):
+            wgt_width[bram_i]  = self.dram_data_bits
+            wgt_height[bram_i] = bram.height_rd
+        if sum([w * h for w, h in zip(ker_width + wgt_width, ker_height + wgt_height)]) > self.memory_limit:
             ker_num    = len(self.ker_brams_nofit)
             ker_width  = [None] * ker_num
             ker_height = [None] * ker_num
@@ -110,6 +139,18 @@ class Memory:
         wr(1, "localparam int KER_HEIGHT [KER_NUM] = {};".format(sv_list(ker_height)))
         wr(1, "localparam int KER_HEIGHT_MAX [2] = {};".format(sv_list([max(ker_height), ker_height_wr_max])))
         wr(1, "localparam [800:1] KER_INIT [KER_NUM] = {};".format(sv_list([f"\"bram_kernel_{i:02d}.mif\"" for i in range(ker_num)])))
+        wr(0)
+
+        wr(1, "/* Weight memory */")
+        if sum([w * h for w, h in zip(ker_width + wgt_width, ker_height + wgt_height)]) > self.memory_limit:
+            wgt_num    = len(self.wgt_brams_nofit)
+            wgt_height = [None] * wgt_num
+            for bram_i, bram in enumerate(self.wgt_brams_nofit):
+                wgt_height[bram_i] = bram.height_rd
+        wr(1, "localparam int WGT_NUM = {};".format(wgt_num))
+        wr(1, "localparam int WGT_HEIGHT [WGT_NUM] = {};".format(sv_list(wgt_height)))
+        wr(1, "localparam int WGT_HEIGHT_MAX = {};".format(max(wgt_height)))
+        wr(1, "localparam [800:1] WGT_INIT [WGT_NUM] = {};".format(sv_list([f"\"bram_weight_{i:02d}.mif\"" for i in range(wgt_num)])))
         wr(0)
 
         wr(1, "/* Activation memory */")

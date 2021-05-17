@@ -32,8 +32,8 @@ module mem_activation_tb;
     logic [$high(act.wr_data):0] act_wr_data;
 
     initial begin
-        act_wr_en = '{0, 0};
-        act.rd_en = '{0, 0};
+        act_wr_en = '{default: 0};
+        act.rd_en = '{default: 0};
 
         for (int mem = 0; mem < ACT_NUM; mem++) begin
             #(RST_PERIOD);

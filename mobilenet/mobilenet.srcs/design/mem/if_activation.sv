@@ -14,10 +14,8 @@ interface if_activation (
 );
 
     import pkg_memory::*;
-    import pkg_convolution::CONVUNITS;
-    import pkg_convolution::CONV_SIZE_MAX;
 
-    logic [$clog2(ACT_NUM)-1:0]        mem_select;
+    logic [$clog2(ACT_NUM)-1:0]        mem_rd_select, mem_wr_select;
     logic [$clog2(ACT_HEIGHT_MAX)-1:0] addr_step [2];
     tri0                               transfer_finish;
 
@@ -44,6 +42,9 @@ interface if_activation (
     end
 
     /* Intermediate convolution BRAM */
+    import pkg_convolution::CONVUNITS;
+    import pkg_convolution::CONV_SIZE_MAX;
+
     logic                              conv_wr_en [CONVUNITS];
     logic                              conv_rd_en [CONVUNITS];
     logic                              conv_rd_val [CONVUNITS];
@@ -57,7 +58,8 @@ interface if_activation (
 
     /* Modports */
     modport proc(
-        output mem_select,
+        output mem_rd_select,
+        output mem_wr_select,
         output addr_step,
         input  transfer_finish,
         output rd_en,
@@ -69,7 +71,7 @@ interface if_activation (
     );
 
     modport conv_in (
-        input mem_select,
+        input mem_rd_select,
         input rd_data,
         input rd_val
     );
@@ -84,7 +86,7 @@ interface if_activation (
     );
 
     modport conv_relu (
-        input  mem_select,
+        input  mem_wr_select,
         input  addr_step,
         output transfer_finish,
         input  conv_rd_val,
@@ -95,15 +97,28 @@ interface if_activation (
     );
 
     modport pool_in (
-        input mem_select,
+        input mem_rd_select,
         input rd_data,
         input rd_val
     );
 
     modport pool_out (
-        input  mem_select,
+        input  mem_wr_select,
         input  addr_step,
         output transfer_finish,
+        output wr_addr_offset,
+        output wr_add_addr,
+        output wr_en,
+        output wr_data
+    );
+
+    modport lin (
+        input  mem_rd_select,
+        input  mem_wr_select,
+        input  addr_step,
+        output transfer_finish,
+        input  rd_data,
+        input  rd_val,
         output wr_addr_offset,
         output wr_add_addr,
         output wr_en,

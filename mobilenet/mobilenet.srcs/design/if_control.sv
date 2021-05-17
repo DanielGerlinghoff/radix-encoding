@@ -37,5 +37,9 @@ interface if_control;
         output finish
     );
 
+    modport lin (
+        input reset
+    );
+
 endinterface
 

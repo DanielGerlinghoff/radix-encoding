@@ -25,11 +25,11 @@ class Network(nn.Module):
 
     def forward(self, x):
         for layer in self.layer_list:
-            if type(layer) in [nn.Conv2d, Q.Conv2dPrune, nn.Linear]:
+            if type(layer) in [nn.Conv2d, Q.Conv2dPrune, nn.Linear, Q.LinearPrune]:
                 if not hasattr(layer, "act_in_limit"): layer.act_in_limit = 0
                 self.quantize_act_in(layer, x)
             x = layer(x)
-            if type(layer) in [nn.Conv2d, Q.Conv2dPrune, nn.Linear]:
+            if type(layer) in [nn.Conv2d, Q.Conv2dPrune, nn.Linear, Q.LinearPrune]:
                 if not hasattr(layer, "weight_qt"): self.quantize_wgt(layer)
                 if not hasattr(layer, "act_out_limit"): layer.act_out_limit = 0
                 self.quantize_act_out(layer, x)
@@ -66,11 +66,12 @@ class Initialization:
 
     def write_weight_files(self):
         # NOTE: Only if kernels fit into FPGA
-        layer_cnt = 0
+        layer_conv_cnt = 0
+        layer_lin_cnt  = 0
         for layer in self.network.layer_list:
             if type(layer) in [nn.Conv2d, Q.Conv2dPrune]:
-                wgt_file = open(f"generated/bram_kernel_{layer_cnt:02d}.mif", "w")
-                layer_cnt += 1
+                wgt_file = open(f"generated/bram_kernel_{layer_conv_cnt:02d}.mif", "w")
+                layer_conv_cnt += 1
                 for ch_out in range(layer.out_channels):
                     for ch_in in range(layer.in_channels):
                         kernel = layer.weight_qt[ch_out, ch_in]
@@ -82,6 +83,22 @@ class Initialization:
                             else:
                                 kernel_packed += value_str[-self.network.wgt_res:]
                         wgt_file.write(f"{kernel_packed}\n")
+                wgt_file.close()
+
+            elif type(layer) in [nn.Linear, Q.LinearPrune]:
+                wgt_file = open(f"generated/bram_weight_{layer_lin_cnt:02d}.mif", "w")
+                layer_lin_cnt += 1
+                for ch_out in range(0, layer.out_features, layer.parallel):
+                    for ch_in in range(layer.in_features):
+                        weight = layer.weight_qt[ch_out:ch_out+layer.parallel, ch_in]
+                        weight_packed = ""
+                        for w in weight:
+                            value_str = "{:b}".format(int(w) & 0xffffffff)
+                            if w >= 0:
+                                weight_packed = value_str.zfill(self.network.wgt_res) + weight_packed
+                            else:
+                                weight_packed = value_str[-self.network.wgt_res:] + weight_packed
+                        wgt_file.write(f"{weight_packed}\n")
                 wgt_file.close()
 
     def write_input_file(self, index):

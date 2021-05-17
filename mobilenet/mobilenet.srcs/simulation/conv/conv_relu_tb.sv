@@ -44,7 +44,7 @@ module conv_relu_tb;
     initial begin
         conf.conv_parallel = PAR;
         conf.act_scale     = 4;
-        act.mem_select     = 1;
+        act.mem_wr_select  = 1;
         act.wr_addr_base   = 0;
         act.conv_rd_en[ID] = 0;
         act.addr_step      = '{4, 10};

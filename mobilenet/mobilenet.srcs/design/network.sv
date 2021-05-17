@@ -35,7 +35,7 @@ module network (
     );
 
     /* Processing units */
-    import pkg_convolution::CONVUNITS, pkg_pooling::POOLUNITS;
+    import pkg_convolution::CONVUNITS, pkg_pooling::POOLUNITS, pkg_linear::LINUNITS;
 
     generate
         for (genvar cu = 0; cu < CONVUNITS; cu++) begin :gen_convunits
@@ -60,6 +60,17 @@ module network (
             end else begin
                 // TODO: Average pooling unit
             end
+        end
+    endgenerate
+
+    generate
+        for (genvar lu = 0; lu < LINUNITS; lu++) begin :gen_linunits
+            lin_unit #(
+                .ID (lu + CONVUNITS + POOLUNITS)
+            ) lin_unit_i (
+                .clk,
+                .conf, .ctrl, .ker, .act
+            );
         end
     endgenerate
 
