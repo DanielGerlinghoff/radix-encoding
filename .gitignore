@@ -1,8 +1,9 @@
-mobilenet.cache
-mobilenet.hw
-mobilenet.ip_user_files
-mobilenet.runs
-mobilenet.sim
+mobilenet
+network.cache
+network.hw
+network.ip_user_files
+network.runs
+network.sim
 
 ddr4.cache
 ddr4.hw
