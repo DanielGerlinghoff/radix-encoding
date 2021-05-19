@@ -93,6 +93,7 @@ module processor (
             ker.wgt_bram_rd_en <= '{default: 0};
             act.rd_en          <= '{default: 0};
             act.conv_rd_en     <= '{default: 0};
+            act.wr_addr_base   <= 0;
             finish             <= 0;
 
         end else if (start || next) begin

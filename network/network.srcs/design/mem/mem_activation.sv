@@ -21,19 +21,35 @@ module mem_activation (
             assign act.rd_data[n] = {act_rd_data, {ACT_WIDTH_MAX-ACT_WIDTH[n] {1'b0}}};
             assign act_wr_data = act.wr_data[0:ACT_WIDTH[n]-1];
 
-            bram_activation #(
-                .WIDTH     (ACT_WIDTH[n]),
-                .HEIGHT    (ACT_HEIGHT[n]),
-                .INIT_FILE (n == 0 ? ACT_INIT : "")
-            ) bram_i (
-                .clk     (clk),
-                .wr_en   (act.wr_en[n]),
-                .wr_addr (act.wr_addr),
-                .wr_data (act_wr_data),
-                .rd_en   (act.rd_en[n]),
-                .rd_addr (act.rd_addr),
-                .rd_data (act_rd_data)
-            );
+            if (n != ACT_NUM - 1) begin
+                bram_activation #(
+                    .WIDTH     (ACT_WIDTH[n]),
+                    .HEIGHT    (ACT_HEIGHT[n]),
+                    .INIT_FILE (n == 0 ? ACT_INIT : "")
+                ) bram_i (
+                    .clk     (clk),
+                    .wr_en   (act.wr_en[n]),
+                    .wr_addr (act.wr_addr),
+                    .wr_data (act_wr_data),
+                    .rd_en   (act.rd_en[n]),
+                    .rd_addr (act.rd_addr),
+                    .rd_data (act_rd_data)
+                );
+            end else begin
+                bram_activation #(
+                    .WIDTH     (ACT_WIDTH[n]),
+                    .HEIGHT    (ACT_HEIGHT[n]),
+                    .INIT_FILE (n == 0 ? ACT_INIT : "")
+                ) bram_i (
+                    .clk     (clk),
+                    .wr_en   (act.wr_en[n]),
+                    .wr_addr (act.wr_addr),
+                    .wr_data (act_wr_data),
+                    .rd_en   (act.out_en),
+                    .rd_addr (act.out_addr),
+                    .rd_data (act.out_data)
+                );
+            end
         end
     endgenerate
 

@@ -2,17 +2,17 @@
 //////////////////////////////////////////////////////////////////////////////////
 // Company:     A*STAR IHPC
 // Engineer:    Gerlinghoff Daniel
-// Create Date: 30/04/2021
+// Create Date: 18/05/2021
 //
-// Description: Simple dual port BRAM to store activations
+// Description: Dual port BRAM writing data from DRAM and reading it to linear
+//              units
 //
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module bram_activation #(
+module bram_weight_dualport #(
     WIDTH,
-    HEIGHT,
-    INIT_FILE = ""
+    HEIGHT
 ) (
     input  logic                      clk,
     input  logic                      wr_en,
@@ -25,17 +25,13 @@ module bram_activation #(
 
     (* rom_style = "block" *) logic [WIDTH-1:0] ram [HEIGHT];
 
-    initial begin
-        if (INIT_FILE != "") begin
-            $readmemb(INIT_FILE, ram);
-        end
-    end
-
     always_ff @(posedge clk) begin
         if (rd_en) begin
             rd_data <= ram[rd_addr];
         end
+    end
 
+    always_ff @(posedge clk) begin
         if (wr_en) begin
             ram[wr_addr] <= wr_data;
         end

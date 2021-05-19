@@ -26,7 +26,7 @@ interface if_activation (
     tri0                               wr_add_addr;
     tri0                               wr_en [ACT_NUM];
     tri0  [0:ACT_WIDTH_MAX-1]          wr_data;
-    logic                              rd_en [ACT_NUM];
+    logic                              rd_en [ACT_NUM-1];
     logic [$clog2(ACT_HEIGHT_MAX)-1:0] rd_addr;
     logic                              rd_val [ACT_NUM];
     logic [0:ACT_WIDTH_MAX-1]          rd_data [ACT_NUM];
@@ -39,6 +39,25 @@ interface if_activation (
         if (wr_add_addr) begin
             wr_addr <= wr_addr_base + wr_addr_offset;
         end
+    end
+
+    /* Input and output access */
+    logic                                     in_en, in_en_dly;
+    logic [$clog2(ACT_HEIGHT_MAX)-1:0]        in_addr, in_addr_dly;
+    logic [0:ACT_WIDTH_MAX-1]                 in_data, in_data_dly;
+    logic                                     out_en;
+    logic [$clog2(ACT_HEIGHT[ACT_NUM-1])-1:0] out_addr;
+    logic [0:ACT_WIDTH[ACT_NUM-1]-1]          out_data;
+
+    assign wr_addr_offset = in_en     ? in_addr_dly : 'z;
+    assign wr_add_addr    = in_en     ? 1 : 'z;
+    assign wr_en[0]       = in_en_dly ? 1 : 'z;
+    assign wr_data        = in_en_dly ? in_data_dly : 'z;
+
+    always @(posedge clk) begin
+        in_en_dly   <= in_en;
+        in_addr_dly <= in_addr;
+        in_data_dly <= in_data;
     end
 
     /* Intermediate convolution BRAM */
@@ -74,15 +93,6 @@ interface if_activation (
         input mem_rd_select,
         input rd_data,
         input rd_val
-    );
-
-    modport conv_bram (
-        input  wr_en,
-        input  wr_addr,
-        input  wr_data,
-        input  rd_en,
-        input  rd_addr,
-        output rd_data
     );
 
     modport conv_relu (
@@ -123,6 +133,22 @@ interface if_activation (
         output wr_add_addr,
         output wr_en,
         output wr_data
+    );
+
+    modport bram (
+        input  wr_en,
+        input  wr_addr,
+        input  wr_data,
+        input  rd_en,
+        input  rd_addr,
+        output rd_data,
+
+        input  in_en,
+        input  in_addr,
+        input  in_data,
+        input  out_en,
+        input  out_addr,
+        output out_data
     );
 
 endinterface

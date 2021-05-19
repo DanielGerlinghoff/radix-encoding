@@ -46,6 +46,7 @@ class Memory:
         self.instr_width    = 32
         self.dram_data_bits = 512
         self.dram_addr_bits = 29
+        self.bits_margin    = 4
 
     def generate(self):
         conv_ping_pong = 0
@@ -91,6 +92,11 @@ class Memory:
 
                 self.act_channels.append(layer.out_features)
 
+            elif type(layer) in [nn.Softmax, nn.LogSoftmax]:
+                self.act_brams.append(BramActivation())
+                self.act_brams[-1].width = sum(Config.resolution()) + self.bits_margin
+                self.act_brams[-1].height = self.act_channels[-1]
+
     def write_to_file(self, instr_height):
         pkg_file = open("generated/pkg_memory.sv", "w")
         wr       = lambda indent, line="": pkg_file.write("\t" * indent + line + "\n")
@@ -121,7 +127,6 @@ class Memory:
         wgt_num           = len(self.wgt_brams_fit)
         wgt_width         = [None] * wgt_num
         wgt_height        = [None] * wgt_num
-        wgt_height_wr_max = 0
         for bram_i, bram in enumerate(self.wgt_brams_fit):
             wgt_width[bram_i]  = self.dram_data_bits
             wgt_height[bram_i] = bram.height_rd
@@ -165,13 +170,13 @@ class Memory:
         wr(1, "localparam int ACT_WIDTH_MAX = {};".format(max(act_width)))
         wr(1, "localparam int ACT_HEIGHT [ACT_NUM] = {};".format(sv_list(act_height)))
         wr(1, "localparam int ACT_HEIGHT_MAX = {};".format(max(act_height)))
-        wr(1, "localparam string ACT_INIT = {};".format("\"bram_activation.mif\""))
+        wr(1, "localparam [800:1] ACT_INIT = {};".format("\"bram_activation.mif\""))
         wr(0)
 
         wr(1, "/* Instruction memory */")
         wr(1, "localparam int INS_WIDTH = {};".format(self.instr_width))
         wr(1, "localparam int INS_HEIGHT = {};".format(instr_height))
-        wr(1, "localparam string INS_INIT = {};".format("\"bram_instruction.mif\""))
+        wr(1, "localparam [800:1] INS_INIT = {};".format("\"bram_instruction.mif\""))
         wr(0)
 
         wr(1, "/* External DRAM */")

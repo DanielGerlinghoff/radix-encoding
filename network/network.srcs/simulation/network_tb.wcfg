@@ -15,12 +15,12 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="641416501197fs"></ZoomStartTime>
-      <ZoomEndTime time="650038494017fs"></ZoomEndTime>
-      <Cursor1Time time="642853500000fs"></Cursor1Time>
+      <ZoomStartTime time="648073750000fs"></ZoomStartTime>
+      <ZoomEndTime time="648423250001fs"></ZoomEndTime>
+      <Cursor1Time time="648365000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="118"></NameColumnWidth>
+      <NameColumnWidth column_width="114"></NameColumnWidth>
       <ValueColumnWidth column_width="66"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="14" />
@@ -94,10 +94,6 @@
          <obj_property name="label">Load Activation</obj_property>
          <obj_property name="DisplayName">label</obj_property>
          <obj_property name="isExpanded"></obj_property>
-         <wvobject type="array" fp_name="/network_tb/test/mem_act/\gen_bram[0].bram_i /ram">
-            <obj_property name="ElementShortName">ram[0:251][31:0]</obj_property>
-            <obj_property name="ObjectShortName">ram[0:251][31:0]</obj_property>
-         </wvobject>
          <wvobject type="array" fp_name="/network_tb/test/act/rd_addr">
             <obj_property name="ElementShortName">rd_addr[8:0]</obj_property>
             <obj_property name="ObjectShortName">rd_addr[8:0]</obj_property>
@@ -345,8 +341,8 @@
          <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/network_tb/test/act/rd_val">
-         <obj_property name="ElementShortName">rd_val[0:3]</obj_property>
-         <obj_property name="ObjectShortName">rd_val[0:3]</obj_property>
+         <obj_property name="ElementShortName">rd_val[0:4]</obj_property>
+         <obj_property name="ObjectShortName">rd_val[0:4]</obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/network_tb/test/\gen_linunits[0].lin_unit_i /act_reg">
          <obj_property name="ElementShortName">act_reg</obj_property>

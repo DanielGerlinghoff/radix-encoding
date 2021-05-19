@@ -108,7 +108,11 @@ import pkg_linear::*;
             act_addr_offset <= 0;
         end else if (write) begin
             act_en[act.mem_wr_select] <= 1;
-            act_data[0] <= lin_activated[cnt_val][cnt_bits];
+            if (conf.lin_relu) begin
+                act_data[0] <= lin_activated[cnt_val][cnt_bits];
+            end else begin
+                act_data[0:SUM_BITS-1] <= lin_sum[cnt_val];
+            end
 
             if (!cnt_bits) begin
                 act_addr_offset <= act_addr_offset - act.addr_step[1];
@@ -128,6 +132,8 @@ import pkg_linear::*;
     assign act.wr_data        = act_data;
 
     /* Process control */
+    localparam LIN_SIZE_LAST = pkg_memory::ACT_HEIGHT[pkg_memory::ACT_NUM-1];
+
     logic finish;
 
     always_ff @(posedge clk) begin
@@ -139,7 +145,16 @@ import pkg_linear::*;
 
         finish <= 0;
         if (write) begin
-            if (!cnt_bits) begin
+            if (!conf.lin_relu) begin
+                if (cnt_val != LIN_SIZE_LAST - 1) begin
+                    cnt_val <= cnt_val + 1;
+                    write   <= 1;
+                end else begin
+                    cnt_val <= 0;
+                    write   <= 0;
+                    finish  <= 1;
+                end
+            end else if (!cnt_bits) begin
                 cnt_bits <= ACT_BITS - 1;
                 if (cnt_val != LIN_SIZE - 1) begin
                     cnt_val <= cnt_val + 1;

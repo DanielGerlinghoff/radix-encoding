@@ -53,7 +53,7 @@ class Instructions:
                 instr_conf(31, "STR", layer.compiler_stride)
                 instr_conf(31, "PAD", 0)
                 instr_conf(31, "KSEL", layer_cnt["conv"])  # NOTE: assuming kernels fit into device
-                instr_conf(31, "ASEL", (4 if conv_ping_pong else 1) if layer.out_size != 1 else (6 if conv_ping_pong else 2))
+                instr_conf(31, "ASEL", (8 if conv_ping_pong else 1) if layer.out_size != 1 else (10 if conv_ping_pong else 2))
                 chn_out = 0
                 while chn_out < layer.out_channels:
                     for tstep in range(self.tsteps):
@@ -119,7 +119,7 @@ class Instructions:
 
             if type(layer) is nn.MaxPool2d:
                 instr_conf(31, "PPAR", layer.compiler_parallel)
-                instr_conf(31, "ASEL", (4 if conv_ping_pong else 1) if layer.out_size != 1 else (6 if conv_ping_pong else 2))
+                instr_conf(31, "ASEL", (8 if conv_ping_pong else 1) if layer.out_size != 1 else (10 if conv_ping_pong else 2))
                 instr_conf(31, "ASTF", layer.out_size * layer.channels)
                 instr_conf(31, "ASTB", layer.out_size * (layer.channels * (self.tsteps - 1) - 1))
                 for pu_i, pu in enumerate(self.processing.pool_units_dupl):
@@ -160,12 +160,13 @@ class Instructions:
                 for l in self.layers.values():
                     if l is layer: break
                     layer_i += 1
+                last_layer = type(self.layers[str(layer_i+1)]) in [nn.Softmax, nn.LogSoftmax]
                 instr_conf(31, "LCHN", layer.in_features)
                 instr_conf(31, "SCL", layer.weight_scale + layer.act_in_scale - layer.act_out_scale)
-                instr_conf(31, "RELU", 0 if type(self.layers[str(layer_i+1)]) in [nn.Softmax, nn.LogSoftmax] else 1)
-                instr_conf(31, "ASEL", 14 if lin_ping_pong else 11)
+                instr_conf(31, "RELU", int(not last_layer))
+                instr_conf(31, "ASEL", (26 if lin_ping_pong else 19) if not last_layer else (28 if lin_ping_pong else 20))
                 instr_conf(31, "WSEL", layer_cnt["lin"])
-                instr_conf(31, "ASTF", layer.out_features)
+                instr_conf(31, "ASTF", layer.out_features if not last_layer else 1)
                 instr_conf(31, "ASTB", (layer.out_features * (self.tsteps - 1) - 1))
                 instr_en(lu_i, 1)
                 chn_out = 0

@@ -10,12 +10,11 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module bram_kernel #(
+module bram_kernel_dualport #(
     RD_WIDTH,
     RD_HEIGHT,
     WR_WIDTH,
-    WR_HEIGHT,
-    INIT_FILE = ""
+    WR_HEIGHT
 ) (
     input  logic                         clk,
     input  logic                         wr_en,
@@ -28,14 +27,8 @@ module bram_kernel #(
 
     localparam RATIO = WR_WIDTH / RD_WIDTH;
 
-    logic [RD_WIDTH-1:0] ram [RD_HEIGHT];
+    (* rom_style = "block" *) logic [RD_WIDTH-1:0] ram [RD_HEIGHT];
     logic [$clog2(RATIO)-1:0] ls_addr;
-
-    initial begin
-        if (INIT_FILE != "") begin
-            $readmemb(INIT_FILE, ram);
-        end
-    end
 
     always_ff @(posedge clk) begin
         if (rd_en) begin

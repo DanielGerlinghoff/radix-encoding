@@ -125,7 +125,7 @@ class Processing:
         self.act_sizes = [input_size]
         self.act_channels = [input_channels]
 
-        self.conv_bits_margin = 4
+        self.bits_margin = 4
         self.max_duplication = 2
 
     def generate(self):
@@ -216,7 +216,7 @@ class Processing:
         wr(1, "localparam int CONVUNITS = {};".format(convunits))
         wr(1, "localparam int CONV_SIZE [CONVUNITS] = {};".format(sv_list(conv_size)))
         wr(1, "localparam int CONV_SIZE_MAX = {};".format(max(conv_size)))
-        wr(1, "localparam int CONV_BITS = {};".format(sum(Config.resolution()) + self.conv_bits_margin))
+        wr(1, "localparam int CONV_BITS = {};".format(sum(Config.resolution()) + self.bits_margin))
         wr(1, "localparam int ACT_BITS = {};".format(Config.resolution()[0]))
         wr(1, "localparam int KER_BITS = {};".format(Config.resolution()[1]))
         wr(1, "localparam int KER_SIZE [CONVUNITS] = {};".format(sv_list(ker_size)))
@@ -338,7 +338,7 @@ class Processing:
         wr(1, "localparam int LIN_CHANNELS_MAX = {};".format(self.lin_unit.lin_channels_max))
         wr(1, "localparam int ACT_BITS = {};".format(Config.resolution()[0]))
         wr(1, "localparam int WGT_BITS = {};".format(Config.resolution()[0]))
-        wr(1, "localparam int SUM_BITS = {};".format(sum(Config.resolution()) + self.conv_bits_margin))
+        wr(1, "localparam int SUM_BITS = {};".format(sum(Config.resolution()) + self.bits_margin))
 
         wr(0)
         wr(0, "endpackage")

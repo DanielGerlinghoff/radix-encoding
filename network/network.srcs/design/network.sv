@@ -10,13 +10,19 @@
 
 
 module network (
-    input  logic                                  clk,
-    input  logic                                  proc_reset,
-    input  logic                                  proc_start,
-    output logic                                  proc_finish,
-    output logic                                  dram_enable,
-    output logic [pkg_memory::DRAM_ADDR_BITS-1:0] dram_addr,
-    input  logic [pkg_memory::DRAM_DATA_BITS-1:0] dram_data
+    input  logic                                                             clk,
+    input  logic                                                             proc_reset,
+    input  logic                                                             proc_start,
+    output logic                                                             proc_finish,
+    input  logic                                                             input_en,
+    input  logic [$clog2(pkg_memory::ACT_HEIGHT_MAX)-1:0]                    input_addr,
+    input  logic [0:pkg_memory::ACT_WIDTH_MAX-1]                             input_data,
+    input  logic                                                             output_en,
+    input  logic [$clog2(pkg_memory::ACT_HEIGHT[pkg_memory::ACT_NUM-1])-1:0] output_addr,
+    output logic [0:pkg_memory::ACT_WIDTH[pkg_memory::ACT_NUM-1]-1]          output_data,
+    output logic                                                             dram_enable,
+    output logic [pkg_memory::DRAM_ADDR_BITS-1:0]                            dram_addr,
+    input  logic [pkg_memory::DRAM_DATA_BITS-1:0]                            dram_data
 );
 
     /* Interfaces */
@@ -24,6 +30,13 @@ module network (
     if_control ctrl ();
     if_activation act (.clk);
     if_kernel ker (.clk);
+
+    assign act.in_en    = input_en;
+    assign act.in_addr  = input_addr;
+    assign act.in_data  = input_data;
+    assign act.out_en   = output_en;
+    assign act.out_addr = output_addr;
+    assign output_data  = act.out_data;
 
     /* Control unit */
     processor proc (

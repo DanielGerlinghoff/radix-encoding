@@ -44,7 +44,7 @@ interface if_kernel (
     logic [DRAM_DATA_BITS-1:0]         wgt_bram_rd_data [WGT_NUM];
 
     always_ff @(posedge clk) begin
-        for (int n = 0; n < KER_NUM; n++) begin
+        for (int n = 0; n < WGT_NUM; n++) begin
             wgt_bram_rd_val[n] <= wgt_bram_rd_en[n];
         end
     end

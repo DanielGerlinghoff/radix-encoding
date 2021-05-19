@@ -26,17 +26,17 @@ package pkg_memory;
 	localparam [800:1] WGT_INIT [WGT_NUM] = '{"bram_weight_00.mif", "bram_weight_01.mif"};
 
 	/* Activation memory */
-	localparam int ACT_NUM = 4;
-	localparam int ACT_WIDTH [ACT_NUM] = '{32, 28, 1, 1};
+	localparam int ACT_NUM = 5;
+	localparam int ACT_WIDTH [ACT_NUM] = '{32, 28, 1, 1, 10};
 	localparam int ACT_WIDTH_MAX = 32;
-	localparam int ACT_HEIGHT [ACT_NUM] = '{252, 504, 360, 252};
+	localparam int ACT_HEIGHT [ACT_NUM] = '{252, 504, 360, 252, 10};
 	localparam int ACT_HEIGHT_MAX = 504;
-	localparam string ACT_INIT = "bram_activation.mif";
+	localparam [800:1] ACT_INIT = "";
 
 	/* Instruction memory */
 	localparam int INS_WIDTH = 32;
 	localparam int INS_HEIGHT = 26287;
-	localparam string INS_INIT = "bram_instruction.mif";
+	localparam [800:1] INS_INIT = "bram_instruction.mif";
 
 	/* External DRAM */
 	localparam int DRAM_DATA_BITS = 512;
