@@ -15,12 +15,12 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="648073750000fs"></ZoomStartTime>
-      <ZoomEndTime time="648423250001fs"></ZoomEndTime>
-      <Cursor1Time time="648365000000fs"></Cursor1Time>
+      <ZoomStartTime time="11337833334fs"></ZoomStartTime>
+      <ZoomEndTime time="12040833335fs"></ZoomEndTime>
+      <Cursor1Time time="11455000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="114"></NameColumnWidth>
+      <NameColumnWidth column_width="110"></NameColumnWidth>
       <ValueColumnWidth column_width="66"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="14" />
@@ -205,11 +205,10 @@
             <obj_property name="ElementShortName">conv_activated[0:30][2:0]</obj_property>
             <obj_property name="ObjectShortName">conv_activated[0:30][2:0]</obj_property>
          </wvobject>
-         <wvobject type="logic" fp_name="/network_tb/test/act/wr_en[1]">
-            <obj_property name="DisplayName">label</obj_property>
-            <obj_property name="ElementShortName">[1]</obj_property>
-            <obj_property name="ObjectShortName">[1]</obj_property>
-            <obj_property name="label">wr_en[1]</obj_property>
+         <wvobject type="array" fp_name="/network_tb/test/act/wr_en">
+            <obj_property name="ElementShortName">wr_en[0:4]</obj_property>
+            <obj_property name="ObjectShortName">wr_en[0:4]</obj_property>
+            <obj_property name="Radix">BINARYRADIX</obj_property>
          </wvobject>
          <wvobject type="array" fp_name="/network_tb/test/act/addr_step">
             <obj_property name="ElementShortName">addr_step[0:1][8:0]</obj_property>
@@ -220,6 +219,10 @@
             <obj_property name="ElementShortName">wr_addr[8:0]</obj_property>
             <obj_property name="ObjectShortName">wr_addr[8:0]</obj_property>
             <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/act/wr_data_u">
+            <obj_property name="ElementShortName">wr_data_u[0:3][0:31]</obj_property>
+            <obj_property name="ObjectShortName">wr_data_u[0:3][0:31]</obj_property>
          </wvobject>
          <wvobject type="array" fp_name="/network_tb/test/act/wr_data">
             <obj_property name="ElementShortName">wr_data[0:31]</obj_property>
@@ -300,10 +303,6 @@
             <obj_property name="ElementShortName">wr_addr_base[8:0]</obj_property>
             <obj_property name="ObjectShortName">wr_addr_base[8:0]</obj_property>
          </wvobject>
-         <wvobject type="array" fp_name="/network_tb/test/act/wr_addr_offset">
-            <obj_property name="ElementShortName">wr_addr_offset[8:0]</obj_property>
-            <obj_property name="ObjectShortName">wr_addr_offset[8:0]</obj_property>
-         </wvobject>
          <wvobject type="array" fp_name="/network_tb/test/act/addr_step">
             <obj_property name="ElementShortName">addr_step[0:1][8:0]</obj_property>
             <obj_property name="ObjectShortName">addr_step[0:1][8:0]</obj_property>
@@ -315,6 +314,11 @@
          <wvobject type="array" fp_name="/network_tb/test/\gen_poolunits[0].genblk1.pool_unit_i /out/cnt_bits">
             <obj_property name="ElementShortName">cnt_bits[1:0]</obj_property>
             <obj_property name="ObjectShortName">cnt_bits[1:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/network_tb/test/act/wr_en">
+            <obj_property name="ElementShortName">wr_en[0:4]</obj_property>
+            <obj_property name="ObjectShortName">wr_en[0:4]</obj_property>
+            <obj_property name="Radix">BINARYRADIX</obj_property>
          </wvobject>
          <wvobject type="array" fp_name="/network_tb/test/act/wr_addr">
             <obj_property name="ElementShortName">wr_addr[8:0]</obj_property>

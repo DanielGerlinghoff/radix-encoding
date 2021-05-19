@@ -23,7 +23,7 @@ import pkg_pooling::*;
 );
 
     /* Parallel unpacking */
-    tri0  [ACT_BITS-1:0] pool_parallel [PARALLEL_MAX[ID]][POOL_SIZE[ID]];
+    logic [ACT_BITS-1:0] pool_parallel [PARALLEL_DIM[ID][0]][PARALLEL_MAX[ID]][POOL_SIZE[ID]];
     logic [ACT_BITS-1:0] pool_unpacked [PARALLEL_MAX[ID]][POOL_SIZE[ID]];
     wire  pool_unpack = (conf.output_mode == conf.DIR) && pool_valid;
 
@@ -32,7 +32,7 @@ import pkg_pooling::*;
             for (genvar a = 0; a < PARALLEL_NUM[ID][p]; a++) begin :gen_parallel_assign
                 localparam int pos [2] = PARALLEL_OUT[ID][p][a];
                 for (genvar v = pos[0]; v <= pos[1]; v++) begin :gen_parallel_values
-                    assign pool_parallel[a][v-pos[0]] = (conf.pool_parallel == p) ? pool_row[v] : 'z;
+                    assign pool_parallel[p][a][v-pos[0]] = pool_row[v];
                 end
             end
         end
@@ -40,7 +40,7 @@ import pkg_pooling::*;
 
     always_ff @(posedge clk) begin
         if (pool_unpack) begin
-            pool_unpacked <= pool_parallel;
+            pool_unpacked <= pool_parallel[conf.pool_parallel];
         end
     end
 
@@ -48,35 +48,28 @@ import pkg_pooling::*;
     logic                                pool_write = 0;
     logic [$clog2(PARALLEL_MAX[ID])-1:0] cnt_assign;
     logic [$clog2(ACT_BITS)-1:0]         cnt_bits;
-    logic [$high(act.wr_addr_offset):0]  act_addr_offset;
-    logic                                act_en [$size(act.wr_en)];
-    logic [0:$high(act.wr_data)]         act_data;
+    logic [$high(act.wr_addr):0]         wr_addr_offset;
 
     always_ff @(posedge clk) begin
         if (pool_unpack) begin
-            act_addr_offset <= 0;
+            wr_addr_offset <= 0;
         end else if (pool_write) begin
-            act_en[act.mem_wr_select] <= 1;
+            act.wr_en_u[ID][act.mem_wr_select] <= 1;
             for (int val = 0; val < POOL_SIZE[ID]; val++) begin
-                act_data[val] <= pool_unpacked[cnt_assign][val][cnt_bits];
+                act.wr_data_u[ID][val] <= pool_unpacked[cnt_assign][val][cnt_bits];
             end
 
             if (!cnt_bits) begin
-                act_addr_offset <= act_addr_offset - act.addr_step[1];
+                wr_addr_offset <= wr_addr_offset - act.addr_step[1];
             end else begin
-                act_addr_offset <= act_addr_offset + act.addr_step[0];
+                wr_addr_offset <= wr_addr_offset + act.addr_step[0];
             end
         end else begin
-            act_en          <= '{default: 'z};
-            act_data        <= 'z;
-            act_addr_offset <= 'z;
+            act.wr_en_u[ID] <= '{default: 0};
         end
-    end
 
-    assign act.wr_en          = act_en;
-    assign act.wr_addr_offset = act_addr_offset;
-    assign act.wr_add_addr    = pool_write ? 1'b1 : 1'bz;
-    assign act.wr_data        = act_data;
+        act.wr_addr_offset_u[ID] <= wr_addr_offset;
+    end
 
     /* Process control */
     logic finish;
@@ -106,7 +99,7 @@ import pkg_pooling::*;
         end
     end
 
-    assign act.transfer_finish = finish ? 1'b1 : 1'bz;
+    assign act.transfer_finish[ID] = finish;
 
 endmodule
 

@@ -61,7 +61,7 @@ module lin_unit_tb;
             #(CLK_PERIOD);
         end
 
-        wait(act.transfer_finish);
+        wait(|act.transfer_finish);
         #(2*CLK_PERIOD) $finish();
     end
 

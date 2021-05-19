@@ -52,7 +52,7 @@ module conv_relu_tb;
         #(RST_PERIOD) act.conv_rd_en[ID] = 1;
         #(CLK_PERIOD) act.conv_rd_en[ID] = 0;
 
-        wait(act.transfer_finish);
+        wait(|act.transfer_finish);
         #(4*CLK_PERIOD);
         $finish();
 

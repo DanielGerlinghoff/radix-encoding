@@ -219,7 +219,7 @@ module processor (
                     case (wait_cond[1])
                         CONV: if (ctrl.finish[instr_unit[1]]) next <= 1;
                         CWR:  if (act.conv_wr_en[instr_unit[1]]) next <= 1;
-                        TRAN: if (act.transfer_finish) next <= 1;
+                        TRAN: if (|act.transfer_finish) next <= 1;
                     endcase
                 end
 

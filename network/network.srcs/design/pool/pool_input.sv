@@ -50,16 +50,19 @@ import pkg_pooling::*;
     end
 
     /* Parallel assignment */
-    tri0 [0:SIZE_INPUT-1][ACT_BITS-1:0] act_parallel;
+    logic [0:PARALLEL_DIM[ID][0]-1][0:SIZE_INPUT-1][ACT_BITS-1:0] act_parallel_p;
+    logic [0:SIZE_INPUT-1][ACT_BITS-1:0] act_parallel;
 
     generate
         for (genvar p = 0; p < PARALLEL_DIM[ID][0]; p++) begin :gen_parallel
             for (genvar a = 0; a < PARALLEL_NUM[ID][p]; a++) begin :gen_parallel_assign
                 localparam int pos [2] = PARALLEL_IN[ID][p][a];
-                assign act_parallel[pos[0]:pos[1]] = (conf.pool_parallel == p) ? act_reg[a][0:pos[1]-pos[0]] : 'z;
+                assign act_parallel_p[p][pos[0]:pos[1]] = act_reg[a][0:pos[1]-pos[0]];
             end
         end
     endgenerate
+
+    assign act_parallel = act_parallel_p[conf.pool_parallel];
 
     /* Row shift */
     logic [0:SIZE_INPUT-1][ACT_BITS-1:0] act_shift;

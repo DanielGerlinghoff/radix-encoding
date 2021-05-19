@@ -23,27 +23,27 @@ module mem_activation_tb;
         end
     end
 
+    /* Module parameters */
+    localparam ID = 0;
+
     /* Module input signals */
     if_activation act (
         .clk (clk)
     );
 
-    logic                        act_wr_en [$size(act.wr_en)];
-    logic [$high(act.wr_data):0] act_wr_data;
-
     initial begin
-        act_wr_en = '{default: 0};
-        act.rd_en = '{default: 0};
+        act.wr_en_u[ID] = '{default: 0};
+        act.rd_en     = '{default: 0};
 
         for (int mem = 0; mem < ACT_NUM; mem++) begin
             #(RST_PERIOD);
             for (int val = 0; val < 4; val++) begin
-                act.wr_addr    = val;
-                act_wr_data    = $random();
-                act_wr_en[mem] = 1;
+                act.wr_addr_u[ID]    = val;
+                act.wr_data_u[ID]    = $random();
+                act.wr_en_u[ID][mem] = 1;
                 #(CLK_PERIOD);
             end
-            act_wr_en[mem] = 0;
+            act.wr_en[ID][mem] = 0;
 
             #(RST_PERIOD);
             for (int val = 0; val < 4; val++) begin
@@ -57,9 +57,6 @@ module mem_activation_tb;
         #(RST_PERIOD);
         $finish();
     end
-
-    assign act.wr_en   = act_wr_en;
-    assign act.wr_data = act_wr_data;
 
     /* Module instantiation */
     mem_activation test (

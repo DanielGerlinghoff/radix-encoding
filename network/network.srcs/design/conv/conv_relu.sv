@@ -22,7 +22,7 @@ import pkg_convolution::*;
 );
 
     /* Parallel unpacking */
-    tri0  [0:PARALLEL_MAX[ID]-1][0:CONV_SIZE[ID]-1][CONV_BITS-1:0] conv_parallel;
+    logic [0:PARALLEL_DIM[ID][0]-1][0:PARALLEL_MAX[ID]-1][0:CONV_SIZE[ID]-1][CONV_BITS-1:0] conv_parallel;
     logic [CONV_BITS-1:0] conv_unpacked [PARALLEL_MAX[ID]][CONV_SIZE[ID]];
     wire  conv_unpack = act.conv_rd_val[ID];
 
@@ -31,14 +31,14 @@ import pkg_convolution::*;
             for (genvar a = 0; a < PARALLEL_NUM[ID][p]; a++) begin :gen_parallel_assign
                 localparam int pos [2] = PARALLEL_OUT[ID][p][a];
                 localparam int pad = CONV_SIZE[ID] - (pos[1] - pos[0] + 1);
-                assign conv_parallel[a] = (conf.conv_parallel == p) ? {conv_data[pos[0]:pos[1]], {pad*CONV_BITS {1'bx}}} : 'z;
+                assign conv_parallel[p][a] = {conv_data[pos[0]:pos[1]], {pad*CONV_BITS {1'bx}}};
             end
         end
     endgenerate
 
     always_ff @(posedge clk) begin
         if (conv_unpack) begin
-            {>>{conv_unpacked}} <= conv_parallel;;
+            {>>{conv_unpacked}} <= conv_parallel[conf.conv_parallel];
         end
     end
 
@@ -68,41 +68,32 @@ import pkg_convolution::*;
     end
 
     /* Write to activation BRAM */
-    logic                               conv_write = 0;
-    logic [$clog2(ACT_BITS)-1:0]        cnt_bits;
-    logic [$high(act.wr_addr_offset):0] act_addr_offset;
-    logic                               act_en [$size(act.wr_en)];
-    logic [0:$high(act.wr_data)]        act_data;
+    logic                        conv_write = 0;
+    logic [$clog2(ACT_BITS)-1:0] cnt_bits;
+    logic [$high(act.wr_addr):0] wr_addr_offset;
 
     always_ff @(posedge clk) begin
         if (conv_write) begin
-            act_en[act.mem_wr_select] <= 1;
+            act.wr_en_u[ID][act.mem_wr_select] <= 1;
             for (int val = 0; val < CONV_SIZE[ID]; val++) begin
-                act_data[val] <= conv_activated[val][cnt_bits];
+                act.wr_data_u[ID][val] <= conv_activated[val][cnt_bits];
             end
         end else begin
-            act_en   <= '{default: 'z};
-            act_data <= 'z;
+            act.wr_en_u[ID] <= '{default: 0};
         end
 
         if (conv_activate) begin
             if (!cnt_assign) begin
-                act_addr_offset <= 0;
+                wr_addr_offset <= 0;
             end else begin
-                act_addr_offset <= act_addr_offset - act.addr_step[1];
+                wr_addr_offset <= wr_addr_offset - act.addr_step[1];
             end
         end else if (conv_write) begin
-            act_addr_offset <= act_addr_offset + act.addr_step[0];
-        end else begin
-            act_addr_offset <= 'z;
+            wr_addr_offset <= wr_addr_offset + act.addr_step[0];
         end
 
+        act.wr_addr_offset_u[ID] <= wr_addr_offset;
     end
-
-    assign act.wr_en          = act_en;
-    assign act.wr_addr_offset = act_addr_offset;
-    assign act.wr_add_addr    = conv_write ? 1'b1 : 1'bz;
-    assign act.wr_data        = act_data;
 
     /* Process control */
     logic finish;
@@ -138,7 +129,7 @@ import pkg_convolution::*;
         end
     end
 
-    assign act.transfer_finish = finish ? 1'b1 : 1'bz;
+    assign act.transfer_finish[ID] = finish;
 
 
 endmodule

@@ -91,7 +91,7 @@ import pkg_convolution::*;
     assign conv_enable = (state == CONV);
 
     /* Kernel assignment */
-    tri0  [KER_BITS-1:0] kernel_parallel [KER_SIZE[ID]][CONV_SIZE[ID]];
+    logic [KER_BITS-1:0] kernel_parallel [PARALLEL_DIM[ID][0]][KER_SIZE[ID]][CONV_SIZE[ID]];
     logic [KER_BITS-1:0] kernel_rows [KER_SIZE[ID]][CONV_SIZE[ID]];
 
     generate
@@ -99,7 +99,7 @@ import pkg_convolution::*;
             for (genvar p = 0; p < PARALLEL_DIM[ID][0]; p++) begin :gen_parallel
                 for (genvar a = 0; a < PARALLEL_NUM[ID][p]; a++) begin :gen_parallel_assign
                     for (genvar v = PARALLEL_OUT[ID][p][a][0]; v <= PARALLEL_OUT[ID][p][a][1]; v++) begin :gen_parallel_values
-                        assign kernel_parallel[r][v] = (conf.conv_parallel == p) ? kernel_regs[a][col_cnt+r*KER_SIZE[ID]] : 'z;
+                        assign kernel_parallel[p][r][v] = kernel_regs[a][col_cnt+r*KER_SIZE[ID]];
                     end
                 end
             end
@@ -108,7 +108,7 @@ import pkg_convolution::*;
 
     always_ff @(posedge clk) begin
         if ((state & (KERNEL | CONV)) && col_cnt < KER_SIZE[ID]) begin
-            kernel_rows <= kernel_parallel;
+            kernel_rows <= kernel_parallel[conf.conv_parallel];
         end
     end
 

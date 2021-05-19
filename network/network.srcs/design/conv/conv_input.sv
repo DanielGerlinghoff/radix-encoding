@@ -36,16 +36,19 @@ import pkg_convolution::*;
     end
 
     /* Parallel assignment */
-    tri0 [0:SIZE_INPUT+KER_SIZE_HALF-1] act_parallel;
+    logic [0:SIZE_INPUT+KER_SIZE_HALF-1] act_parallel;
+    logic [0:PARALLEL_DIM[ID][0]-1][0:SIZE_INPUT+KER_SIZE_HALF-1] act_parallel_p;
 
     generate
         for (genvar p = 0; p < PARALLEL_DIM[ID][0]; p++) begin :gen_parallel
             for (genvar a = 0; a < PARALLEL_NUM[ID][p]; a++) begin :gen_parallel_assign
                 localparam int pos [2] = PARALLEL_IN[ID][p][a];
-                assign act_parallel[pos[0]:pos[1]] = (conf.conv_parallel == p) ? act_reg[0:pos[1]-pos[0]] : 'z;
+                assign act_parallel_p[p][pos[0]:pos[1]] = act_reg[0:pos[1]-pos[0]];
             end
         end
     endgenerate
+
+    assign act_parallel = act_parallel_p[conf.conv_parallel];
 
     /* Row shift */
     logic [0:SIZE_INPUT+KER_SIZE_HALF-1] act_shift;
@@ -64,12 +67,12 @@ import pkg_convolution::*;
     end
 
     /* Stride selection */
-    wire [0:SIZE-1] act_stride;
+    logic [0:STRIDE_DIM[ID]-1][0:SIZE-1] act_stride;
 
     generate
         for (genvar s = 0; s < STRIDE_DIM[ID]; s++) begin :gen_stride
             for (genvar i = 0; i < SIZE; i++) begin :gen_stride_assign
-                assign act_stride[i] = (conf.conv_stride == s) ? act_shift[i*STRIDE[ID][s]+KER_SIZE_HALF] : 'z;
+                assign act_stride[s][i] = act_shift[i*STRIDE[ID][s]+KER_SIZE_HALF];
             end
         end
     endgenerate
@@ -77,7 +80,7 @@ import pkg_convolution::*;
     /* Register output */
     always_ff @(posedge clk) begin
         if (shift_cnt) begin
-            {>>{act_row}} <= act_stride;
+            {>>{act_row}} <= act_stride[conf.conv_stride];
         end
     end
 

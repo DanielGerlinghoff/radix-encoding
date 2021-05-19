@@ -14,32 +14,13 @@ interface if_activation (
 );
 
     import pkg_memory::*;
+    import pkg_convolution::CONVUNITS, pkg_pooling::POOLUNITS, pkg_linear::LINUNITS;
+
+    localparam UNITS = CONVUNITS + POOLUNITS + LINUNITS;
 
     logic [$clog2(ACT_NUM)-1:0]        mem_rd_select, mem_wr_select;
     logic [$clog2(ACT_HEIGHT_MAX)-1:0] addr_step [2];
-    tri0                               transfer_finish;
-
-    /* Activation BRAMs */
-    logic [$clog2(ACT_HEIGHT_MAX)-1:0] wr_addr;
-    logic [$clog2(ACT_HEIGHT_MAX)-1:0] wr_addr_base;
-    tri0  [$clog2(ACT_HEIGHT_MAX)-1:0] wr_addr_offset;
-    tri0                               wr_add_addr;
-    tri0                               wr_en [ACT_NUM];
-    tri0  [0:ACT_WIDTH_MAX-1]          wr_data;
-    logic                              rd_en [ACT_NUM-1];
-    logic [$clog2(ACT_HEIGHT_MAX)-1:0] rd_addr;
-    logic                              rd_val [ACT_NUM];
-    logic [0:ACT_WIDTH_MAX-1]          rd_data [ACT_NUM];
-
-    always_ff @(posedge clk) begin
-        for (int n = 0; n < ACT_NUM; n++) begin
-            rd_val[n] <= rd_en[n];
-        end
-
-        if (wr_add_addr) begin
-            wr_addr <= wr_addr_base + wr_addr_offset;
-        end
-    end
+    logic [UNITS-1:0]                  transfer_finish;
 
     /* Input and output access */
     logic                                     in_en, in_en_dly;
@@ -49,15 +30,37 @@ interface if_activation (
     logic [$clog2(ACT_HEIGHT[ACT_NUM-1])-1:0] out_addr;
     logic [0:ACT_WIDTH[ACT_NUM-1]-1]          out_data;
 
-    assign wr_addr_offset = in_en     ? in_addr_dly : 'z;
-    assign wr_add_addr    = in_en     ? 1 : 'z;
-    assign wr_en[0]       = in_en_dly ? 1 : 'z;
-    assign wr_data        = in_en_dly ? in_data_dly : 'z;
+    /* Activation BRAMs */
+    logic [$clog2(ACT_HEIGHT_MAX)-1:0] wr_addr;
+    logic [$clog2(ACT_HEIGHT_MAX)-1:0] wr_addr_base;
+    logic [$clog2(ACT_HEIGHT_MAX)-1:0] wr_addr_offset_u [UNITS];
+    logic [0:ACT_NUM-1]                wr_en, wr_en_u [UNITS];
+    logic [0:ACT_WIDTH_MAX-1]          wr_data, wr_data_u [UNITS];
+    logic [0:ACT_NUM-2]                rd_en;
+    logic [$clog2(ACT_HEIGHT_MAX)-1:0] rd_addr;
+    logic                              rd_val [ACT_NUM];
+    logic [0:ACT_WIDTH_MAX-1]          rd_data [ACT_NUM];
 
-    always @(posedge clk) begin
-        in_en_dly   <= in_en;
-        in_addr_dly <= in_addr;
-        in_data_dly <= in_data;
+    always_ff @(posedge clk) begin
+        for (int n = 0; n < ACT_NUM; n++) begin
+            rd_val[n] <= rd_en[n];
+        end
+
+        for (int u = 0; u < UNITS; u++) begin
+            if (|wr_en_u[u]) begin
+                wr_en   <= wr_en_u[u];
+                wr_addr <= wr_addr_base + wr_addr_offset_u[u];
+                wr_data <= wr_data_u[u];
+            end
+        end
+        if (in_en) begin
+            wr_en[0] <= 1;
+            wr_addr  <= in_addr;
+            wr_data  <= in_data;
+        end
+        if (!(in_en || |(UNITS*ACT_NUM)'({>>{wr_en_u}}))) begin
+            wr_en <= 0;
+        end
     end
 
     /* Intermediate convolution BRAM */
@@ -100,10 +103,10 @@ interface if_activation (
         input  addr_step,
         output transfer_finish,
         input  conv_rd_val,
-        output wr_addr_offset,
-        output wr_add_addr,
-        output wr_en,
-        output wr_data
+        input  wr_addr,
+        output wr_addr_offset_u,
+        output wr_en_u,
+        output wr_data_u
     );
 
     modport pool_in (
@@ -116,10 +119,10 @@ interface if_activation (
         input  mem_wr_select,
         input  addr_step,
         output transfer_finish,
-        output wr_addr_offset,
-        output wr_add_addr,
-        output wr_en,
-        output wr_data
+        input  wr_addr,
+        output wr_addr_offset_u,
+        output wr_en_u,
+        output wr_data_u
     );
 
     modport lin (
@@ -129,10 +132,10 @@ interface if_activation (
         output transfer_finish,
         input  rd_data,
         input  rd_val,
-        output wr_addr_offset,
-        output wr_add_addr,
-        output wr_en,
-        output wr_data
+        input  wr_addr,
+        output wr_addr_offset_u,
+        output wr_en_u,
+        output wr_data_u
     );
 
     modport bram (
@@ -143,9 +146,6 @@ interface if_activation (
         input  rd_addr,
         output rd_data,
 
-        input  in_en,
-        input  in_addr,
-        input  in_data,
         input  out_en,
         input  out_addr,
         output out_data

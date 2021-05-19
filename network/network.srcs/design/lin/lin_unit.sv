@@ -97,39 +97,32 @@ import pkg_linear::*;
 
     /* Write to activation BRAM */
     logic write = 0;
-    logic [$clog2(LIN_SIZE)-1:0]        cnt_val;
-    logic [$clog2(ACT_BITS)-1:0]        cnt_bits;
-    logic [$high(act.wr_addr_offset):0] act_addr_offset;
-    logic                               act_en [$size(act.wr_en)];
-    logic [0:$high(act.wr_data)]        act_data;
+    logic [$clog2(LIN_SIZE)-1:0] cnt_val;
+    logic [$clog2(ACT_BITS)-1:0] cnt_bits;
+    logic [$high(act.wr_addr):0] wr_addr_offset;
 
     always_ff @(posedge clk) begin
         if (activate) begin
-            act_addr_offset <= 0;
+            wr_addr_offset <= 0;
         end else if (write) begin
-            act_en[act.mem_wr_select] <= 1;
+            act.wr_en_u[ID][act.mem_wr_select] <= 1;
             if (conf.lin_relu) begin
-                act_data[0] <= lin_activated[cnt_val][cnt_bits];
+                act.wr_data_u[ID][0] <= lin_activated[cnt_val][cnt_bits];
             end else begin
-                act_data[0:SUM_BITS-1] <= lin_sum[cnt_val];
+                act.wr_data_u[ID][0:SUM_BITS-1] <= lin_sum[cnt_val];
             end
 
             if (!cnt_bits) begin
-                act_addr_offset <= act_addr_offset - act.addr_step[1];
+                wr_addr_offset <= wr_addr_offset - act.addr_step[1];
             end else begin
-                act_addr_offset <= act_addr_offset + act.addr_step[0];
+                wr_addr_offset <= wr_addr_offset + act.addr_step[0];
             end
         end else begin
-            act_en          <= '{default: 'z};
-            act_data        <= 'z;
-            act_addr_offset <= 'z;
+            act.wr_en_u[ID] <= '{default: 0};
         end
-    end
 
-    assign act.wr_en          = act_en;
-    assign act.wr_addr_offset = act_addr_offset;
-    assign act.wr_add_addr    = write ? 1'b1 : 1'bz;
-    assign act.wr_data        = act_data;
+        act.wr_addr_offset_u[ID] <= wr_addr_offset;
+    end
 
     /* Process control */
     localparam LIN_SIZE_LAST = pkg_memory::ACT_HEIGHT[pkg_memory::ACT_NUM-1];
@@ -170,7 +163,7 @@ import pkg_linear::*;
         end
     end
 
-    assign act.transfer_finish = finish ? 1'b1 : 1'bz;
+    assign act.transfer_finish[ID] = finish;
 
 endmodule
 
