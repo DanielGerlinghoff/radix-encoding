@@ -10,7 +10,7 @@
 
 
 module mem_kernel (
-    if_kernel.bram ker,
+    if_kernel ker,
     input clk
 );
 

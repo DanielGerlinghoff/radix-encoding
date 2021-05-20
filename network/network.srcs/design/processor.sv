@@ -10,10 +10,10 @@
 
 
 module processor (
-    if_configuration.proc conf,
-    if_control.proc ctrl,
-    if_kernel.proc ker,
-    if_activation.proc act,
+    if_configuration conf,
+    if_control ctrl,
+    if_kernel ker,
+    if_activation act,
     input  logic clk,
     input  logic reset,
     input  logic start,

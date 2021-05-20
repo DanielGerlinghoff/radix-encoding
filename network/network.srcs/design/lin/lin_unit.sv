@@ -15,10 +15,10 @@ import pkg_linear::*;
 #(
     ID
 ) (
-    if_configuration.lin conf,
-    if_control.lin ctrl,
-    if_kernel.lin ker,
-    if_activation.lin act,
+    if_configuration conf,
+    if_control ctrl,
+    if_kernel ker,
+    if_activation act,
     input logic clk
 );
 

@@ -16,7 +16,7 @@ import pkg_convolution::*;
 ) (
     input logic clk,
     if_configuration conf,
-    if_control.conv ctrl,
+    if_control ctrl,
     if_kernel ker,
     if_activation act
 );

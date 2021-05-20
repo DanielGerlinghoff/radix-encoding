@@ -16,7 +16,7 @@ import pkg_pooling::*;
 ) (
     input logic clk,
     if_configuration conf,
-    if_control.pool ctrl,
+    if_control ctrl,
     if_activation act
 );
 

@@ -15,8 +15,8 @@ import pkg_pooling::*;
 #(
     ID
 ) (
-    if_configuration.pool_out conf,
-    if_activation.pool_out act,
+    if_configuration conf,
+    if_activation act,
     input  logic                clk,
     input  logic [ACT_BITS-1:0] pool_row [POOL_SIZE[ID]],
     input  logic                pool_valid

@@ -14,8 +14,8 @@ import pkg_convolution::*;
 #(
     ID
 ) (
-    if_configuration.conv_array conf,
-    if_kernel.conv ker,
+    if_configuration conf,
+    if_kernel ker,
     input  logic clk, rst,
     input  logic start,
     output logic finish,

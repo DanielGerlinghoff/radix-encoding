@@ -9,7 +9,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 module mem_activation (
-    if_activation.bram act,
+    if_activation act,
     input logic clk
 );
 

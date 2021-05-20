@@ -15,7 +15,7 @@ import pkg_convolution::*;
 #(
     ID
 ) (
-    if_configuration.conv_out conf,
+    if_configuration conf,
     input  logic                               clk, rst,
     input  logic [CONV_BITS-1:0]               act_row [CONV_SIZE[ID]],
     input  logic                               act_valid,

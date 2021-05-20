@@ -15,7 +15,7 @@ import pkg_pooling::*;
 #(
     ID
 ) (
-    if_configuration.pool_array conf,
+    if_configuration conf,
     input  logic                clk, rst,
     input  logic                start,
     output logic                finish,

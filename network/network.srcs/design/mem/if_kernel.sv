@@ -49,43 +49,5 @@ interface if_kernel (
         end
     end
 
-    /* Modports */
-    modport proc (
-        output ker_select,
-        output wgt_select,
-        output ker_bram_rd_en,
-        output ker_bram_rd_addr,
-        output wgt_bram_rd_en,
-        output wgt_bram_rd_addr
-    );
-
-    modport conv (
-        input ker_select,
-        input ker_bram_rd_data,
-        input ker_bram_rd_val
-    );
-
-    modport lin (
-        input wgt_select,
-        input wgt_bram_rd_data,
-        input wgt_bram_rd_val
-    );
-
-    modport bram (
-        input  ker_bram_wr_en,
-        input  ker_bram_wr_addr,
-        input  ker_bram_wr_data,
-        input  ker_bram_rd_en,
-        input  ker_bram_rd_addr,
-        output ker_bram_rd_data,
-
-        input  wgt_bram_wr_en,
-        input  wgt_bram_wr_addr,
-        input  wgt_bram_wr_data,
-        input  wgt_bram_rd_en,
-        input  wgt_bram_rd_addr,
-        output wgt_bram_rd_data
-    );
-
 endinterface
 

@@ -18,28 +18,5 @@ interface if_control;
     logic start;
     logic finish [CONVUNITS+POOLUNITS];
 
-    /* Modports */
-    modport proc (
-        output reset,
-        output start,
-        input  finish
-    );
-
-    modport conv (
-        input  reset,
-        input  start,
-        output finish
-    );
-
-    modport pool (
-        input  reset,
-        input  start,
-        output finish
-    );
-
-    modport lin (
-        input reset
-    );
-
 endinterface
 
