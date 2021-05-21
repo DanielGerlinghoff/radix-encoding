@@ -156,10 +156,7 @@ class Instructions:
 
             if type(layer) in [nn.Linear, Q.LinearPrune]:
                 lu_i = len(self.processing.conv_units_dupl) + len(self.processing.pool_units_dupl)
-                layer_i = 0
-                for l in self.layers.values():
-                    if l is layer: break
-                    layer_i += 1
+                layer_i = list(self.layers.values()).index(layer)
                 last_layer = type(self.layers[str(layer_i+1)]) in [nn.Softmax, nn.LogSoftmax]
                 instr_conf(31, "LCHN", layer.in_features)
                 instr_conf(31, "SCL", layer.weight_scale + layer.act_in_scale - layer.act_out_scale)
@@ -179,6 +176,7 @@ class Instructions:
                         instr_cmd("LIN")
                     instr_wait(lu_i, "TRAN")
                     chn_out += layer.parallel
+                instr_en(lu_i, 0)
                 lin_ping_pong = not lin_ping_pong
                 layer_cnt["lin"] += 1
 

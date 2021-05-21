@@ -104,7 +104,8 @@ module processor (
                             CPAR: conf.conv_parallel   <= instr_val[VAL_BITS-CONF_BITS-1:0];
                             STR:  conf.conv_stride     <= instr_val[VAL_BITS-CONF_BITS-1:0];
                             PAD:  conf.conv_padding    <= instr_val[VAL_BITS-CONF_BITS-1:0];
-                            OUT:  conf.output_mode     <= conf.output_modes'(instr_val[VAL_BITS-CONF_BITS-1:0]);
+`ifndef SYNTHESIS           OUT:  conf.output_mode     <= conf.output_modes'(instr_val[VAL_BITS-CONF_BITS-1:0]);
+`else                       OUT:  conf.output_mode     <= instr_val[VAL_BITS-CONF_BITS-1:0]; `endif
                             LCHN: conf.lin_channels    <= instr_val[VAL_BITS-CONF_BITS-1:0];
                             WADR: ker.wgt_bram_rd_addr <= instr_val[VAL_BITS-CONF_BITS-1:0];
                             ASEL: {act.mem_rd_select, act.mem_wr_select} <= instr_val[VAL_BITS-CONF_BITS-1:0];
@@ -219,7 +220,7 @@ module processor (
                     case (wait_cond[1])
                         CONV: if (ctrl.finish[instr_unit[1]]) next <= 1;
                         CWR:  if (act.conv_wr_en[instr_unit[1]]) next <= 1;
-                        TRAN: if (|act.transfer_finish) next <= 1;
+                        TRAN: if (|($size(act.transfer_finish))'({>>{act.transfer_finish}})) next <= 1;
                     endcase
                 end
 

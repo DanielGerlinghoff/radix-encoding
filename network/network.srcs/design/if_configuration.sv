@@ -37,7 +37,7 @@ interface if_configuration;
     logic [POOL_PARALLEL_BITS-1:0] pool_parallel;
 
     /* Linear settings */
-    logic [$clog2(pkg_linear::LIN_CHANNELS_MAX+1)-1:0] lin_channels;
+    logic [$clog2(pkg_linear::CHANNELS_MAX+1)-1:0] lin_channels;
     logic lin_relu;
 
 endinterface

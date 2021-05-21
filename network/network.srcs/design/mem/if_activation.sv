@@ -20,7 +20,7 @@ interface if_activation (
 
     logic [$clog2(ACT_NUM)-1:0]        mem_rd_select, mem_wr_select;
     logic [$clog2(ACT_HEIGHT_MAX)-1:0] addr_step [2];
-    logic [UNITS-1:0]                  transfer_finish;
+    logic                              transfer_finish [UNITS];
 
     /* Input and output access */
     logic                                     in_en, in_en_dly;
@@ -28,7 +28,7 @@ interface if_activation (
     logic [0:ACT_WIDTH_MAX-1]                 in_data, in_data_dly;
     logic                                     out_en;
     logic [$clog2(ACT_HEIGHT[ACT_NUM-1])-1:0] out_addr;
-    logic [0:ACT_WIDTH[ACT_NUM-1]-1]          out_data;
+    logic [ACT_WIDTH[ACT_NUM-1]-1:0]          out_data;
 
     /* Activation BRAMs */
     logic [$clog2(ACT_HEIGHT_MAX)-1:0] wr_addr;
@@ -42,7 +42,7 @@ interface if_activation (
     logic [0:ACT_WIDTH_MAX-1]          rd_data [ACT_NUM];
 
     always_ff @(posedge clk) begin
-        for (int n = 0; n < ACT_NUM; n++) begin
+        for (int n = 0; n < ACT_NUM - 1; n++) begin
             rd_val[n] <= rd_en[n];
         end
 

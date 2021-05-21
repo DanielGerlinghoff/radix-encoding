@@ -110,15 +110,19 @@ class Initialization:
         input        = input_scaled.round().clip(0, 2 ** self.network.act_res - 1).type(torch.int32)
 
         act_file = open("generated/bram_activation.mif", "w")
+        bin_file = open("generated/bram_activation.bin", "wb")
         for bit in range(self.network.act_res - 1, -1, -1):
             for chn in range(input.shape[0]):
                 for row in range(input.shape[1]):
                     data_full = input[chn, row]
                     data_bit  = data_full.bitwise_and(torch.ones_like(data_full) << bit) >> bit
-
                     data_str = ""
                     for val in data_bit:
                         data_str += str(int(val))
                     data_str = data_str.ljust(width, "0")
                     act_file.write(f"{data_str}\n")
-
+                    data_bytes = bytearray()
+                    for byte in range(math.ceil(len(data_str)/8)):
+                        bits = data_str[byte*8:(byte+1)*8]
+                        data_bytes.append(int(bits, 2))
+                    bin_file.write(data_bytes)

@@ -43,7 +43,7 @@ import pkg_linear::*;
     logic [$clog2(ACT_BITS)-1:0] cnt_tstep;
 
     always_ff @(posedge clk) begin
-        enable <= act.rd_val[act.mem_rd_select] && conf.enable[ID];
+        enable <= act.rd_val[act.mem_rd_select];
         activate <= 0;
 
         if (ctrl.reset) begin
@@ -51,22 +51,24 @@ import pkg_linear::*;
             cnt_chn   <= 0;
             cnt_tstep <= 0;
 
-        end else if (enable) begin
-            for (int s = 0; s < LIN_SIZE; s++) begin
-                lin_sum[s] <= act_reg ? lin_sum[s] + weights_reg[s] : lin_sum[s];
-            end
-            cnt_chn <= cnt_chn + 1;
-
-        end else if (cnt_chn == conf.lin_channels) begin
-            cnt_chn <= 0;
-            if (cnt_tstep != ACT_BITS - 1) begin
-                cnt_tstep <= cnt_tstep + 1;
+        end else if (conf.enable[ID]) begin
+            if (enable) begin
                 for (int s = 0; s < LIN_SIZE; s++) begin
-                    lin_sum[s] <= lin_sum[s] << 1;
+                    lin_sum[s] <= act_reg ? lin_sum[s] + weights_reg[s] : lin_sum[s];
                 end
-            end else begin
-                cnt_tstep <= 0;
-                activate <= 1;
+                cnt_chn <= cnt_chn + 1;
+
+            end else if (cnt_chn == conf.lin_channels) begin
+                cnt_chn <= 0;
+                if (cnt_tstep != ACT_BITS - 1) begin
+                    cnt_tstep <= cnt_tstep + 1;
+                    for (int s = 0; s < LIN_SIZE; s++) begin
+                        lin_sum[s] <= lin_sum[s] << 1;
+                    end
+                end else begin
+                    cnt_tstep <= 0;
+                    activate <= 1;
+                end
             end
         end
     end
@@ -119,6 +121,7 @@ import pkg_linear::*;
             end
         end else begin
             act.wr_en_u[ID] <= '{default: 0};
+            act.wr_data_u[ID] <= 0;
         end
 
         act.wr_addr_offset_u[ID] <= wr_addr_offset;
@@ -127,7 +130,7 @@ import pkg_linear::*;
     /* Process control */
     localparam LIN_SIZE_LAST = pkg_memory::ACT_HEIGHT[pkg_memory::ACT_NUM-1];
 
-    logic finish;
+    logic lin_finish;
 
     always_ff @(posedge clk) begin
         if (activate) begin
@@ -136,7 +139,7 @@ import pkg_linear::*;
             cnt_bits <= ACT_BITS - 1;
         end
 
-        finish <= 0;
+        lin_finish <= 0;
         if (write) begin
             if (!conf.lin_relu) begin
                 if (cnt_val != LIN_SIZE_LAST - 1) begin
@@ -145,7 +148,7 @@ import pkg_linear::*;
                 end else begin
                     cnt_val <= 0;
                     write   <= 0;
-                    finish  <= 1;
+                    lin_finish <= 1;
                 end
             end else if (!cnt_bits) begin
                 cnt_bits <= ACT_BITS - 1;
@@ -155,7 +158,7 @@ import pkg_linear::*;
                 end else begin
                     cnt_val <= 0;
                     write   <= 0;
-                    finish  <= 1;
+                    lin_finish <= 1;
                 end
             end else begin
                 cnt_bits <= cnt_bits - 1;
@@ -163,7 +166,24 @@ import pkg_linear::*;
         end
     end
 
-    assign act.transfer_finish[ID] = finish;
+    assign act.transfer_finish[ID] = lin_finish;
+
+`ifdef DEBUG
+    ila_lin ila (
+        .clk     (clk),
+        .probe0  (lin_finish),
+        .probe1  (lin_sum[0]),
+        .probe2  (lin_sum[1]),
+        .probe3  (lin_sum[2]),
+        .probe4  (lin_sum[3]),
+        .probe5  (lin_sum[4]),
+        .probe6  (lin_sum[5]),
+        .probe7  (lin_sum[6]),
+        .probe8  (lin_sum[7]),
+        .probe9  (lin_sum[8]),
+        .probe10 (lin_sum[9])
+    );
+`endif
 
 endmodule
 

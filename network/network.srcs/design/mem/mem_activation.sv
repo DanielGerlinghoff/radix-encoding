@@ -25,7 +25,8 @@ module mem_activation (
                 bram_activation #(
                     .WIDTH     (ACT_WIDTH[n]),
                     .HEIGHT    (ACT_HEIGHT[n]),
-                    .INIT_FILE (n == 0 ? ACT_INIT : "")
+`ifndef SYNTHESIS   .INIT_FILE (n == 0 ? ACT_INIT : "")
+`else               .INIT_FILE ("") `endif
                 ) bram_i (
                     .clk     (clk),
                     .wr_en   (act.wr_en[n]),
@@ -39,7 +40,8 @@ module mem_activation (
                 bram_activation #(
                     .WIDTH     (ACT_WIDTH[n]),
                     .HEIGHT    (ACT_HEIGHT[n]),
-                    .INIT_FILE (n == 0 ? ACT_INIT : "")
+`ifndef SYNTHESIS   .INIT_FILE (n == 0 ? ACT_INIT : "")
+`else               .INIT_FILE ("") `endif
                 ) bram_i (
                     .clk     (clk),
                     .wr_en   (act.wr_en[n]),

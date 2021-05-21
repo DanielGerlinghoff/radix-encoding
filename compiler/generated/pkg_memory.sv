@@ -2,7 +2,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 // Company:     A*STAR IHPC
 // Engineer:    Gerlinghoff Daniel
-// Create Date: 18/05/2021
+// Create Date: 20/05/2021
 //
 // Description: Automatically generated package with configurations for kernel
 //              and activation memories
@@ -31,11 +31,11 @@ package pkg_memory;
 	localparam int ACT_WIDTH_MAX = 32;
 	localparam int ACT_HEIGHT [ACT_NUM] = '{252, 504, 360, 252, 10};
 	localparam int ACT_HEIGHT_MAX = 504;
-	localparam [800:1] ACT_INIT = "";
+	localparam [800:1] ACT_INIT = "bram_activation.mif";
 
 	/* Instruction memory */
 	localparam int INS_WIDTH = 32;
-	localparam int INS_HEIGHT = 26287;
+	localparam int INS_HEIGHT = 26289;
 	localparam [800:1] INS_INIT = "bram_instruction.mif";
 
 	/* External DRAM */

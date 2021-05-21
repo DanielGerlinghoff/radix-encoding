@@ -108,11 +108,13 @@ class LinearUnit:
         self.parallel = math.floor(self.dram_data_bits / Config.resolution()[1])
         self.lin_size = 0
         self.lin_channels_max = 0
+        self.lin_channels_out = None
 
-    def new_layer(self, layer):
+    def new_layer(self, layer, last):
         layer.parallel = self.parallel
         self.lin_size = min(max(self.lin_size, layer.out_features), self.parallel)
         self.lin_channels_max = max(self.lin_channels_max, layer.in_features)
+        if last: self.lin_channels_out = layer.out_features
 
 class Processing:
     def __init__(self, layers, input_size, input_channels):
@@ -151,7 +153,9 @@ class Processing:
                 self.act_sizes.append(act_out)
 
             if type(layer) in [nn.Linear, Q.LinearPrune]:
-                self.lin_unit.new_layer(layer)
+                layer_i = list(self.layers.values()).index(layer)
+                last_layer = type(self.layers[str(layer_i+1)]) in [nn.Softmax, nn.LogSoftmax]
+                self.lin_unit.new_layer(layer, last_layer)
 
     def duplicate(self):
         # TODO: Duplicate based on number of output channels
@@ -335,7 +339,8 @@ class Processing:
 
         wr(1, "localparam int LINUNITS = {};".format(1))
         wr(1, "localparam int LIN_SIZE = {};".format(self.lin_unit.lin_size))
-        wr(1, "localparam int LIN_CHANNELS_MAX = {};".format(self.lin_unit.lin_channels_max))
+        wr(1, "localparam int CHANNELS_MAX = {};".format(self.lin_unit.lin_channels_max))
+        wr(1, "localparam int CHANNELS_OUT = {};".format(self.lin_unit.lin_channels_out))
         wr(1, "localparam int ACT_BITS = {};".format(Config.resolution()[0]))
         wr(1, "localparam int WGT_BITS = {};".format(Config.resolution()[0]))
         wr(1, "localparam int SUM_BITS = {};".format(sum(Config.resolution()) + self.bits_margin))

@@ -10,19 +10,19 @@
 
 
 module network (
-    input  logic                                                             clk,
-    input  logic                                                             proc_reset,
-    input  logic                                                             proc_start,
-    output logic                                                             proc_finish,
-    input  logic                                                             input_en,
-    input  logic [$clog2(pkg_memory::ACT_HEIGHT_MAX)-1:0]                    input_addr,
-    input  logic [0:pkg_memory::ACT_WIDTH_MAX-1]                             input_data,
-    input  logic                                                             output_en,
-    input  logic [$clog2(pkg_memory::ACT_HEIGHT[pkg_memory::ACT_NUM-1])-1:0] output_addr,
-    output logic [0:pkg_memory::ACT_WIDTH[pkg_memory::ACT_NUM-1]-1]          output_data,
-    output logic                                                             dram_enable,
-    output logic [pkg_memory::DRAM_ADDR_BITS-1:0]                            dram_addr,
-    input  logic [pkg_memory::DRAM_DATA_BITS-1:0]                            dram_data
+    input  logic                                          clk,
+    input  logic                                          proc_reset,
+    input  logic                                          proc_start,
+    output logic                                          proc_finish,
+    input  logic                                          input_en,
+    input  logic [$clog2(pkg_memory::ACT_HEIGHT_MAX)-1:0] input_addr,
+    input  logic [0:pkg_memory::ACT_WIDTH_MAX-1]          input_data,
+    input  logic                                          output_en,
+    input  logic [$clog2(pkg_linear::CHANNELS_OUT)-1:0]   output_addr,
+    output logic [pkg_linear::SUM_BITS-1:0]               output_data,
+    output logic                                          dram_enable,
+    output logic [pkg_memory::DRAM_ADDR_BITS-1:0]         dram_addr,
+    input  logic [pkg_memory::DRAM_DATA_BITS-1:0]         dram_data
 );
 
     /* Interfaces */

@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="top_tb_func_synth.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="top_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="1336525100000fs"></ZoomStartTime>
+      <ZoomEndTime time="1371275100001fs"></ZoomEndTime>
+      <Cursor1Time time="1362025100000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="118"></NameColumnWidth>
+      <ValueColumnWidth column_width="66"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="47" />
+   <wvobject type="logic" fp_name="/top_tb/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_tb/clk_half">
+      <obj_property name="ElementShortName">clk_half</obj_property>
+      <obj_property name="ObjectShortName">clk_half</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_tb/test/start">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_tb/test/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/state__0">
+      <obj_property name="ElementShortName">state__0[4:0]</obj_property>
+      <obj_property name="ObjectShortName">state__0[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_tb/test/net/\gen_linunits[0].lin_unit_i /\act\.transfer_finish[3] ">
+      <obj_property name="ElementShortName">\act\.transfer_finish[3] </obj_property>
+      <obj_property name="ObjectShortName">\act\.transfer_finish[3] </obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_tb/test/uart_rx_valid">
+      <obj_property name="ElementShortName">uart_rx_valid</obj_property>
+      <obj_property name="ObjectShortName">uart_rx_valid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/uart_rx_data">
+      <obj_property name="ElementShortName">uart_rx_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">uart_rx_data[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_tb/uart_tx_en">
+      <obj_property name="ElementShortName">uart_tx_en</obj_property>
+      <obj_property name="ObjectShortName">uart_tx_en</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/uart_tx_data">
+      <obj_property name="ElementShortName">uart_tx_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">uart_tx_data[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_tb/uart_txd">
+      <obj_property name="ElementShortName">uart_txd</obj_property>
+      <obj_property name="ObjectShortName">uart_txd</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider1502" type="divider">
+      <obj_property name="label">Conv</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">#DCDCDC</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_convunits[0].conv_unit_i /\conv_output[0]_146 ">
+      <obj_property name="ElementShortName">\conv_output[0]_146 [9:0]</obj_property>
+      <obj_property name="ObjectShortName">\conv_output[0]_146 [9:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_convunits[0].conv_unit_i /\conv_output[1]_147 ">
+      <obj_property name="ElementShortName">\conv_output[1]_147 [9:0]</obj_property>
+      <obj_property name="ObjectShortName">\conv_output[1]_147 [9:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_convunits[0].conv_unit_i /\conv_output[2]_148 ">
+      <obj_property name="ElementShortName">\conv_output[2]_148 [9:0]</obj_property>
+      <obj_property name="ObjectShortName">\conv_output[2]_148 [9:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_convunits[0].conv_unit_i /\conv_output[3]_149 ">
+      <obj_property name="ElementShortName">\conv_output[3]_149 [9:0]</obj_property>
+      <obj_property name="ObjectShortName">\conv_output[3]_149 [9:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_convunits[0].conv_unit_i /\conv_output[4]_150 ">
+      <obj_property name="ElementShortName">\conv_output[4]_150 [9:0]</obj_property>
+      <obj_property name="ObjectShortName">\conv_output[4]_150 [9:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_convunits[0].conv_unit_i /\conv_output[5]_151 ">
+      <obj_property name="ElementShortName">\conv_output[5]_151 [9:0]</obj_property>
+      <obj_property name="ObjectShortName">\conv_output[5]_151 [9:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_convunits[0].conv_unit_i /\conv_output[6]_152 ">
+      <obj_property name="ElementShortName">\conv_output[6]_152 [9:0]</obj_property>
+      <obj_property name="ObjectShortName">\conv_output[6]_152 [9:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_convunits[0].conv_unit_i /\conv_output[7]_153 ">
+      <obj_property name="ElementShortName">\conv_output[7]_153 [9:0]</obj_property>
+      <obj_property name="ObjectShortName">\conv_output[7]_153 [9:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_convunits[0].conv_unit_i /\conv_output[8]_154 ">
+      <obj_property name="ElementShortName">\conv_output[8]_154 [9:0]</obj_property>
+      <obj_property name="ObjectShortName">\conv_output[8]_154 [9:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_convunits[0].conv_unit_i /\conv_output[9]_155 ">
+      <obj_property name="ElementShortName">\conv_output[9]_155 [9:0]</obj_property>
+      <obj_property name="ObjectShortName">\conv_output[9]_155 [9:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_convunits[0].conv_unit_i /relu/\conv_activated_reg[0]_388 ">
+      <obj_property name="ElementShortName">\conv_activated_reg[0]_388 [2:0]</obj_property>
+      <obj_property name="ObjectShortName">\conv_activated_reg[0]_388 [2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_convunits[0].conv_unit_i /relu/\conv_activated_reg[1]_387 ">
+      <obj_property name="ElementShortName">\conv_activated_reg[1]_387 [2:0]</obj_property>
+      <obj_property name="ObjectShortName">\conv_activated_reg[1]_387 [2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_convunits[0].conv_unit_i /relu/\conv_activated_reg[2]_386 ">
+      <obj_property name="ElementShortName">\conv_activated_reg[2]_386 [2:0]</obj_property>
+      <obj_property name="ObjectShortName">\conv_activated_reg[2]_386 [2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_convunits[0].conv_unit_i /relu/\conv_activated_reg[3]_385 ">
+      <obj_property name="ElementShortName">\conv_activated_reg[3]_385 [2:0]</obj_property>
+      <obj_property name="ObjectShortName">\conv_activated_reg[3]_385 [2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_convunits[0].conv_unit_i /relu/\conv_activated_reg[4]_384 ">
+      <obj_property name="ElementShortName">\conv_activated_reg[4]_384 [2:0]</obj_property>
+      <obj_property name="ObjectShortName">\conv_activated_reg[4]_384 [2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_convunits[0].conv_unit_i /relu/\conv_activated_reg[5]_383 ">
+      <obj_property name="ElementShortName">\conv_activated_reg[5]_383 [2:0]</obj_property>
+      <obj_property name="ObjectShortName">\conv_activated_reg[5]_383 [2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_convunits[0].conv_unit_i /relu/\conv_activated_reg[6]_382 ">
+      <obj_property name="ElementShortName">\conv_activated_reg[6]_382 [2:0]</obj_property>
+      <obj_property name="ObjectShortName">\conv_activated_reg[6]_382 [2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_convunits[0].conv_unit_i /relu/\conv_activated_reg[7]_381 ">
+      <obj_property name="ElementShortName">\conv_activated_reg[7]_381 [2:0]</obj_property>
+      <obj_property name="ObjectShortName">\conv_activated_reg[7]_381 [2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_convunits[0].conv_unit_i /relu/\conv_activated_reg[8]_380 ">
+      <obj_property name="ElementShortName">\conv_activated_reg[8]_380 [2:0]</obj_property>
+      <obj_property name="ObjectShortName">\conv_activated_reg[8]_380 [2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_convunits[0].conv_unit_i /relu/\conv_activated_reg[9]_379 ">
+      <obj_property name="ElementShortName">\conv_activated_reg[9]_379 [2:0]</obj_property>
+      <obj_property name="ObjectShortName">\conv_activated_reg[9]_379 [2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider636" type="divider">
+      <obj_property name="label">Activation</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">#DCDCDC</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_convunits[0].conv_unit_i /relu/\act\.wr_data_u[0] ">
+      <obj_property name="ElementShortName">\act\.wr_data_u[0] [29:0]</obj_property>
+      <obj_property name="ObjectShortName">\act\.wr_data_u[0] [29:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_convunits[1].conv_unit_i /relu/\act\.wr_data_u[1] ">
+      <obj_property name="ElementShortName">\act\.wr_data_u[1] [29:0]</obj_property>
+      <obj_property name="ObjectShortName">\act\.wr_data_u[1] [29:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_linunits[0].lin_unit_i /\act\.wr_en_u[3] ">
+      <obj_property name="ElementShortName">\act\.wr_en_u[3] [0:4]</obj_property>
+      <obj_property name="ObjectShortName">\act\.wr_en_u[3] [0:4]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_linunits[0].lin_unit_i /\act\.wr_data_u[3] ">
+      <obj_property name="ElementShortName">\act\.wr_data_u[3] [0:31]</obj_property>
+      <obj_property name="ObjectShortName">\act\.wr_data_u[3] [0:31]</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider1195" type="divider">
+      <obj_property name="label">Lin Unit</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">#DCDCDC</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_linunits[0].lin_unit_i /ila/probe0">
+      <obj_property name="ElementShortName">probe0[0:0]</obj_property>
+      <obj_property name="ObjectShortName">probe0[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_linunits[0].lin_unit_i /ila/probe1">
+      <obj_property name="ElementShortName">probe1[9:0]</obj_property>
+      <obj_property name="ObjectShortName">probe1[9:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_linunits[0].lin_unit_i /ila/probe2">
+      <obj_property name="ElementShortName">probe2[9:0]</obj_property>
+      <obj_property name="ObjectShortName">probe2[9:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_linunits[0].lin_unit_i /ila/probe3">
+      <obj_property name="ElementShortName">probe3[9:0]</obj_property>
+      <obj_property name="ObjectShortName">probe3[9:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/net/\gen_linunits[0].lin_unit_i /ila/probe4">
+      <obj_property name="ElementShortName">probe4[9:0]</obj_property>
+      <obj_property name="ObjectShortName">probe4[9:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider1758" type="divider">
+      <obj_property name="label">Output UART</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">#A0A0A4</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/state__0">
+      <obj_property name="ElementShortName">state__0[4:0]</obj_property>
+      <obj_property name="ObjectShortName">state__0[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_tb/test/uart_tx_data">
+      <obj_property name="ElementShortName">uart_tx_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">uart_tx_data[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_tb/test/uart_tx_en">
+      <obj_property name="ElementShortName">uart_tx_en</obj_property>
+      <obj_property name="ObjectShortName">uart_tx_en</obj_property>
+   </wvobject>
+</wave_config>

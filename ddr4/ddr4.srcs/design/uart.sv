@@ -4,7 +4,7 @@
 // Engineer:    Gerlinghoff Daniel
 // Create Date: 16/04/2021
 // 
-// Description: Top module to test write and read on DRAM hardware
+// Description: Receives and sends bytes using the UART interface
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -12,12 +12,13 @@
 module uart #(
     BITWIDTH  = 8,
     BAUDRATE  = 921600,
-    CLKPERIOD = 4.284e-9
+    CLKPERIOD = 4.284e-9,
+    STOPBITS  = 1
 )(
     input  logic                clk,
     input  logic                rxd, cts,
     output logic                txd, rts,
-    output logic                rstn,
+    inout  logic                rstn,
 
     input  logic [BITWIDTH-1:0] tx_data,
     input  logic                tx_en,
@@ -144,7 +145,7 @@ module uart #(
             STOP: begin
                 txd <= 1;
 
-                if (send_cnt != BITCOUNT) begin
+                if (send_cnt != BITCOUNT * STOPBITS) begin
                     send_cnt <= send_cnt + 1;
                 end else begin
                     send_cnt <= 0;
@@ -183,7 +184,7 @@ module uart #(
 `endif
 
     /* Unused signals */
-    assign rstn = 1;
+    assign rstn = 'z;
     assign rts  = 0;
 
 endmodule

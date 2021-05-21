@@ -80,6 +80,7 @@ import pkg_convolution::*;
             end
         end else begin
             act.wr_en_u[ID] <= '{default: 0};
+            act.wr_data_u[ID] <= 0;
         end
 
         if (conv_activate) begin
