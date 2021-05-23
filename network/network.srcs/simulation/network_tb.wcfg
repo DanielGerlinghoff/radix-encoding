@@ -15,15 +15,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="11337833334fs"></ZoomStartTime>
-      <ZoomEndTime time="12040833335fs"></ZoomEndTime>
-      <Cursor1Time time="11455000000fs"></Cursor1Time>
+      <ZoomStartTime time="649420000000fs"></ZoomStartTime>
+      <ZoomEndTime time="650135000001fs"></ZoomEndTime>
+      <Cursor1Time time="650015000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="110"></NameColumnWidth>
+      <NameColumnWidth column_width="98"></NameColumnWidth>
       <ValueColumnWidth column_width="66"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="14" />
+   <WVObjectSize size="15" />
    <wvobject type="logic" fp_name="/network_tb/clk">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -58,8 +58,8 @@
       <obj_property name="ObjectShortName">instr_unit[0:1][4:0]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/network_tb/test/proc/instr_conf">
-      <obj_property name="ElementShortName">instr_conf[3:0]</obj_property>
-      <obj_property name="ObjectShortName">instr_conf[3:0]</obj_property>
+      <obj_property name="ElementShortName">instr_conf[4:0]</obj_property>
+      <obj_property name="ObjectShortName">instr_conf[4:0]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/network_tb/test/proc/wait_cond">
       <obj_property name="ElementShortName">wait_cond[0:1][1:0]</obj_property>
@@ -87,8 +87,8 @@
          </wvobject>
       </wvobject>
       <wvobject type="array" fp_name="/network_tb/test/ker/ker_select">
-         <obj_property name="ElementShortName">ker_select[1:0]</obj_property>
-         <obj_property name="ObjectShortName">ker_select[1:0]</obj_property>
+         <obj_property name="ElementShortName">ker_select[0:0]</obj_property>
+         <obj_property name="ObjectShortName">ker_select[0:0]</obj_property>
       </wvobject>
       <wvobject type="group" fp_name="group86">
          <obj_property name="label">Load Activation</obj_property>
@@ -387,9 +387,41 @@
          <obj_property name="ElementShortName">write</obj_property>
          <obj_property name="ObjectShortName">write</obj_property>
       </wvobject>
-      <wvobject type="logic" fp_name="/network_tb/test/\gen_linunits[0].lin_unit_i /finish">
-         <obj_property name="ElementShortName">finish</obj_property>
-         <obj_property name="ObjectShortName">finish</obj_property>
+   </wvobject>
+   <wvobject type="group" fp_name="group577">
+      <obj_property name="label">DRAM</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/network_tb/test/ker/dram_start">
+         <obj_property name="ElementShortName">dram_start</obj_property>
+         <obj_property name="ObjectShortName">dram_start</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/network_tb/test/ker/dram_cnt">
+         <obj_property name="ElementShortName">dram_cnt[28:0]</obj_property>
+         <obj_property name="ObjectShortName">dram_cnt[28:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/network_tb/test/ker/dram_en">
+         <obj_property name="ElementShortName">dram_en</obj_property>
+         <obj_property name="ObjectShortName">dram_en</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/network_tb/test/ker/dram_val">
+         <obj_property name="ElementShortName">dram_val[0:1]</obj_property>
+         <obj_property name="ObjectShortName">dram_val[0:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/network_tb/test/ker/dram_addr_base">
+         <obj_property name="ElementShortName">dram_addr_base[28:0]</obj_property>
+         <obj_property name="ObjectShortName">dram_addr_base[28:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/network_tb/test/ker/dram_addr">
+         <obj_property name="ElementShortName">dram_addr[28:0]</obj_property>
+         <obj_property name="ObjectShortName">dram_addr[28:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/network_tb/dram_addr_dly[4]">
+         <obj_property name="ElementShortName">[4][28:0]</obj_property>
+         <obj_property name="ObjectShortName">[4][28:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/network_tb/test/ker/dram_data">
+         <obj_property name="ElementShortName">dram_data[511:0]</obj_property>
+         <obj_property name="ObjectShortName">dram_data[511:0]</obj_property>
       </wvobject>
    </wvobject>
 </wave_config>

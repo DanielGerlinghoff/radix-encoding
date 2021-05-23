@@ -60,22 +60,31 @@ class Initialization:
         self.network.load_state_dict(torch.load(model_path))
         self.network.eval()
 
+        self.dram_data_bits = 512
+
     def layer_scaling_factors(self):
         with torch.no_grad():
             self.network(torch.stack([image for image, label in self.dataset]))
 
     def write_weight_files(self):
-        # NOTE: Only if kernels fit into FPGA
         layer_conv_cnt = 0
         layer_lin_cnt  = 0
+        dram_file = open(f"generated/dram_kernel.mif", "w")
+        bin_file = open(f"generated/dram_kernel.bin", "wb")
+        dram_addr = 0
         for layer in self.network.layer_list:
             if type(layer) in [nn.Conv2d, Q.Conv2dPrune]:
                 wgt_file = open(f"generated/bram_kernel_{layer_conv_cnt:02d}.mif", "w")
+                nofit_width = int(math.pow(2, math.ceil(math.log2(self.network.wgt_res * layer.kernel_size[0] * layer.kernel_size[1]))))
+                nofit_cnt = 0
+                layer.dram_addr = dram_addr
+                layer.dram_cnt  = 0
                 layer_conv_cnt += 1
                 for ch_out in range(layer.out_channels):
                     for ch_in in range(layer.in_channels):
                         kernel = layer.weight_qt[ch_out, ch_in]
                         kernel_packed = ""
+                        if not nofit_cnt: kernel_dram = ""
                         for k in kernel.flatten():
                             value_str = "{:b}".format(int(k) & 0xffffffff)
                             if k >= 0:
@@ -83,10 +92,26 @@ class Initialization:
                             else:
                                 kernel_packed += value_str[-self.network.wgt_res:]
                         wgt_file.write(f"{kernel_packed}\n")
+                        kernel_dram = kernel_packed.zfill(nofit_width) + kernel_dram
+                        nofit_cnt += nofit_width
+                        if nofit_cnt == self.dram_data_bits:
+                            nofit_cnt = 0
+                            dram_file.write(f"{kernel_dram}\n")
+                            bin_file.write(self.binarize(kernel_dram))
+                            dram_addr += 1
+                            layer.dram_cnt += 1
+                if nofit_cnt:
+                    kernel_dram = kernel_dram.zfill(self.dram_data_bits)
+                    dram_file.write(f"{kernel_dram}\n")
+                    bin_file.write(self.binarize(kernel_dram))
+                    dram_addr += 1
+                    layer.dram_cnt += 1
                 wgt_file.close()
 
             elif type(layer) in [nn.Linear, Q.LinearPrune]:
                 wgt_file = open(f"generated/bram_weight_{layer_lin_cnt:02d}.mif", "w")
+                layer.dram_addr = dram_addr
+                layer.dram_cnt  = 0
                 layer_lin_cnt += 1
                 for ch_out in range(0, layer.out_features, layer.parallel):
                     for ch_in in range(layer.in_features):
@@ -98,8 +123,15 @@ class Initialization:
                                 weight_packed = value_str.zfill(self.network.wgt_res) + weight_packed
                             else:
                                 weight_packed = value_str[-self.network.wgt_res:] + weight_packed
+                        weight_packed = weight_packed.zfill(self.dram_data_bits)
                         wgt_file.write(f"{weight_packed}\n")
+                        dram_file.write(f"{weight_packed}\n")
+                        bin_file.write(self.binarize(weight_packed))
+                        dram_addr += 1
+                        layer.dram_cnt += 1
                 wgt_file.close()
+
+        dram_file.close()
 
     def write_input_file(self, index):
         image = self.dataset[index][0]
@@ -121,8 +153,12 @@ class Initialization:
                         data_str += str(int(val))
                     data_str = data_str.ljust(width, "0")
                     act_file.write(f"{data_str}\n")
-                    data_bytes = bytearray()
-                    for byte in range(math.ceil(len(data_str)/8)):
-                        bits = data_str[byte*8:(byte+1)*8]
-                        data_bytes.append(int(bits, 2))
-                    bin_file.write(data_bytes)
+                    bin_file.write(self.binarize(data_str))
+
+    @staticmethod
+    def binarize(data_str):
+        data_bytes = bytearray()
+        for byte in range(math.ceil(len(data_str)/8)):
+            bits = data_str[byte*8:(byte+1)*8]
+            data_bytes.append(int(bits, 2))
+        return data_bytes

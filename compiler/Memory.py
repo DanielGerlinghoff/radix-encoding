@@ -10,6 +10,7 @@
 import torch.nn as nn
 import math
 from datetime import date
+from collections import OrderedDict
 from spikes import Config
 from spikes import Quantize as Q
 
@@ -35,14 +36,16 @@ class Memory:
     def __init__(self, layers, input_dim):
         self.layers          = layers._modules
         self.ker_brams_fit   = list()
-        self.ker_brams_nofit = dict()
+        self.ker_brams_nofit = OrderedDict()
         self.wgt_brams_fit   = list()
         self.wgt_brams_nofit = BramWeight()
         self.act_brams       = [BramActivation(), BramActivation(), BramActivation(), BramActivation()]
         self.act_sizes       = [input_dim[0]]
         self.act_channels    = [input_dim[1]]
 
-        self.memory_limit   = 10e6
+        self.memory_limit   = 0
+        self.memory_usage   = 0
+        self.kernel_fit     = None
         self.instr_width    = 32
         self.dram_data_bits = 512
         self.dram_addr_bits = 29
@@ -64,11 +67,14 @@ class Memory:
                     if kernel not in self.ker_brams_nofit.keys():
                         self.ker_brams_nofit[kernel] = BramKernel(kernel)
                         self.ker_brams_nofit[kernel].width_rd = 2 ** math.ceil(math.log2(kernel ** 2 * Config.resolution()[1]))
-                    self.ker_brams_nofit[kernel].height_rd = max(self.ker_brams_nofit[kernel].height_rd, layer.in_channels * layer.out_channels) 
+                    self.ker_brams_nofit[kernel].height_rd = max(self.ker_brams_nofit[kernel].height_rd, layer.in_channels * layer.out_channels)
+                    layer.ker_bram_nofit = list(self.ker_brams_nofit.keys()).index(kernel)
 
                     self.ker_brams_fit.append(BramKernel(kernel))
                     self.ker_brams_fit[-1].width_rd  = kernel ** 2 * Config.resolution()[1]
                     self.ker_brams_fit[-1].height_rd = layer.in_channels * layer.out_channels
+                    layer.ker_bram_fit = len(self.ker_brams_fit) - 1
+                    self.memory_usage += self.ker_brams_fit[-1].width_rd * self.ker_brams_fit[-1].height_rd
 
                     self.act_sizes.append(math.floor((self.act_sizes[-1] + 2 * layer.padding[0] - layer.kernel_size[0]) / layer.stride[0] + 1))
                     self.act_channels.append(layer.out_channels)
@@ -84,11 +90,14 @@ class Memory:
                 lin_ping_pong = 3 if lin_ping_pong == 2 else 2
 
                 self.wgt_brams_nofit.height_rd = \
-                    max(self.wgt_brams_nofit.height_rd, 
+                    max(self.wgt_brams_nofit.height_rd,
                     layer.in_features * math.ceil(layer.out_features / layer.parallel))
+                layer.wgt_bram_nofit = 0
 
                 self.wgt_brams_fit.append(BramWeight())
                 self.wgt_brams_fit[-1].height_rd = layer.in_features * math.ceil(layer.out_features / layer.parallel)
+                layer.wgt_bram_fit = len(self.wgt_brams_fit) - 1
+                self.memory_usage += self.wgt_brams_fit[-1].width_rd * self.wgt_brams_fit[-1].height_rd
 
                 self.act_channels.append(layer.out_features)
 
@@ -96,6 +105,8 @@ class Memory:
                 self.act_brams.append(BramActivation())
                 self.act_brams[-1].width = sum(Config.resolution()) + self.bits_margin
                 self.act_brams[-1].height = self.act_channels[-1]
+
+        self.kernel_fit = self.memory_usage < self.memory_limit
 
     def write_to_file(self, instr_height):
         pkg_file = open("generated/pkg_memory.sv", "w")
@@ -130,32 +141,36 @@ class Memory:
         for bram_i, bram in enumerate(self.wgt_brams_fit):
             wgt_width[bram_i]  = self.dram_data_bits
             wgt_height[bram_i] = bram.height_rd
-        if sum([w * h for w, h in zip(ker_width + wgt_width, ker_height + wgt_height)]) > self.memory_limit:
+        if not self.kernel_fit:
             ker_num    = len(self.ker_brams_nofit)
             ker_width  = [None] * ker_num
             ker_height = [None] * ker_num
-            for bram_i, bram in enumerate(self.ker_brams_nofit):
+            ker_init   = ["\"\""] * ker_num
+            for bram_i, bram in enumerate(self.ker_brams_nofit.values()):
                 ker_width[bram_i]  = bram.width_rd
                 ker_height[bram_i] = bram.height_rd
                 ker_height_wr_max  = max(ker_height_wr_max, bram.height_rd * bram.width_rd // self.dram_data_bits)
+        else:
+            ker_init = [f"\"bram_kernel_{i:02d}.mif\"" for i in range(ker_num)]
         wr(1, "localparam int KER_NUM = {};".format(ker_num))
         wr(1, "localparam int KER_WIDTH [KER_NUM] = {};".format(sv_list(ker_width)))
         wr(1, "localparam int KER_WIDTH_MAX = {};".format(max(ker_width)))
         wr(1, "localparam int KER_HEIGHT [KER_NUM] = {};".format(sv_list(ker_height)))
         wr(1, "localparam int KER_HEIGHT_MAX [2] = {};".format(sv_list([max(ker_height), ker_height_wr_max])))
-        wr(1, "localparam [800:1] KER_INIT [KER_NUM] = {};".format(sv_list([f"\"bram_kernel_{i:02d}.mif\"" for i in range(ker_num)])))
+        wr(1, "localparam [800:1] KER_INIT [KER_NUM] = {};".format(sv_list(ker_init)))
         wr(0)
 
         wr(1, "/* Weight memory */")
-        if sum([w * h for w, h in zip(ker_width + wgt_width, ker_height + wgt_height)]) > self.memory_limit:
-            wgt_num    = len(self.wgt_brams_nofit)
-            wgt_height = [None] * wgt_num
-            for bram_i, bram in enumerate(self.wgt_brams_nofit):
-                wgt_height[bram_i] = bram.height_rd
+        if not self.kernel_fit:
+            wgt_num    = 1
+            wgt_height = [self.wgt_brams_nofit.height_rd]
+            wgt_init   = ["\"\""] * wgt_num
+        else:
+            wgt_init = [f"\"bram_weight_{i:02d}.mif\"" for i in range(wgt_num)]
         wr(1, "localparam int WGT_NUM = {};".format(wgt_num))
         wr(1, "localparam int WGT_HEIGHT [WGT_NUM] = {};".format(sv_list(wgt_height)))
         wr(1, "localparam int WGT_HEIGHT_MAX = {};".format(max(wgt_height)))
-        wr(1, "localparam [800:1] WGT_INIT [WGT_NUM] = {};".format(sv_list([f"\"bram_weight_{i:02d}.mif\"" for i in range(wgt_num)])))
+        wr(1, "localparam [800:1] WGT_INIT [WGT_NUM] = {};".format(sv_list(wgt_init)))
         wr(0)
 
         wr(1, "/* Activation memory */")

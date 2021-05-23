@@ -2,10 +2,10 @@
   Company:     A*STAR IHPC
   Engineer:    Gerlinghoff Daniel
   Create Date: 22/04/2021
- 
+
   Description: Main program to generate configuration and memory intialization
                from PyTorch network
- 
+
 """
 
 import torch
@@ -39,10 +39,11 @@ class Compiler:
         self.initialization.write_weight_files()
         self.initialization.write_input_file(0)
 
-        self.instructions.generate()
+        self.memory.generate()
+
+        self.instructions.generate(self.memory.kernel_fit)
         self.instructions.write_to_file()
 
-        self.memory.generate()
         self.memory.write_to_file(len(self.instructions.instr))
 
 

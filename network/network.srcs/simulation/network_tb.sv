@@ -38,9 +38,6 @@ module network_tb;
     logic                                     output_en = 0;
     logic [$clog2(ACT_HEIGHT[ACT_NUM-1])-1:0] output_addr;
     logic [0:ACT_WIDTH[ACT_NUM-1]-1]          output_data;
-    logic                                     dram_enable;
-    logic [pkg_memory::DRAM_ADDR_BITS-1:0]    dram_addr;
-    logic [pkg_memory::DRAM_DATA_BITS-1:0]    dram_data;
 
     int act_file;
     initial begin
@@ -67,6 +64,39 @@ module network_tb;
         wait(proc_finish);
         #(4*CLK_PERIOD) $finish();
 
+    end
+
+    /* DRAM simulation */
+    localparam DRAM_DELAY = 5;
+    localparam DRAM_FILE  = "dram_kernel.mif";
+
+    logic [pkg_memory::DRAM_DATA_BITS-1:0]    dram [1000];
+    logic                                     dram_rdy;
+    logic                                     dram_en, dram_en_dly [1:DRAM_DELAY];
+    logic [pkg_memory::DRAM_ADDR_BITS-1:0]    dram_addr, dram_addr_dly [1:DRAM_DELAY];
+    logic [pkg_memory::DRAM_DATA_BITS-1:0]    dram_data;
+    logic                                     dram_val;
+
+    initial begin
+        $readmemb(DRAM_FILE, dram);
+
+        dram_rdy = 1;
+    end
+
+    always_ff @(posedge clk) begin
+        dram_en_dly[1]   <= dram_en;
+        dram_addr_dly[1] <= dram_addr;
+        for (int d = 1; d < DRAM_DELAY; d++) begin
+            dram_en_dly[d+1]   <= dram_en_dly[d];
+            dram_addr_dly[d+1] <= dram_addr_dly[d];
+        end
+
+        if (dram_en_dly[DRAM_DELAY-1]) begin
+            dram_data <= #(CLK_PERIOD/2) dram[dram_addr_dly[DRAM_DELAY-1]];
+            dram_val  <= #(CLK_PERIOD/2) 1;
+        end else begin
+            dram_val <= #(CLK_PERIOD/2) 0;
+        end
     end
 
     /* Module instantiation */

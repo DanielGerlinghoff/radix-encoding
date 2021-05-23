@@ -2,7 +2,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 // Company:     A*STAR IHPC
 // Engineer:    Gerlinghoff Daniel
-// Create Date: 20/05/2021
+// Create Date: 23/05/2021
 //
 // Description: Automatically generated package with configurations for kernel
 //              and activation memories
@@ -12,18 +12,18 @@
 
 package pkg_memory;
 	/* Kernel memory */
-	localparam int KER_NUM = 3;
-	localparam int KER_WIDTH [KER_NUM] = '{75, 75, 75};
-	localparam int KER_WIDTH_MAX = 75;
-	localparam int KER_HEIGHT [KER_NUM] = '{6, 96, 1920};
-	localparam int KER_HEIGHT_MAX [2] = '{1920, 0};
-	localparam [800:1] KER_INIT [KER_NUM] = '{"bram_kernel_00.mif", "bram_kernel_01.mif", "bram_kernel_02.mif"};
+	localparam int KER_NUM = 1;
+	localparam int KER_WIDTH [KER_NUM] = '{128};
+	localparam int KER_WIDTH_MAX = 128;
+	localparam int KER_HEIGHT [KER_NUM] = '{1920};
+	localparam int KER_HEIGHT_MAX [2] = '{1920, 480};
+	localparam [800:1] KER_INIT [KER_NUM] = '{""};
 
 	/* Weight memory */
-	localparam int WGT_NUM = 2;
-	localparam int WGT_HEIGHT [WGT_NUM] = '{120, 84};
+	localparam int WGT_NUM = 1;
+	localparam int WGT_HEIGHT [WGT_NUM] = '{120};
 	localparam int WGT_HEIGHT_MAX = 120;
-	localparam [800:1] WGT_INIT [WGT_NUM] = '{"bram_weight_00.mif", "bram_weight_01.mif"};
+	localparam [800:1] WGT_INIT [WGT_NUM] = '{""};
 
 	/* Activation memory */
 	localparam int ACT_NUM = 5;
@@ -35,7 +35,7 @@ package pkg_memory;
 
 	/* Instruction memory */
 	localparam int INS_WIDTH = 32;
-	localparam int INS_HEIGHT = 26289;
+	localparam int INS_HEIGHT = 26306;
 	localparam [800:1] INS_INIT = "bram_instruction.mif";
 
 	/* External DRAM */
