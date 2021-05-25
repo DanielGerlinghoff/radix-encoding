@@ -61,6 +61,7 @@ class Initialization:
         self.network.eval()
 
         self.dram_data_bits = 512
+        self.dram_addr      = 0
 
     def layer_scaling_factors(self):
         with torch.no_grad():
@@ -71,13 +72,12 @@ class Initialization:
         layer_lin_cnt  = 0
         dram_file = open(f"generated/dram_kernel.mif", "w")
         bin_file = open(f"generated/dram_kernel.bin", "wb")
-        dram_addr = 0
         for layer in self.network.layer_list:
             if type(layer) in [nn.Conv2d, Q.Conv2dPrune]:
                 wgt_file = open(f"generated/bram_kernel_{layer_conv_cnt:02d}.mif", "w")
                 nofit_width = int(math.pow(2, math.ceil(math.log2(self.network.wgt_res * layer.kernel_size[0] * layer.kernel_size[1]))))
                 nofit_cnt = 0
-                layer.dram_addr = dram_addr
+                layer.dram_addr = self.dram_addr
                 layer.dram_cnt  = 0
                 layer_conv_cnt += 1
                 for ch_out in range(layer.out_channels):
@@ -98,19 +98,19 @@ class Initialization:
                             nofit_cnt = 0
                             dram_file.write(f"{kernel_dram}\n")
                             bin_file.write(self.binarize(kernel_dram))
-                            dram_addr += 1
+                            self.dram_addr += 1
                             layer.dram_cnt += 1
                 if nofit_cnt:
                     kernel_dram = kernel_dram.zfill(self.dram_data_bits)
                     dram_file.write(f"{kernel_dram}\n")
                     bin_file.write(self.binarize(kernel_dram))
-                    dram_addr += 1
+                    self.dram_addr += 1
                     layer.dram_cnt += 1
                 wgt_file.close()
 
             elif type(layer) in [nn.Linear, Q.LinearPrune]:
                 wgt_file = open(f"generated/bram_weight_{layer_lin_cnt:02d}.mif", "w")
-                layer.dram_addr = dram_addr
+                layer.dram_addr = self.dram_addr
                 layer.dram_cnt  = 0
                 layer_lin_cnt += 1
                 for ch_out in range(0, layer.out_features, layer.parallel):
@@ -127,7 +127,7 @@ class Initialization:
                         wgt_file.write(f"{weight_packed}\n")
                         dram_file.write(f"{weight_packed}\n")
                         bin_file.write(self.binarize(weight_packed))
-                        dram_addr += 1
+                        self.dram_addr += 1
                         layer.dram_cnt += 1
                 wgt_file.close()
 

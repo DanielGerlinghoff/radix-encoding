@@ -108,7 +108,7 @@ class Memory:
 
         self.kernel_fit = self.memory_usage < self.memory_limit
 
-    def write_to_file(self, instr_height):
+    def write_to_file(self, instr_height, dram_height):
         pkg_file = open("generated/pkg_memory.sv", "w")
         wr       = lambda indent, line="": pkg_file.write("\t" * indent + line + "\n")
         sv_list  = lambda py_list: "'{" + ", ".join([str(v) for v in py_list]) + "}"
@@ -197,6 +197,7 @@ class Memory:
         wr(1, "/* External DRAM */")
         wr(1, "localparam int DRAM_DATA_BITS = {};".format(self.dram_data_bits))
         wr(1, "localparam int DRAM_ADDR_BITS = {};".format(self.dram_addr_bits))
+        wr(1, "localparam int DRAM_HEIGHT = {};".format(dram_height))
         wr(0)
 
         wr(0, "endpackage")

@@ -150,7 +150,7 @@ module processor (
 
                 KERD: begin
                     ker.dram_start <= 1;
-                    ker.dram_cnt <= instr_val;
+                    ker.dram_cnt_max <= instr_val;
                     next <= 0;
                 end
 

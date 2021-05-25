@@ -26,11 +26,12 @@ module top_tb;
     end
 
     /* Module input signals */
-    int          act_file;
-    logic [0:31] input_data;
-    logic        uart_tx_en;
-    logic [7:0]  uart_tx_data;
-    logic        uart_txd;
+    int           act_file;
+    logic [0:31]  input_data;
+    logic [0:511] dram_data;
+    logic         uart_tx_en;
+    logic [7:0]   uart_tx_data;
+    logic         uart_txd;
 
     initial begin
         uart_tx_en = 0;
@@ -41,6 +42,26 @@ module top_tb;
         uart_tx_data = "R";
         #(2*CLK_PERIOD);
         uart_tx_en = 0;
+
+`ifndef SKIP_UART #120us;
+`else   #(10000*CLK_PERIOD); `endif
+        uart_tx_en = 1;
+        uart_tx_data = "D";
+        #(2*CLK_PERIOD);
+        uart_tx_en = 0;
+
+        act_file = $fopen("dram_kernel.mif", "r");
+        for (int row = 0; row < 710; row++) begin
+            $fscanf(act_file, "%b", dram_data);
+            for (int val = 0; val < 512; val+=8) begin
+`ifndef SKIP_UART #44100ns;
+`else           #(2*CLK_PERIOD); `endif
+                uart_tx_en = 1;
+                uart_tx_data = dram_data[val+:8];
+                #(2*CLK_PERIOD);
+                uart_tx_en = 0;
+            end
+        end
 
 `ifndef SKIP_UART #44100ns;
 `else   #(2*CLK_PERIOD); `endif

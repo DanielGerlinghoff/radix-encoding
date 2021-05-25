@@ -184,8 +184,8 @@ module uart #(
 `endif
 
     /* Unused signals */
-    assign rstn = 'z;
-    assign rts  = 0;
+    assign rstn = 1'bz;
+    assign rts  = 1'b0;
 
 endmodule
 

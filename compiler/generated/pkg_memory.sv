@@ -2,7 +2,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 // Company:     A*STAR IHPC
 // Engineer:    Gerlinghoff Daniel
-// Create Date: 23/05/2021
+// Create Date: 24/05/2021
 //
 // Description: Automatically generated package with configurations for kernel
 //              and activation memories
@@ -41,5 +41,6 @@ package pkg_memory;
 	/* External DRAM */
 	localparam int DRAM_DATA_BITS = 512;
 	localparam int DRAM_ADDR_BITS = 29;
+	localparam int DRAM_HEIGHT = 710;
 
 endpackage

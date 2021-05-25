@@ -53,7 +53,7 @@ interface if_kernel (
 
     /* External DRAM */
     logic                                  dram_start;
-    logic [pkg_memory::DRAM_ADDR_BITS-1:0] dram_cnt;
+    logic [pkg_memory::DRAM_ADDR_BITS-1:0] dram_cnt, dram_cnt_max;
     logic                                  dram_en = 0, dram_val [2];
     logic [pkg_memory::DRAM_ADDR_BITS-1:0] dram_addr_base, dram_addr;
     logic [pkg_memory::DRAM_DATA_BITS-1:0] dram_data;
@@ -63,13 +63,13 @@ interface if_kernel (
         if (dram_start) begin
             dram_addr <= dram_addr_base;
             dram_en   <= 1;
+            dram_cnt  <= 0;
         end
         if (dram_en && dram_rdy) begin
-            if (dram_cnt != 1) begin
-                dram_cnt  <= dram_cnt - 1;
+            if (dram_cnt != dram_cnt_max - 1) begin
+                dram_cnt  <= dram_cnt + 1;
                 dram_addr <= dram_addr + 1;
             end else begin
-                dram_cnt  <= 0;
                 dram_addr <= 0;
                 dram_en   <= 0;
             end

@@ -44,7 +44,7 @@ class Compiler:
         self.instructions.generate(self.memory.kernel_fit)
         self.instructions.write_to_file()
 
-        self.memory.write_to_file(len(self.instructions.instr))
+        self.memory.write_to_file(len(self.instructions.instr), self.initialization.dram_addr)
 
 
 if __name__ == "__main__":
