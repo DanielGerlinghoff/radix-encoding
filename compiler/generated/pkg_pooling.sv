@@ -2,7 +2,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 // Company:     A*STAR IHPC
 // Engineer:    Gerlinghoff Daniel
-// Create Date: 20/05/2021
+// Create Date: 09/08/2021
 //
 // Description: Automatically generated package with config of pooling units
 //
@@ -11,7 +11,7 @@
 
 package pkg_pooling;
 	localparam int POOLUNITS = 1;
-	localparam bit MAX_N_AVG = 1;
+	localparam bit MAX_N_AVG [2:POOLUNITS+1] = '{1};
 	localparam int POOL_SIZE [2:POOLUNITS+1] = '{14};
 	localparam int ACT_BITS = 3;
 	localparam int KER_SIZE [2:POOLUNITS+1] = '{2};

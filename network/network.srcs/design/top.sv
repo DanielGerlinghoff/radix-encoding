@@ -15,7 +15,6 @@ module top (
     input  wire        sys_clk_p,
     input  wire        sys_clk_n,
 
-    inout  wire        uart_rst_n,
     input  wire        uart_txd,
     input  wire        uart_rts,
     output wire        uart_rxd,
@@ -41,34 +40,39 @@ module top (
     import pkg_linear::SUM_BITS, pkg_linear::CHANNELS_OUT;
 
     /* Input and clock buffer */
-    localparam CLKPERIOD = 4.284e-9;
+    localparam CLKPERIOD = DRAM_ENABLE ? 4.284e-9 : 4.998e-9;  // = 1 / MMCM_CLKOUT : 1 / CLKREF
     localparam CLKDIV    = 1;
 
     wire         clk_ibuf, clk_buf, clk_ui, clk;
     logic [31:0] clk_cnt [2];
     logic        reset = 0;
 
-//    IBUFDS inp_buffer (
-//        .I  (sys_clk_p),
-//        .IB (sys_clk_n),
-//        .O  (clk_ibuf)
-//    );
+    generate
+        if (!DRAM_ENABLE) begin
+            IBUFDS inp_buffer (
+                .I  (sys_clk_p),
+                .IB (sys_clk_n),
+                .O  (clk_ibuf)
+            );
 
-//    BUFGCE_DIV #(
-//        .BUFGCE_DIVIDE (CLKDIV)
-//    ) clk_buffer (
-//        .I   (clk_ibuf),
-//        .O   (clk_buf),
-//        .CE  (1'b1),
-//        .CLR (1'b0)
-//    );
+            BUFGCE_DIV #(
+                .BUFGCE_DIVIDE (CLKDIV)
+            ) clk_buffer (
+                .I   (clk_ibuf),
+                .O   (clk_buf),
+                .CE  (1'b1),
+                .CLR (1'b0)
+            );
 
-//    assign clk = clk_buf;
-    assign clk = clk_ui;
+            assign clk = clk_buf;
+
+        end else begin
+            assign clk = clk_ui;
+
+        end
+    endgenerate
 
     /* DRAM controller */
-    import pkg_memory::DRAM_DATA_BITS, pkg_memory::DRAM_ADDR_BITS;
-
     localparam DRAM_MASK_BITS  = DRAM_DATA_BITS / 8;
     localparam DRAM_ADDR_SHIFT = 3;
 
@@ -109,46 +113,61 @@ module top (
         ddr4_app_wdf_mask = 0;
     end
 
-    ddr4_4g_x64 ddr4_control (
-        .sys_rst                   (reset),
-        .c0_sys_clk_p              (sys_clk_p),
-        .c0_sys_clk_n              (sys_clk_n),
+    generate
+        if (DRAM_ENABLE) begin
+            ddr4_4g_x64 ddr4_control (
+                .sys_rst                   (reset),
+                .c0_sys_clk_p              (sys_clk_p),
+                .c0_sys_clk_n              (sys_clk_n),
 
-        .c0_ddr4_act_n             (c0_ddr4_act_n),
-        .c0_ddr4_adr               (c0_ddr4_adr),
-        .c0_ddr4_ba                (c0_ddr4_ba),
-        .c0_ddr4_bg                (c0_ddr4_bg),
-        .c0_ddr4_cke               (c0_ddr4_cke),
-        .c0_ddr4_odt               (c0_ddr4_odt),
-        .c0_ddr4_cs_n              (c0_ddr4_cs_n),
-        .c0_ddr4_ck_t              (c0_ddr4_ck_t),
-        .c0_ddr4_ck_c              (c0_ddr4_ck_c),
-        .c0_ddr4_reset_n           (c0_ddr4_reset_n),
-        .c0_ddr4_dm_dbi_n          (c0_ddr4_dm_dbi_n),
-        .c0_ddr4_dq                (c0_ddr4_dq),
-        .c0_ddr4_dqs_c             (c0_ddr4_dqs_c),
-        .c0_ddr4_dqs_t             (c0_ddr4_dqs_t),
+                .c0_ddr4_act_n             (c0_ddr4_act_n),
+                .c0_ddr4_adr               (c0_ddr4_adr),
+                .c0_ddr4_ba                (c0_ddr4_ba),
+                .c0_ddr4_bg                (c0_ddr4_bg),
+                .c0_ddr4_cke               (c0_ddr4_cke),
+                .c0_ddr4_odt               (c0_ddr4_odt),
+                .c0_ddr4_cs_n              (c0_ddr4_cs_n),
+                .c0_ddr4_ck_t              (c0_ddr4_ck_t),
+                .c0_ddr4_ck_c              (c0_ddr4_ck_c),
+                .c0_ddr4_reset_n           (c0_ddr4_reset_n),
+                .c0_ddr4_dm_dbi_n          (c0_ddr4_dm_dbi_n),
+                .c0_ddr4_dq                (c0_ddr4_dq),
+                .c0_ddr4_dqs_c             (c0_ddr4_dqs_c),
+                .c0_ddr4_dqs_t             (c0_ddr4_dqs_t),
 
-        .c0_ddr4_ui_clk            (clk_ui),
-        .c0_ddr4_ui_clk_sync_rst   (),
-        .c0_ddr4_app_rdy           (ddr4_app_rdy),
-        .c0_ddr4_app_addr          (ddr4_app_addr << DRAM_ADDR_SHIFT),
-        .c0_ddr4_app_cmd           (ddr4_app_cmd),
-        .c0_ddr4_app_en            (ddr4_app_en),
-        .c0_ddr4_app_hi_pri        (1'b0),
-        .c0_ddr4_app_wdf_rdy       (ddr4_app_wdf_rdy),
-        .c0_ddr4_app_wdf_data      (ddr4_app_wdf_data),
-        .c0_ddr4_app_wdf_end       (ddr4_app_wdf_end),
-        .c0_ddr4_app_wdf_mask      (ddr4_app_wdf_mask),
-        .c0_ddr4_app_wdf_wren      (ddr4_app_wdf_en & ddr4_app_rdy),
-        .c0_ddr4_app_rd_data       (ddr4_app_rd_data),
-        .c0_ddr4_app_rd_data_end   (ddr4_app_rd_data_end),
-        .c0_ddr4_app_rd_data_valid (ddr4_app_rd_data_valid),
-        .c0_init_calib_complete    (ddr4_init_calib_complete),
+                .c0_ddr4_ui_clk            (clk_ui),
+                .c0_ddr4_ui_clk_sync_rst   (),
+                .c0_ddr4_app_rdy           (ddr4_app_rdy),
+                .c0_ddr4_app_addr          (ddr4_app_addr << DRAM_ADDR_SHIFT),
+                .c0_ddr4_app_cmd           (ddr4_app_cmd),
+                .c0_ddr4_app_en            (ddr4_app_en),
+                .c0_ddr4_app_hi_pri        (1'b0),
+                .c0_ddr4_app_wdf_rdy       (ddr4_app_wdf_rdy),
+                .c0_ddr4_app_wdf_data      (ddr4_app_wdf_data),
+                .c0_ddr4_app_wdf_end       (ddr4_app_wdf_end),
+                .c0_ddr4_app_wdf_mask      (ddr4_app_wdf_mask),
+                .c0_ddr4_app_wdf_wren      (ddr4_app_wdf_en & ddr4_app_rdy),
+                .c0_ddr4_app_rd_data       (ddr4_app_rd_data),
+                .c0_ddr4_app_rd_data_end   (ddr4_app_rd_data_end),
+                .c0_ddr4_app_rd_data_valid (ddr4_app_rd_data_valid),
+                .c0_init_calib_complete    (ddr4_init_calib_complete),
 
-        .dbg_clk                   (),
-        .dbg_bus                   ()
-    );
+                .dbg_clk                   (),
+                .dbg_bus                   ()
+            );
+
+        end else begin
+            assign {c0_ddr4_act_n, c0_ddr4_adr, c0_ddr4_ba, c0_ddr4_bg, c0_ddr4_odt, c0_ddr4_cs_n, c0_ddr4_reset_n} = '1;
+            assign {c0_ddr4_dm_dbi_n, c0_ddr4_dq, c0_ddr4_dqs_t, c0_ddr4_dqs_c} = 'z;
+            assign {c0_ddr4_cke, ddr4_app_rdy, ddr4_app_rd_data, ddr4_app_rd_data_valid} = '0;
+
+            OBUFDS OBUFDS_inst (
+                .I  (0),
+                .O  (c0_ddr4_ck_t),
+                .OB (c0_ddr4_ck_c)
+            );
+        end
+    endgenerate
 
 `ifdef DEBUG
     ila_ddr4 ila (
@@ -196,23 +215,23 @@ module top (
         DRAM   = 6'b100000
     } state = IDLE;
 
-    logic iterate, count;
+    logic count;
     always_ff @(posedge clk) begin
         start           <= 0;
         input_en        <= 0;
         output_en       <= 0;
+        output_val      <= 0;
         uart_tx_en      <= 0;
         ddr4_app_wdf_en <= 0;
 
         case (state)
             IDLE: begin
                 if (uart_rx_valid) begin
-                    if (uart_rx_data == "R") state   <= RESET;
-                    if (uart_rx_data == "S") state   <= START;
-                    if (uart_rx_data == "I") state   <= INPUT;
-                    if (uart_rx_data == "D") state   <= DRAM;
-                    if (uart_rx_data == "T") iterate <= 1;
-                    if (uart_rx_data == "C") count   <= 1;
+                    if (uart_rx_data == "R") state <= RESET;
+                    if (uart_rx_data == "S") state <= START;
+                    if (uart_rx_data == "I") state <= INPUT;
+                    if (uart_rx_data == "D") state <= DRAM;
+                    if (uart_rx_data == "C") count <= 1;
                 end
                 if (finish) state <= OUTPUT;
             end
@@ -222,7 +241,6 @@ module top (
                 input_addr        <= 0;
                 output_addr       <= 0;
                 ddr4_app_wdf_addr <= 0;
-                iterate           <= 0;
                 count             <= 0;
 
                 if (!reset) begin
@@ -264,11 +282,7 @@ module top (
             end
 
             OUTPUT: begin
-                if (iterate) begin
-                    start <= 1;
-                    state <= IDLE;
-
-                end else if (count) begin
+                if (count) begin
                     uart_tx_en   <= 1;
                     uart_tx_data <= clk_cnt[1][output_addr*UART_BITS+:UART_BITS];
                     if (output_addr != 3) begin
@@ -278,7 +292,7 @@ module top (
                         state <= IDLE;
                     end
                 end else begin
-                    output_en <= !uart_tx_rdy_n;
+                    output_en  <= !uart_tx_rdy_n;
                     output_val <= output_en;
                     if (output_en) begin
                         if (output_addr != CHANNELS_OUT) begin
@@ -306,7 +320,7 @@ module top (
                     if (!ddr4_app_rdy) begin
                         ddr4_app_wdf_en <= 1;
                     end else begin
-                        if (ddr4_app_wdf_addr != pkg_memory::DRAM_HEIGHT - 1) begin
+                        if (ddr4_app_wdf_addr != DRAM_HEIGHT - 1) begin
                             ddr4_app_wdf_addr <= ddr4_app_wdf_addr + 1;
                         end else begin
                             ddr4_app_wdf_addr <= 0;
@@ -327,12 +341,8 @@ module top (
         end
     end
 
-    uart #(
-        .CLKPERIOD (CLKPERIOD * CLKDIV),
-        .STOPBITS  (2)
-    ) uart_ctrl (
+    uart_ctrl uart_control (
         .clk      (clk),
-        .rstn     (uart_rst_n),
         .rxd      (uart_txd),
         .cts      (uart_rts),
         .txd      (uart_rxd),
@@ -365,4 +375,3 @@ module top (
     );
 
 endmodule
-

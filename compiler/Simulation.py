@@ -31,14 +31,13 @@ class Simulation(nn.Module):
         return x.type(torch.float)
 
     def forward(self, x):
-        x = self.quantize_activations(x, self.layer_list[0].act_in_scale)
+        x = self.quantize_activations(x, self.layer_list[0].hardware["act_in_scale"])
         for layer in self.layer_list:
             x = layer(x)
-            if hasattr(layer, "weight_scale"):
-                scales = (layer.weight_scale, layer.act_in_scale, layer.act_out_scale)
+            if "wgt_scale" in layer.hardware.keys():
+                scales = (layer.hardware["wgt_scale"], layer.hardware["act_in_scale"], layer.hardware["act_out_scale"])
             else:
                 scales = None
             if scales is not None:
                 x = self.requantize_activations(x, *scales)
         return x
-

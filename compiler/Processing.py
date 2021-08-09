@@ -11,8 +11,6 @@ import torch.nn as nn
 import math
 from datetime import date
 from collections import OrderedDict
-from spikes import Config
-from spikes import Quantize as Q
 
 class ConvUnit:
     def __init__(self, kernel):
@@ -28,7 +26,6 @@ class ConvUnit:
         kernel  = layer.kernel_size[0]
         padding = layer.padding[0]
         stride  = layer.stride[0]
-        groups  = layer.groups
         act_in  = act_size
         act_out = math.floor((act_in + 2 * padding - kernel) / stride + 1)
         layer.in_size  = act_in
@@ -39,13 +36,13 @@ class ConvUnit:
         if parallel not in self.parallel_in.keys():
             self.parallel_in[parallel] = [[None, None]] * parallel
             assign_width = act_in + padding
-            if assign_width % 2 == 1: assign_width = assign_width + 1
+            if assign_width % 2 == 1: assign_width += 1  # TODO: Why mod 2?
             for assign in range(parallel):
                 start = padding + assign * assign_width
                 end   = padding + act_in + assign * assign_width - 1
                 self.parallel_in[parallel][assign] = [start, end]
-        layer.parallel = parallel
-        layer.compiler_parallel = list(self.parallel_in.keys()).index(parallel)
+        layer.hardware["parallel"]       = parallel
+        layer.hardware["parallel_instr"] = list(self.parallel_in.keys()).index(parallel)
         if parallel not in self.parallel_out.keys():
             self.parallel_out[parallel] = [[None, None]] * parallel
             for assign in range(parallel):
@@ -56,14 +53,14 @@ class ConvUnit:
                     del self.parallel_in[parallel]
                     self.parallel_out[assign] = self.parallel_out[parallel][0:assign]
                     del self.parallel_out[parallel]
-                    layer.parallel = assign
-                    layer.compiler_parallel = list(self.parallel_in.keys()).index(assign)
+                    layer.hardware["parallel"]       = assign
+                    layer.hardware["parallel_instr"] = list(self.parallel_in.keys()).index(assign)
                     break
                 else:
                     self.parallel_out[parallel][assign] = [start, end]
 
         self.stride[stride] = True
-        layer.compiler_stride = list(self.stride.keys()).index(stride)
+        layer.hardware["stride_instr"] = list(self.stride.keys()).index(stride)
 
         return act_out
 
@@ -91,8 +88,8 @@ class PoolUnit:
                 start = assign * assign_width
                 end   = start + act_in - 1
                 self.parallel_in[parallel][assign] = [start, end]
-        layer.parallel = parallel
-        layer.compiler_parallel = list(self.parallel_in.keys()).index(parallel)
+        layer.hardware["parallel"]       = parallel
+        layer.hardware["parallel_instr"] = list(self.parallel_in.keys()).index(parallel)
         if parallel not in self.parallel_out.keys():
             self.parallel_out[parallel] = [[None, None]] * parallel
             for assign in range(parallel):
@@ -103,36 +100,43 @@ class PoolUnit:
         return act_out
 
 class LinearUnit:
-    def __init__(self):
+    def __init__(self, res_weight):
         self.dram_data_bits = 512
-        self.parallel = math.floor(self.dram_data_bits / Config.resolution()[1])
+        self.parallel = math.floor(self.dram_data_bits / res_weight)
         self.lin_size = 0
         self.lin_channels_max = 0
         self.lin_channels_out = None
 
     def new_layer(self, layer, last):
-        layer.parallel = self.parallel
+        layer.hardware["parallel"] = self.parallel
         self.lin_size = min(max(self.lin_size, layer.out_features), self.parallel)
         self.lin_channels_max = max(self.lin_channels_max, layer.in_features)
         if last: self.lin_channels_out = layer.out_features
 
 class Processing:
-    def __init__(self, layers, input_size, input_channels):
+    def __init__(self, layers, config):
         self.layers = layers._modules
-        self.conv_units = dict()
+        self.config = config
+        self.conv_units      = OrderedDict()
         self.conv_units_dupl = list()
-        self.pool_units = dict()
-        self.pool_units_dupl = list()
-        self.lin_unit = LinearUnit()
-        self.act_sizes = [input_size]
-        self.act_channels = [input_channels]
+        self.pool_units      = OrderedDict()
+        self.lin_unit        = LinearUnit(config["res_weight"])
+        self.act_sizes    = [config["input_size"]]
+        self.act_channels = [config["input_channels"]]
 
-        self.bits_margin = 4
-        self.max_duplication = 2
+        self.init = None
+        self.mem  = None
+        self.inst = None
+
+    def link(self, init, mem, inst):
+        self.init, self.mem, self.inst = init, mem, inst
 
     def generate(self):
         for layer in self.layers.values():
-            if type(layer) in [nn.Conv2d, Q.Conv2dPrune]:
+            if not hasattr(layer, "hardware"):
+                layer.hardware = dict()
+
+            if type(layer) in [nn.Conv2d]:
                 kernel = layer.kernel_size[0]
                 if kernel not in self.conv_units.keys():
                     self.conv_units[kernel] = ConvUnit(kernel)
@@ -152,18 +156,16 @@ class Processing:
                     act_out = self.pool_units[kernel].new_layer(layer, self.act_sizes[-1])
                 self.act_sizes.append(act_out)
 
-            if type(layer) in [nn.Linear, Q.LinearPrune]:
+            if type(layer) in [nn.Linear]:
                 layer_i = list(self.layers.values()).index(layer)
                 last_layer = type(self.layers[str(layer_i+1)]) in [nn.Softmax, nn.LogSoftmax]
                 self.lin_unit.new_layer(layer, last_layer)
 
-    def duplicate(self):
-        # TODO: Duplicate based on number of output channels
-        for cu in self.conv_units.values():
-            for _ in range(self.max_duplication):
+    def duplicate_conv(self, number):
+        for ker, cu in self.conv_units.items():
+            num = number if type(number) is int else number[ker]
+            for _ in range(num):
                 self.conv_units_dupl.append(cu)
-        for pu in self.pool_units.values():
-            self.pool_units_dupl.append(pu)
 
     def write_to_file(self):
         wr       = lambda indent, line="": pkg_file.write("\t" * indent + line + "\n")
@@ -201,12 +203,12 @@ class Processing:
             for p in cu.parallel_out.values():
                 for a in p:
                     conv_size[cu_i] = max(conv_size[cu_i], a[1] + 1)
-        parallel_num   = [[0] * parallel_dim_max[0]] * convunits
-        parallel_max   = [0] * convunits
-        parallel_in    = [[[[0, 0] for _ in range(parallel_dim_max[1])] for _ in range(parallel_dim_max[0])] for _ in range(convunits)]
-        parallel_out   = [[[[0, 0] for _ in range(parallel_dim_max[1])] for _ in range(parallel_dim_max[0])] for _ in range(convunits)]
-        stride         = [[0 for _ in range(stride_dim_max)] for _ in range(convunits)]
-        stride_max     = [0] * convunits
+        parallel_num = [[0] * parallel_dim_max[0]] * convunits
+        parallel_max = [0] * convunits
+        parallel_in  = [[[[0, 0] for _ in range(parallel_dim_max[1])] for _ in range(parallel_dim_max[0])] for _ in range(convunits)]
+        parallel_out = [[[[0, 0] for _ in range(parallel_dim_max[1])] for _ in range(parallel_dim_max[0])] for _ in range(convunits)]
+        stride       = [[0 for _ in range(stride_dim_max)] for _ in range(convunits)]
+        stride_max   = [0] * convunits
         for cu_i, cu in enumerate(self.conv_units_dupl):
             for p_i, p in enumerate(cu.parallel_in.keys()):
                 parallel_num[cu_i][p_i] = p
@@ -220,9 +222,9 @@ class Processing:
         wr(1, "localparam int CONVUNITS = {};".format(convunits))
         wr(1, "localparam int CONV_SIZE [CONVUNITS] = {};".format(sv_list(conv_size)))
         wr(1, "localparam int CONV_SIZE_MAX = {};".format(max(conv_size)))
-        wr(1, "localparam int CONV_BITS = {};".format(sum(Config.resolution()) + self.bits_margin))
-        wr(1, "localparam int ACT_BITS = {};".format(Config.resolution()[0]))
-        wr(1, "localparam int KER_BITS = {};".format(Config.resolution()[1]))
+        wr(1, "localparam int CONV_BITS = {};".format(self.config["res_weight"] + self.config["res_activation"] + self.config["bits_margin"]))
+        wr(1, "localparam int ACT_BITS = {};".format(self.config["res_activation"]))
+        wr(1, "localparam int KER_BITS = {};".format(self.config["res_weight"]))
         wr(1, "localparam int KER_SIZE [CONVUNITS] = {};".format(sv_list(ker_size)))
         wr(0)
         wr(1, "localparam int PARALLEL_DIM [CONVUNITS][2] = {};".format(sv_list([sv_list(l) for l in parallel_dim])))
@@ -269,13 +271,14 @@ class Processing:
         wr(0)
         wr(0, "package pkg_pooling;")
 
-        poolunits        = len(self.pool_units_dupl)
+        poolunits        = len(self.pool_units)
+        max_n_avg        = [None] * poolunits
         pool_size        = [0] * poolunits
         ker_size         = [0] * poolunits
         parallel_dim     = [None] * poolunits
         parallel_dim_max = [0, 0]
-        for pu_i, pu in enumerate(self.pool_units_dupl):
-            max_n_avg           = pu.max_n_avg
+        for pu_i, pu in enumerate(self.pool_units.values()):
+            max_n_avg[pu_i]     = pu.max_n_avg
             ker_size[pu_i]      = pu.kernel
             parallel_dim[pu_i]  = [len(pu.parallel_in), max(pu.parallel_in.keys())]
             parallel_dim_max[0] = max(parallel_dim_max[0], parallel_dim[pu_i][0])
@@ -287,7 +290,7 @@ class Processing:
         parallel_max   = [0] * poolunits
         parallel_in    = [[[[0, 0] for _ in range(parallel_dim_max[1])] for _ in range(parallel_dim_max[0])] for _ in range(poolunits)]
         parallel_out   = [[[[0, 0] for _ in range(parallel_dim_max[1])] for _ in range(parallel_dim_max[0])] for _ in range(poolunits)]
-        for pu_i, pu in enumerate(self.pool_units_dupl):
+        for pu_i, pu in enumerate(self.pool_units.values()):
             for p_i, p in enumerate(pu.parallel_in.keys()):
                 parallel_num[pu_i][p_i]   = p
                 parallel_max[pu_i]        = max(parallel_max[pu_i], p)
@@ -295,9 +298,9 @@ class Processing:
                     parallel_in[pu_i][p_i][a_i]  = pu.parallel_in[p][a_i]
                     parallel_out[pu_i][p_i][a_i] = pu.parallel_out[p][a_i]
         wr(1, "localparam int POOLUNITS = {};".format(poolunits))
-        wr(1, "localparam bit MAX_N_AVG = {:b};".format(max_n_avg))
+        wr(1, "localparam bit MAX_N_AVG [{}:POOLUNITS+{}] = {};".format(convunits, convunits - 1, sv_list([int(v) for v in max_n_avg])))
         wr(1, "localparam int POOL_SIZE [{}:POOLUNITS+{}] = {};".format(convunits, convunits - 1, sv_list(pool_size)))
-        wr(1, "localparam int ACT_BITS = {};".format(Config.resolution()[0]))
+        wr(1, "localparam int ACT_BITS = {};".format(self.config["res_activation"]))
         wr(1, "localparam int KER_SIZE [{}:POOLUNITS+{}] = {};".format(convunits, convunits - 1, sv_list(ker_size)))
         wr(0)
         wr(1, "localparam int PARALLEL_DIM [{}:POOLUNITS+{}][2] = {};".format(convunits, convunits - 1, sv_list([sv_list(l) for l in parallel_dim])))
@@ -341,9 +344,9 @@ class Processing:
         wr(1, "localparam int LIN_SIZE = {};".format(self.lin_unit.lin_size))
         wr(1, "localparam int CHANNELS_MAX = {};".format(self.lin_unit.lin_channels_max))
         wr(1, "localparam int CHANNELS_OUT = {};".format(self.lin_unit.lin_channels_out))
-        wr(1, "localparam int ACT_BITS = {};".format(Config.resolution()[0]))
-        wr(1, "localparam int WGT_BITS = {};".format(Config.resolution()[0]))
-        wr(1, "localparam int SUM_BITS = {};".format(sum(Config.resolution()) + self.bits_margin))
+        wr(1, "localparam int ACT_BITS = {};".format(self.config["res_activation"]))
+        wr(1, "localparam int WGT_BITS = {};".format(self.config["res_weight"]))
+        wr(1, "localparam int SUM_BITS = {};".format(self.config["res_weight"] + self.config["res_activation"] + self.config["bits_margin"]))
 
         wr(0)
         wr(0, "endpackage")

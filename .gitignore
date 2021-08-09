@@ -1,17 +1,13 @@
-mobilenet
 network.cache
 network.hw
 network.ip_user_files
 network.runs
 network.sim
 
-ddr4.cache
-ddr4.hw
-ddr4.ip_user_files
-ddr4.runs
-ddr4.sim
+uart
 
-compiler/spikes
+compiler/models/*.pt
+compiler/data
 
 ip
 *.swp

@@ -17,49 +17,67 @@ from Processing import Processing
 from Memory import Memory
 from Instructions import Instructions
 from Simulation import Simulation
-from spikes.Lenet import LeNet
-from spikes import Config
+from models.Lenet import LeNet5
 
 class Compiler:
-    def __init__(self, layers, weights, inputs):
-        input_size     = inputs[0][0].shape[1]
-        input_channels = inputs[0][0].shape[0]
+    def __init__(self, layers, inputs, config):
+        self.config              = config
+        config["input_size"]     = inputs[0][0].shape[1]
+        config["input_channels"] = inputs[0][0].shape[0]
 
-        self.initialization = Initialization(layers, inputs, weights)
-        self.processing     = Processing(layers, input_size, input_channels)
-        self.memory         = Memory(layers, (input_size, input_channels))
-        self.instructions   = Instructions(layers, (input_size, input_channels), self.processing, self.memory)
+        # Initialize compiler modules
+        self.processing     = Processing(layers, config)
+        self.initialization = Initialization(layers, inputs, config)
+        self.memory         = Memory(layers, config)
+        self.instructions   = Instructions(layers, config)
 
-    def generate_config(self):
+        # Link compiler modules
+        self.processing.link(self.initialization, self.memory, self.instructions)
+        self.initialization.link(self.processing, self.memory, self.instructions)
+        self.memory.link(self.processing, self.initialization, self.instructions)
+        self.instructions.link(self.processing, self.initialization, self.memory)
+
+    def run(self):
         self.processing.generate()
-        self.processing.duplicate()
+        self.processing.duplicate_conv(self.config["cu_duplication"])
         self.processing.write_to_file()
 
         self.initialization.layer_scaling_factors()
         self.initialization.write_weight_files()
-        self.initialization.write_input_file(0)
+        self.initialization.write_input_file(self.config["input_index"])
 
         self.memory.generate()
 
-        self.instructions.generate(self.memory.kernel_fit)
+        self.instructions.generate()
         self.instructions.write_to_file()
 
-        self.memory.write_to_file(len(self.instructions.instr), self.initialization.dram_addr)
+        self.memory.write_to_file()
 
 
 if __name__ == "__main__":
-    network    = LeNet()
+    network    = LeNet5()
     layers     = network.layer_list
-    model_path = "spikes/models/0_0" + ("_3,3_qat.pt" if Config.if_pretrained() else ".pt")
+    config = {
+        "model_path":     "models/Lenet.pt",
+        "res_weight":     3,
+        "sigma_weight":   3,
+        "res_activation": 3,
+        "bits_margin":    4,
+        "dram_data_bits": 512,
+        "dram_addr_bits": 29,
+        "memory_limit":   10e6,
+        "cu_duplication": 2,
+        "input_index":    0
+    }
 
-    data_train = MNIST('spikes/data', download=True, transform=transforms.Compose([transforms.Resize((32, 32)), transforms.ToTensor()]))
-    data_test  = MNIST('spikes/data', train=False, download=True, transform=transforms.Compose([transforms.Resize((32, 32)), transforms.ToTensor()]))
+    data_train = MNIST('./data', download=True, transform=transforms.Compose([transforms.Resize((32, 32)), transforms.ToTensor()]))
+    data_test  = MNIST('./data', train=False, download=True, transform=transforms.Compose([transforms.Resize((32, 32)), transforms.ToTensor()]))
 
-    compiler = Compiler(layers, model_path, data_train)
-    compiler.generate_config()
+    compiler = Compiler(layers, data_train, config)
+    compiler.run()
 
     sim = Simulation(layers)
-    sim.load_state_dict(torch.load(model_path))
+    sim.load_state_dict(torch.load(config["model_path"]))
     sim.quantize_weights()
     sim.eval()
 
