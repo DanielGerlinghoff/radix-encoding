@@ -1,0 +1,3 @@
+[submodule "compiler/training"]
+	path = compiler/training
+	url = git@github.com:DanielGerlinghoff/pytorch-cifar.git
