@@ -20,6 +20,8 @@ class Simulation(nn.Module):
         for layer in self.layer_list:
             if hasattr(layer, "weight_qt"):
                 layer.weight = nn.Parameter(layer.weight_qt.type(torch.float))
+            if hasattr(layer, "bias_qt"):
+                layer.bias = nn.Parameter(layer.bias_qt.type(torch.float))
 
     def quantize_activations(self, x, scale):
         return x.mul(2 ** scale - 1).round()
@@ -36,8 +38,5 @@ class Simulation(nn.Module):
             x = layer(x)
             if "wgt_scale" in layer.hardware.keys():
                 scales = (layer.hardware["wgt_scale"], layer.hardware["act_in_scale"], layer.hardware["act_out_scale"])
-            else:
-                scales = None
-            if scales is not None:
                 x = self.requantize_activations(x, *scales)
         return x

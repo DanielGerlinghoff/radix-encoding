@@ -147,10 +147,10 @@ class Instructions:
                             instr_mem("ACTL", int(conv_ping_pong), layer.in_size * (chn_pu + layer.channels * tstep))
                         chn_pu += 1
                         if chn_pu == layer.channels: break
-                    for row in range(layer.in_size):
+                    for row in range(layer.in_size // layer.kernel_size * layer.kernel_size):
                         if row % layer.kernel_size == 0:
                             instr_cmd("RST")
-                            instr_acts(pu_1st + len(self.proc.conv_units_dupl), 0, row // 2 + layer.out_size * chn)
+                            instr_acts(pu_1st + len(self.proc.conv_units_dupl), 0, row // layer.kernel_size + layer.out_size * chn)
                         instr_cmd("PROC")
                         instr_conf("OUTM", out_mode["DIR" if (row + 1) % layer.kernel_size == 0 else "DEL"])
                         if row < layer.in_size - 1:

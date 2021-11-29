@@ -19,13 +19,36 @@ class Network(nn.Module):
         self.config     = config
 
     def forward(self, x):
+        # Fold batchnorm
+        for mod in self.layer_list:
+            if type(mod) in [nn.Conv2d]:
+                mod_dst = mod
+            elif type(mod) in [nn.BatchNorm2d]:
+                mod_src = mod
+
+                # Transfer bias and weights
+                bias_new = mod_src.bias - mod_src.running_mean * mod_src.weight / torch.sqrt(mod_src.running_var)
+                mod_dst.bias = nn.Parameter(bias_new)
+
+                weight_new = mod_src.weight / torch.sqrt(mod_src.running_var)
+                mod_dst.weight = nn.Parameter(mod_dst.weight.mul(weight_new.view(-1, 1, 1, 1).expand_as(mod_dst.weight)))
+
+                # Neutralize batch normalization layer
+                mod_src.weight = nn.Parameter(torch.ones_like(mod_src.weight))
+                mod_src.bias = nn.Parameter(torch.zeros_like(mod_src.bias))
+                mod_src.running_mean = torch.zeros_like(mod_src.running_mean)
+                mod_src.running_var = torch.ones_like(mod_src.running_var)
+                mod_src.eps = 0
+
+        # Quantize weights and activations
         for layer in self.layer_list:
             if type(layer) in [nn.Conv2d, nn.Linear]:
                 layer.hardware["act_in_scale"] = self.quantize_act(x)
             x = layer(x)
             if type(layer) in [nn.Conv2d, nn.Linear]:
-                if not hasattr(layer, "weight_qt"): self.quantize_wgt(layer)
                 layer.hardware["act_out_scale"] = self.quantize_act(x)
+                layer.hardware["wgt_scale"]     = self.quantize_wgt(layer)
+                self.quantize_bias(layer)
 
     def quantize_act(self, activation):
         limit = activation.max()
@@ -36,11 +59,20 @@ class Network(nn.Module):
         std, mean = torch.std_mean(layer.weight)
         limit     = abs(mean) + self.config["sigma_weight"] * std
         scale     = self.config["res_weight"] - math.ceil(math.log2(limit)) - 1
-        layer.hardware["wgt_scale"] = scale
 
         weights_scaled    = layer.weight.mul(math.pow(2, scale))
         weights_quantized = weights_scaled.round().clip(-2 ** (self.config["res_weight"] - 1), 2 ** (self.config["res_weight"] - 1) - 1)
         layer.weight_qt   = weights_quantized.type(torch.int)
+        return scale
+
+    def quantize_bias(self, layer):
+        if type(layer) in [nn.Conv2d, nn.Linear] and layer.bias is not None:
+            res_bias = self.config["res_weight"] + self.config["res_activation"] + self.config["bits_margin"]
+
+            bias_scaled    = layer.bias.mul(math.pow(2, layer.hardware["act_in_scale"] + layer.hardware["wgt_scale"]))
+            bias_quantized = bias_scaled.round().clip(-2 ** (res_bias - 1), 2 ** (res_bias - 1) - 1)
+            layer.bias_qt  = bias_quantized.type(torch.int)
+
 
 class Initialization:
     def __init__(self, layers, dataset, config):

@@ -8,6 +8,7 @@ uart
 
 compiler/models/*.pt
 compiler/data
+compiler/generated
 
 ip
 *.swp

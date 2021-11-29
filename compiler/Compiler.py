@@ -10,14 +10,15 @@
 
 import torch
 import torchvision.transforms as transforms
-from torchvision.datasets.mnist import MNIST
+from torchvision.datasets import mnist, CIFAR10, CIFAR100
+import os
 
 from Initialization import Initialization
 from Processing import Processing
 from Memory import Memory
 from Instructions import Instructions
 from Simulation import Simulation
-from models.Lenet import LeNet5
+from training.models import *
 
 class Compiler:
     def __init__(self, layers, inputs, config):
@@ -38,6 +39,12 @@ class Compiler:
         self.instructions.link(self.processing, self.initialization, self.memory)
 
     def run(self):
+        # Delete previously generated files
+        folder = './generated'
+        for filename in os.listdir(folder):
+            os.remove(os.path.join(folder, filename))
+
+        # Run sub-processes
         self.processing.generate()
         self.processing.duplicate_conv(self.config["cu_duplication"])
         self.processing.write_to_file()
@@ -55,13 +62,13 @@ class Compiler:
 
 
 if __name__ == "__main__":
-    network    = LeNet5()
-    layers     = network.layer_list
     config = {
-        "model_path":     "models/Lenet.pt",
-        "res_weight":     3,
+        "network":        ("lenet", "alexnet", "vgg", "fang")[0],
+        "dataset":        ("mnist-32", "mnist-28", "cifar10", "cifar100")[0],
+        "model_path":     None,
+        "res_weight":     None,
         "sigma_weight":   3,
-        "res_activation": 3,
+        "res_activation": None,
         "bits_margin":    4,
         "dram_data_bits": 512,
         "dram_addr_bits": 29,
@@ -70,14 +77,50 @@ if __name__ == "__main__":
         "input_index":    0
     }
 
-    data_train = MNIST('./data', download=True, transform=transforms.Compose([transforms.Resize((32, 32)), transforms.ToTensor()]))
-    data_test  = MNIST('./data', train=False, download=True, transform=transforms.Compose([transforms.Resize((32, 32)), transforms.ToTensor()]))
+    if config["dataset"] == "mnist-32":
+        trans = transforms.Compose([transforms.Resize((32, 32)), transforms.ToTensor()])
+        data_train = mnist.MNIST('./data', download=True, transform=trans)
+        data_test  = mnist.MNIST('./data', train=False, download=True, transform=trans)
+    elif config["dataset"] == "mnist-28":
+        trans = transforms.Compose([transforms.ToTensor()])
+        data_train = mnist.MNIST('./data', download=True, transform=trans)
+        data_test  = mnist.MNIST('./data', train=False, download=True, transform=trans)
+    elif config["dataset"] == "cifar10":
+        trans = transforms.Compose([transforms.RandomHorizontalFlip(), transforms.RandomCrop(32, 4), transforms.ToTensor()])
+        data_train = CIFAR10(root='./data', train=True, download=True, transform=trans)
+        data_test  = CIFAR10(root='./data', train=False, download=True, transform=transforms.Compose([transforms.ToTensor()]))
+    elif config["dataset"] == "cifar100":
+        trans = transforms.Compose([transforms.RandomHorizontalFlip(), transforms.RandomCrop(32, 4), transforms.ToTensor()])
+        data_train = CIFAR100(root='./data', train=True, download=True, transform=trans)
+        data_test  = CIFAR100(root='./data', train=False, download=True, transform=transforms.Compose([transforms.ToTensor()]))
 
-    compiler = Compiler(layers, data_train, config)
+    if config["network"] == "lenet":
+        network = LeNet()
+        if not config["model_path"]:     config["model_path"] = "training/checkpoint/lenet.pth"
+        if not config["res_weight"]:     config["res_weight"] = 3
+        if not config["res_activation"]: config["res_activation"] = 4
+    elif config["network"] == "alexnet":
+        network = AlexNet(batchnorm=True, num_classes=10)
+        if not config["model_path"]:     config["model_path"]     = "training/checkpoint/alexnet_bn.pth"
+        if not config["res_weight"]:     config["res_weight"]     = 6
+        if not config["res_activation"]: config["res_activation"] = 6
+    elif config["network"] == "vgg":
+        network = VGG("VGG11", batchnorm=True, num_classes=100)
+        if not config["model_path"]:     config["model_path"]     = "training/checkpoint/vgg_bn.pth"
+        if not config["res_weight"]:     config["res_weight"]     = 6
+        if not config["res_activation"]: config["res_activation"] = 6
+    elif config["network"] == "fang":
+        network = Fang()
+        if not config["model_path"]:     config["model_path"]     = "training/checkpoint/fang.pth"
+        if not config["res_weight"]:     config["res_weight"]     = 4
+        if not config["res_activation"]: config["res_activation"] = 4
+
+    # Compile
+    compiler = Compiler(network.layer_list, data_train, config)
     compiler.run()
 
-    sim = Simulation(layers)
-    sim.load_state_dict(torch.load(config["model_path"]))
+    # Simulate compiled network
+    sim = Simulation(network.layer_list)
     sim.quantize_weights()
     sim.eval()
 
